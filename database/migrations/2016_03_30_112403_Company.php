@@ -24,6 +24,9 @@ class Company extends Migration
             $table->string('phonenumber')->nullable();
             $table->string('email');
             $table->timestamps();
+
+            $table->primary('id');
+
         });
     }
 
