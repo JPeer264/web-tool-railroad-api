@@ -14,6 +14,7 @@ class Forum extends Migration
     {
         Schema::create('Forum', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('id_category')->unsigned();
             $table->foreign('id_category')->references('id')->on('Category');
             $table->timestamps();
 

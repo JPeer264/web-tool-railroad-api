@@ -14,7 +14,9 @@ class ForumJob extends Migration
     {
         Schema::create('Forum_Job', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('id_forum')->unsigned();
             $table->foreign('id_forum')->references('id')->on('Forum');
+            $table->integer('id_job')->unsigned();
             $table->foreign('id_job')->references('id')->on('Job');
             $table->timestamps();
 

@@ -14,11 +14,13 @@ class Topic extends Migration
     {
         Schema::create('Topic', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('id_category')->unsigned();
             $table->foreign('id_category')->references('id')->on('Category');
+            $table->integer('id_person')->unsigned();
             $table->foreign('id_person')->references('id')->on('Person');
             $table->string('title');
             $table->string('description');
-            $table->tinyInteger('is_closed')
+            $table->tinyInteger('is_closed');
             $table->timestamps();
 
             $table->primary('id');
