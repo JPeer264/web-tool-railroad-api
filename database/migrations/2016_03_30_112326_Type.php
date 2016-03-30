@@ -14,7 +14,11 @@ class Type extends Migration
     {
         Schema::create('Type', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('title');
+            $table->string('description');
             $table->timestamps();
+
+            $table->primary('id');
         });
     }
 
