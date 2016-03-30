@@ -14,7 +14,13 @@ class SocialMedia extends Migration
     {
         Schema::create('SocialMedia', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('twitter')->nullable();
+            $table->string('facebook')->nullable();
+            $table->string('linkedin')->nullable();
+            $table->string('xing')->nullable();
             $table->timestamps();
+
+            $table->primary('id');
         });
     }
 
