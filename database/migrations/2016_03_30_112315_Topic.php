@@ -12,7 +12,10 @@ class Topic extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('Topic', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -22,6 +25,6 @@ class Topic extends Migration
      */
     public function down()
     {
-        //
+        Schema::drop('Topic');
     }
 }

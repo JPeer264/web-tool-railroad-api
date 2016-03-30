@@ -12,7 +12,10 @@ class SocialMedia extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('SocialMedia', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -22,6 +25,6 @@ class SocialMedia extends Migration
      */
     public function down()
     {
-        //
+        Schema::drop('SocialMedia');
     }
 }

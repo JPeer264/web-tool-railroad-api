@@ -12,7 +12,10 @@ class Job extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('Job', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -22,6 +25,6 @@ class Job extends Migration
      */
     public function down()
     {
-        //
+        Schema::drop('Job');
     }
 }

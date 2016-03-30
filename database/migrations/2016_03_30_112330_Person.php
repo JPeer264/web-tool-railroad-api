@@ -12,7 +12,10 @@ class Person extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('Person', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -22,6 +25,6 @@ class Person extends Migration
      */
     public function down()
     {
-        //
+        Schema::drop('Person');
     }
 }

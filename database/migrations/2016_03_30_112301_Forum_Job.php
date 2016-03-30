@@ -12,7 +12,10 @@ class ForumJob extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('Forum_Job', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -22,6 +25,6 @@ class ForumJob extends Migration
      */
     public function down()
     {
-        //
+        Schema::drop('Forum_Job');
     }
 }

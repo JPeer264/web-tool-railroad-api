@@ -12,7 +12,10 @@ class Type extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('Type', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -22,6 +25,6 @@ class Type extends Migration
      */
     public function down()
     {
-        //
+        Schema::drop('Type');
     }
 }
