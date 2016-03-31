@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Category extends Migration
+class Job extends Migration
 {
     /**
      * Run the migrations.
@@ -12,14 +12,11 @@ class Category extends Migration
      */
     public function up()
     {
-        Schema::create('Category', function (Blueprint $table) {
+        Schema::create('Job', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title');
-            $table->string('descriptions');
+            $table->string('jobtitle');
+            $table->string('description');
             $table->timestamps();
-
-            $table->primary('id');
-
         });
     }
 
@@ -30,6 +27,6 @@ class Category extends Migration
      */
     public function down()
     {
-        Schema::drop('Category');
+        Schema::drop('Job');
     }
 }

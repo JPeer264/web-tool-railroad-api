@@ -14,7 +14,7 @@ class Company extends Migration
     {
         Schema::create('Company', function (Blueprint $table) {
             $table->increments('id');
-            $table->foreign('administrator')->references('id')->on('Person');
+            $table->integer('administrator')->unsigned();
             $table->string('name');
             $table->string('logo_alt');
             $table->string('logo_location');
@@ -24,9 +24,6 @@ class Company extends Migration
             $table->string('phonenumber')->nullable();
             $table->string('email');
             $table->timestamps();
-
-            $table->primary('id');
-
         });
     }
 

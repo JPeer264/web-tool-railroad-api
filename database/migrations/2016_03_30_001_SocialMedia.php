@@ -19,8 +19,6 @@ class SocialMedia extends Migration
             $table->string('linkedin')->nullable();
             $table->string('xing')->nullable();
             $table->timestamps();
-
-            $table->primary('id');
         });
     }
 

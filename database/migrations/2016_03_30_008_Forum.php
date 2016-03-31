@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Topic extends Migration
+class Forum extends Migration
 {
     /**
      * Run the migrations.
@@ -12,19 +12,11 @@ class Topic extends Migration
      */
     public function up()
     {
-        Schema::create('Topic', function (Blueprint $table) {
+        Schema::create('Forum', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('id_category')->unsigned();
             $table->foreign('id_category')->references('id')->on('Category');
-            $table->integer('id_person')->unsigned();
-            $table->foreign('id_person')->references('id')->on('Person');
-            $table->string('title');
-            $table->string('description');
-            $table->tinyInteger('is_closed');
             $table->timestamps();
-
-            $table->primary('id');
-
         });
     }
 
@@ -35,6 +27,6 @@ class Topic extends Migration
      */
     public function down()
     {
-        Schema::drop('Topic');
+        Schema::drop('Forum');
     }
 }

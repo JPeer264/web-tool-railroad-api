@@ -44,8 +44,6 @@ class Person extends Migration
             $table->timestamp('birthday');
             $table->rememberToken();
             $table->timestamps();
-
-            $table->primary('id');
         });
     }
 

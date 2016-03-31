@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Role extends Migration
+class Category extends Migration
 {
     /**
      * Run the migrations.
@@ -12,14 +12,11 @@ class Role extends Migration
      */
     public function up()
     {
-        Schema::create('Role', function (Blueprint $table) {
+        Schema::create('Category', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('rolename');
-            $table->string('description');
-            $table->tinyInteger('ranking'); //1 - 5 | Admin - User - etc.
+            $table->string('title');
+            $table->string('descriptions');
             $table->timestamps();
-
-            $table->primary('id');
         });
     }
 
@@ -30,6 +27,6 @@ class Role extends Migration
      */
     public function down()
     {
-        Schema::drop('Role');
+        Schema::drop('Category');
     }
 }

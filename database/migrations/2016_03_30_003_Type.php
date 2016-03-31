@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Job extends Migration
+class Type extends Migration
 {
     /**
      * Run the migrations.
@@ -12,13 +12,11 @@ class Job extends Migration
      */
     public function up()
     {
-        Schema::create('Job', function (Blueprint $table) {
+        Schema::create('Type', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('jobtitle');
+            $table->string('title');
             $table->string('description');
             $table->timestamps();
-
-            $table->primary('id');
         });
     }
 
@@ -29,6 +27,6 @@ class Job extends Migration
      */
     public function down()
     {
-        Schema::drop('Job');
+        Schema::drop('Type');
     }
 }
