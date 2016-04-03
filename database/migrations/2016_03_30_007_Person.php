@@ -42,6 +42,9 @@ class Person extends Migration
             $table->string('city');
             $table->string('address');
             $table->timestamp('birthday');
+            $table->tinyInteger('accepted');
+            $table->timestamp('accepted_at');
+            $table->timestamp('requested_at');
             $table->rememberToken();
             $table->timestamps();
         });
