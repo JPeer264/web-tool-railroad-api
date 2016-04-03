@@ -27,10 +27,6 @@ class Person extends Migration
             $table->foreign('id_job')
                 ->references('id')->on('Job');
 
-            $table->integer('id_socialmedia')->unsigned();
-            $table->foreign('id_socialmedia')
-                ->references('id')->on('SocialMedia');
-
             $table->string('firstname');
             $table->string('lastname');
             $table->string('password');
@@ -42,9 +38,14 @@ class Person extends Migration
             $table->string('city');
             $table->string('address');
             $table->timestamp('birthday');
+            $table->string('Twitter');
+            $table->string('Facebook');
+            $table->string('LinkedIn');
+            $table->string('Xing');
             $table->tinyInteger('accepted');
             $table->timestamp('accepted_at');
             $table->timestamp('requested_at');
+            $table->timestamp('token_refresh');
             $table->rememberToken();
             $table->timestamps();
         });
