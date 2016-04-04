@@ -37,6 +37,7 @@ class Person extends Migration
             $table->string('country');
             $table->string('city');
             $table->string('address');
+            $table->text('signup_comment');
             $table->timestamp('birthday');
             $table->string('Twitter');
             $table->string('Facebook');
