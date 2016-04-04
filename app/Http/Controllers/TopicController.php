@@ -34,11 +34,11 @@ class TopicController extends Controller
      *
      * @return 200 {Array} - within this array several single objects as topic
      */
-    public function getAllByCategory(Request $request) {
+    public function getAllByCategory(Request $request, $id) {
         // todo janpeer check if filter isset and apply
         // todo janpeer check for error 409
 
-        $return = (object)['id' => '1', 'name' => 'categoryname', 'topics' => [(object)['id' => '1', 'name' => 'testtopic'], (object)['id' => '2', 'name' => 'testtopic']]];
+        $return = (object)['id' => $id, 'name' => 'categoryname', 'topics' => [(object)['id' => '1', 'name' => 'testtopic'], (object)['id' => '2', 'name' => 'testtopic']]];
 
         return response()->json($return);
     }
