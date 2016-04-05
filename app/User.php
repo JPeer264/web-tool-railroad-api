@@ -34,16 +34,24 @@ class User extends Model
     protected $table = 'user';
 
     // DEFINE RELATIONSHIPS --------------------------------------------------
-   public function company() {
-       return $this->belongsTo('Company');
+    public function company() {
+        return $this->belongsTo('Company');
+    }
+
+    public function role() {
+        return $this->belongsTo('Role');
+    }
+
+    public function job() {
+        return $this->belongsTo('Job');
    }
 
-   public function role() {
-       return $this->belongsTo('Role');
+   public function topic() {
+       return $this->hasMany('Topic');
    }
 
-   public function job() {
-       return $this->belongsTo('Job');
+   public function comment() {
+       return $this->hasMany('Comment');
    }
 
 }
