@@ -14,7 +14,7 @@ class Job extends Migration
     {
         Schema::create('Job', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('jobtitle');
+            $table->string('title');
             $table->string('description');
             $table->timestamps();
         });

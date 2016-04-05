@@ -14,7 +14,7 @@ class Role extends Migration
     {
         Schema::create('Role', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('rolename');
+            $table->string('name');
             $table->string('description');
             $table->tinyInteger('ranking'); //1 - 5 | Admin - User - etc.
             $table->timestamps();
