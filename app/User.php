@@ -14,7 +14,10 @@ class User extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'email',
+        'firstname', 'lastname', 'gender', 'picture_alt',
+        'picture_location', 'email', 'country', 'city',
+        'address', 'signup_comment', 'birthday', 'Twitter',
+        'Twitter', 'LinkedIn', 'Xing',
     ];
 
     /**
@@ -25,4 +28,22 @@ class User extends Model
     protected $hidden = [
         'password',
     ];
+
+    // LINK THIS MODEL TO OUR DATABASE TABLE ---------------------------------
+    // since the plural of user isnt what we named our database table we have to define it
+    protected $table = 'user';
+
+    // DEFINE RELATIONSHIPS --------------------------------------------------
+   public function company() {
+       return $this->belongsTo('Company');
+   }
+
+   public function role() {
+       return $this->belongsTo('Role');
+   }
+
+   public function job() {
+       return $this->belongsTo('Job');
+   }
+
 }
