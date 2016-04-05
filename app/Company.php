@@ -20,8 +20,6 @@ class Company extends Model
 
 
     // DEFINE RELATIONSHIPS --------------------------------------------------
-    // define a many to many relationship
-    // also call the linking table
     public function category() {
         return $this->belongsToMany('Category', 'Category_Company', 'category_id', 'company_id');
     }

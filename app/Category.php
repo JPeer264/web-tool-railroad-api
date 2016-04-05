@@ -17,8 +17,6 @@ class Category extends Model
     protected $table = 'category';
 
     // DEFINE RELATIONSHIPS --------------------------------------------------
-    // define a many to many relationship
-    // also call the linking table
     public function company() {
         return $this->belongsToMany('Company', 'Category_Company', 'category_id', 'company_id');
     }
