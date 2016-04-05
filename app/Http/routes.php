@@ -20,7 +20,7 @@ $app->get('/', function () use ($app) {
 $app->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], function($app) {
     // todo add specific method
     // @example UserController@method
-    
+
     // user & register
     $app->post('register', 'UserController@register');
     $app->get('user', 'UserController@getAll');
@@ -39,11 +39,11 @@ $app->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], functi
     // company
     $app->get('company', 'CompanyController@getAll'); // created
     $app->post('company', 'CompanyController@create'); // created
-    
+
     $app->get('company/{id}', 'CompanyController@get'); // created
     $app->post('company/{id}', 'CompanyController@update'); // created
     $app->delete('company/{id}', 'CompanyController@delete'); // created
-    
+
     // category
     $app->get('category', 'CategoryController@getAll'); // created
     $app->post('category', 'CategoryController@create'); // created
@@ -56,13 +56,17 @@ $app->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], functi
     $app->get('category/{id}/topic', 'TopicController@getAllByCategory'); // created
     $app->post('category/{id}/topic', 'TopicController@create'); // created
 
-    $app->get('topic/{id}', 'TopicController@get'); // created 
+    $app->get('topic/{id}', 'TopicController@get'); // created
     $app->post('topic/{id}', 'TopicController'); // created
     $app->delete('topic/{id}', 'TopicController'); // created
 
     // comment
     $app->post('topic/{id}/comment', 'CommentController@create');
 
+    $app->get('type/{id}', 'TypeController@get'); // created
+    $app->post('type/{id}', 'TypeController'); // created
+    $app->delete('type/{id}', 'TypeController'); // created
+    
     // todo add middleware to refresh token
     $app->post('refresh_token', function () use ($app) {
         return 'Should return a new token!';
