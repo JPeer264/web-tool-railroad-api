@@ -18,14 +18,14 @@ class Category extends Model
 
     // DEFINE RELATIONSHIPS --------------------------------------------------
     public function company() {
-        return $this->belongsToMany('Company', 'Category_Company', 'category_id', 'company_id');
+        return $this->belongsToMany('App\Company', 'Category_Company', 'category_id', 'company_id');
     }
 
     public function job() {
-        return $this->belongsToMany('Job', 'Category_Job', 'category_id', 'job_id');
+        return $this->belongsToMany('App\Job', 'Category_Job', 'category_id', 'job_id');
     }
 
     public function topic() {
-        return $this->hasMany('Topic');
+        return $this->hasMany('App\Topic');
     }
 }

@@ -18,14 +18,14 @@ class Job extends Model
 
     // DEFINE RELATIONSHIPS --------------------------------------------------
     public function category() {
-        return $this->belongsToMany('Category', 'Category_Job', 'category_id', 'job_id');
+        return $this->belongsToMany('App\Category', 'Category_Job', 'category_id', 'job_id');
     }
 
     public function topic() {
-        return $this->belongsToMany('Topic', 'Topic_Job', 'topic_id', 'job_id');
+        return $this->belongsToMany('App\Topic', 'Topic_Job', 'topic_id', 'job_id');
     }
 
     public function user() {
-        return $this->hasMany('User');
+        return $this->hasMany('App\User');
     }
 }

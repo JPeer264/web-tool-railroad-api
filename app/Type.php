@@ -20,7 +20,7 @@ class Type extends Model
     // DEFINE RELATIONSHIPS --------------------------------------------------
 
     public function topic() {
-        return $this->hasMany('Topic');
+        return $this->hasMany('App\Topic');
     }
 
 

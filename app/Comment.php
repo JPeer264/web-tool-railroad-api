@@ -19,11 +19,11 @@ class Comment extends Model
     // DEFINE RELATIONSHIPS --------------------------------------------------
 
     public function topic() {
-        return $this->belongsTo('Topic');
+        return $this->belongsTo('App\Topic');
     }
 
     public function user() {
-        return $this->belongsTo('User');
+        return $this->belongsTo('App\User');
     }
 
 }

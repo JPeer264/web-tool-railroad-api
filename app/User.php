@@ -35,23 +35,23 @@ class User extends Model
 
     // DEFINE RELATIONSHIPS --------------------------------------------------
     public function company() {
-        return $this->belongsTo('Company');
+        return $this->belongsTo('App\Company');
     }
 
     public function role() {
-        return $this->belongsTo('Role');
+        return $this->belongsTo('App\Role');
     }
 
     public function job() {
-        return $this->belongsTo('Job');
+        return $this->belongsTo('App\Job');
    }
 
    public function topic() {
-       return $this->hasMany('Topic');
+       return $this->hasMany('App\Topic');
    }
 
    public function comment() {
-       return $this->hasMany('Comment');
+       return $this->hasMany('App\Comment');
    }
 
 }

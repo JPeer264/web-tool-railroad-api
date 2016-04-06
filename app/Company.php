@@ -21,14 +21,14 @@ class Company extends Model
 
     // DEFINE RELATIONSHIPS --------------------------------------------------
     public function category() {
-        return $this->belongsToMany('Category', 'Category_Company', 'category_id', 'company_id');
+        return $this->belongsToMany('App\Category', 'Category_Company', 'category_id', 'company_id');
     }
 
     public function topic() {
-        return $this->belongsToMany('Topic', 'Topic_Company', 'topic_id', 'company_id');
+        return $this->belongsToMany('App\Topic', 'Topic_Company', 'topic_id', 'company_id');
     }
 
     public function user() {
-        return $this->hasMany('User');
+        return $this->hasMany('App\User');
     }
 }
