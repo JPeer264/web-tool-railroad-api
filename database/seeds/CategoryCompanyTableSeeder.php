@@ -21,8 +21,8 @@ class CategoryCompanyTableSeeder extends Seeder
         $category_random = mt_rand(0, $category_count-1);
 
         DB::table('Category_Company')->insert([
-            'id_category' => $category[$category_random]->id,
-            'id_company' => $company[$company_random]->id
+            'category_id' => $category[$category_random]->id,
+            'company_id' => $company[$company_random]->id
         ]);
     }
 }

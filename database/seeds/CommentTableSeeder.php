@@ -16,13 +16,13 @@ class CommentTableSeeder extends Seeder
         $topic_count = count($topic);
         $topic_random = mt_rand(0, $topic_count-1);
 
-        $person = DB::table('Person')->get();
-        $person_count = count($person);
-        $person_random = mt_rand(0, $person_count-1);
+        $user = DB::table('User')->get();
+        $user_count = count($user);
+        $user_random = mt_rand(0, $user_count-1);
 
         DB::table('Comment')->insert([
-            'id_person' => $person[$person_random]->id,
-            'id_topic' => $topic[$topic_random]->id,
+            'user_id' => $user[$user_random]->id,
+            'topic_id' => $topic[$topic_random]->id,
             'content' => str_random(10)
         ]);
     }

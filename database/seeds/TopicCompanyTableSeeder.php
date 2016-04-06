@@ -21,8 +21,8 @@ class TopicCompanyTableSeeder extends Seeder
         $topic_random = mt_rand(0, $topic_count-1);
 
         DB::table('Topic_Company')->insert([
-            'id_topic' => $topic[$topic_random]->id,
-            'id_company' => $company[$company_random]->id
+            'topic_id' => $topic[$topic_random]->id,
+            'company_id' => $company[$company_random]->id
         ]);
     }
 }

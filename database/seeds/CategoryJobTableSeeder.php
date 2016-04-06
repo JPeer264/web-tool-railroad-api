@@ -21,8 +21,8 @@ class CategoryJobTableSeeder extends Seeder
         $job_random = mt_rand(0, $job_count-1);
 
         DB::table('Category_Job')->insert([
-            'id_category' => $category[$category_random]->id,
-            'id_job' => $job[$job_random]->id
+            'category_id' => $category[$category_random]->id,
+            'job_id' => $job[$job_random]->id
         ]);
     }
 }

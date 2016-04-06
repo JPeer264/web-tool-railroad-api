@@ -14,10 +14,10 @@ class CategoryJob extends Migration
     {
         Schema::create('Category_Job', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_category')->unsigned();
-            $table->foreign('id_category')->references('id')->on('Category');
-            $table->integer('id_job')->unsigned();
-            $table->foreign('id_job')->references('id')->on('Job');
+            $table->integer('category_id')->unsigned();
+            $table->foreign('category_id')->references('id')->on('Category');
+            $table->integer('job_id')->unsigned();
+            $table->foreign('job_id')->references('id')->on('Job');
             $table->timestamps();
         });
     }

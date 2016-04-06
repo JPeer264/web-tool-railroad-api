@@ -14,10 +14,10 @@ class CategoryCompany extends Migration
     {
         Schema::create('Category_Company', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_category')->unsigned();
-            $table->foreign('id_category')->references('id')->on('Category');
-            $table->integer('id_company')->unsigned();
-            $table->foreign('id_company')->references('id')->on('Company');
+            $table->integer('category_id')->unsigned();
+            $table->foreign('category_id')->references('id')->on('Category');
+            $table->integer('company_id')->unsigned();
+            $table->foreign('company_id')->references('id')->on('Company');
             $table->timestamps();
         });
     }

@@ -13,63 +13,63 @@ class UserController extends Controller
     // todo get user (one or all -> login)
       public function getUser($id)
        {
-         $Person  = Person::findOrFail($id);
+         $user  = User::findOrFail($id);
 
-         return response()->json($Person);
+         return response()->json($user);
        }
 
      public function getAllUsers()
       {
-          $Person  = Person::all()->value('id', 'name', 'id_job', 'id_company', 'picture_alt', 'picture_location');
-          return response()->json($Person);
+          $user  = User::all()->value('id', 'name', 'job_id', 'company_id', 'picture_alt', 'picture_location');
+          return response()->json($user);
       }
 
       public function getUsersJob($id)
        {
-           $Person  = Person::where('id_company', $id)->value('id', 'name', 'id_job', 'id_company', 'picture_alt', 'picture_location');
-           return response()->json($Person);
+           $user  = User::where('company_id', $id)->value('id', 'name', 'job_id', 'company_id', 'picture_alt', 'picture_location');
+           return response()->json($user);
        }
 
        public function getUsersCompany($id)
         {
-            $Person  = Person::where('id_job', $id)->value('id', 'name', 'id_job', 'id_company', 'picture_alt', 'picture_location');
-            return response()->json($Person);
+            $user  = User::where('job_id', $id)->value('id', 'name', 'job_id', 'company_id', 'picture_alt', 'picture_location');
+            return response()->json($user);
         }
 
 
     // todo update user (just one)
     public function updateUsers(Request $request, $id)
      {
-         $Person  = Person::find($id);
+         $user  = User::find($id);
 
-         $Person->id_company = $request->input ('id_company');
-         $Person->id_role = $request->input ('id_role');
-         $Person->id_job = $request->input ('id_job');
-         $Person->firstname = $request->input ('firstname');
-         $Person->lastname = $request->input ('lastname');
-         $Person->password = $request->input ('password');
-         $Person->gender = $request->input ('gender');
-         $Person->picture_alt = $request->input ('picture_alt');
-         $Person->picture_location = $request->input ('picture_location');
-         $Person->email = $request->input ('email');
-         $Person->country = $request->input ('country');
-         $Person->city = $request->input ('city');
-         $Person->address = $request->input ('address');
-         $Person->birthday = $request->input ('birthday');
-         $Person->Twitter = $request->input ('twitter');
-         $Person->Facebook = $request->input ('facebook');
-         $Person->LinkedIn = $request->input ('linkedin');
-         $Person->Xing = $request->input ('xing');
+         $user->company_id = $request->input ('company_id');
+         $user->role_id = $request->input ('role_id');
+         $user->job_id = $request->input ('job_id');
+         $user->firstname = $request->input ('firstname');
+         $user->lastname = $request->input ('lastname');
+         $user->password = $request->input ('password');
+         $user->gender = $request->input ('gender');
+         $user->picture_alt = $request->input ('picture_alt');
+         $user->picture_location = $request->input ('picture_location');
+         $user->email = $request->input ('email');
+         $user->country = $request->input ('country');
+         $user->city = $request->input ('city');
+         $user->address = $request->input ('address');
+         $user->birthday = $request->input ('birthday');
+         $user->Twitter = $request->input ('twitter');
+         $user->Facebook = $request->input ('facebook');
+         $user->LinkedIn = $request->input ('linkedin');
+         $user->Xing = $request->input ('xing');
 
-         $Person->save();
-         return response()->json($Person);
+         $user->save();
+         return response()->json($user);
      }
 
     // todo delete user (just one)
     public function deleteUser($id)
     {
-        $Person  = Person::find($id);
-        $Person->delete();
+        $user  = User::find($id);
+        $user->delete();
 
         return response()->json('deleted user');
     }
@@ -77,21 +77,21 @@ class UserController extends Controller
     // todo create user (one)
     public function updateUsers(Request $request)
      {
-       $Person = new Person;
+       $user = new User;
 
-       $Person->id_company = $request->input ('id_company');
-       $Person->id_role = $request->input ('id_role');
-       $Person->id_job = $request->input ('id_job');
-       $Person->firstname = $request->input ('firstname');
-       $Person->lastname = $request->input ('lastname');
-       $Person->password = $request->input ('password');
-       $Person->gender = $request->input ('gender');
-       $Person->email = $request->input ('email');
-       $Person->country = $request->input ('country');
-       $Person->city = $request->input ('city');
-       $Person->signup_comment = $request->input ('signup_comment');
+       $user->company_id = $request->input ('company_id');
+       $user->role_id = $request->input ('role_id');
+       $user->job_id = $request->input ('job_id');
+       $user->firstname = $request->input ('firstname');
+       $user->lastname = $request->input ('lastname');
+       $user->password = $request->input ('password');
+       $user->gender = $request->input ('gender');
+       $user->email = $request->input ('email');
+       $user->country = $request->input ('country');
+       $user->city = $request->input ('city');
+       $user->signup_comment = $request->input ('signup_comment');
 
-       $Person->save();
-       return response()->json($Person);
+       $user->save();
+       return response()->json($user);
      }
 }

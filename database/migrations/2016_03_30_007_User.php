@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Person extends Migration
+class User extends Migration
 {
     /**
      * Run the migrations.
@@ -12,19 +12,19 @@ class Person extends Migration
      */
     public function up()
     {
-        Schema::create('Person', function (Blueprint $table) {
+        Schema::create('User', function (Blueprint $table) {
             $table->increments('id');
             
-            $table->integer('id_company')->unsigned();
-            $table->foreign('id_company')
+            $table->integer('company_id')->unsigned();
+            $table->foreign('company_id')
                 ->references('id')->on('Company');
 
-            $table->integer('id_role')->unsigned();
-            $table->foreign('id_role')
+            $table->integer('role_id')->unsigned();
+            $table->foreign('role_id')
                 ->references('id')->on('Role');
 
-            $table->integer('id_job')->unsigned();
-            $table->foreign('id_job')
+            $table->integer('job_id')->unsigned();
+            $table->foreign('job_id')
                 ->references('id')->on('Job');
 
             $table->string('firstname');
@@ -59,6 +59,6 @@ class Person extends Migration
      */
     public function down()
     {
-        Schema::drop('Person');
+        Schema::drop('User');
     }
 }

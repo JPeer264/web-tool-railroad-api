@@ -14,10 +14,10 @@ class TopicCompany extends Migration
     {
       Schema::create('Topic_Company', function (Blueprint $table) {
           $table->increments('id');
-          $table->integer('id_topic')->unsigned();
-          $table->foreign('id_topic')->references('id')->on('Topic');
-          $table->integer('id_company')->unsigned();
-          $table->foreign('id_company')->references('id')->on('Company');
+          $table->integer('topic_id')->unsigned();
+          $table->foreign('topic_id')->references('id')->on('Topic');
+          $table->integer('company_id')->unsigned();
+          $table->foreign('company_id')->references('id')->on('Company');
           $table->timestamps();
       });
     }

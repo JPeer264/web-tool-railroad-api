@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 
-class PersonTableSeeder extends Seeder
+class UserTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -24,10 +24,10 @@ class PersonTableSeeder extends Seeder
         $role_count = count($role);
         $role_random = mt_rand(0, $role_count-1);
 
-        DB::table('Person')->insert([
-            'id_company' => $company[$company_random]->id,
-            'id_role' => $role[$role_random]->id,
-            'id_job' => $job[$job_random]->id,
+        DB::table('User')->insert([
+            'company_id' => $company[$company_random]->id,
+            'role_id' => $role[$role_random]->id,
+            'job_id' => $job[$job_random]->id,
             'firstname' => str_random(10),
             'lastname' => str_random(10),
             'password' => 'secret',

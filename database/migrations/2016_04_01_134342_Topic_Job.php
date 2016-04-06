@@ -14,10 +14,10 @@ class TopicJob extends Migration
     {
       Schema::create('Topic_Job', function (Blueprint $table) {
           $table->increments('id');
-          $table->integer('id_topic')->unsigned();
-          $table->foreign('id_topic')->references('id')->on('Topic');
-          $table->integer('id_job')->unsigned();
-          $table->foreign('id_job')->references('id')->on('Job');
+          $table->integer('topic_id')->unsigned();
+          $table->foreign('topic_id')->references('id')->on('Topic');
+          $table->integer('job_id')->unsigned();
+          $table->foreign('job_id')->references('id')->on('Job');
           $table->timestamps();
       });
     }

@@ -14,10 +14,10 @@ class Comment extends Migration
     {
         Schema::create('Comment', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_person')->unsigned();
-            $table->foreign('id_person')->references('id')->on('Person');
-            $table->integer('id_topic')->unsigned();
-            $table->foreign('id_topic')->references('id')->on('Topic');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('User');
+            $table->integer('topic_id')->unsigned();
+            $table->foreign('topic_id')->references('id')->on('Topic');
             $table->string('content');
             $table->timestamps();
         });

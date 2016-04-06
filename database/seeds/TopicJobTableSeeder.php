@@ -21,8 +21,8 @@ class TopicJobTableSeeder extends Seeder
         $job_random = mt_rand(0, $job_count-1);
 
         DB::table('Topic_Job')->insert([
-            'id_topic' => $topic[$topic_random]->id,
-            'id_job' => $job[$job_random]->id
+            'topic_id' => $topic[$topic_random]->id,
+            'job_id' => $job[$job_random]->id
         ]);
     }
 }
