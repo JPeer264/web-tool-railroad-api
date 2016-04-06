@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Category;
+use App\Http\Controllers\Filter;
 
 class CategoryController extends Controller
 {
@@ -16,18 +17,15 @@ class CategoryController extends Controller
      * @return 404 - category not found
      */
     public function get(Request $request, $id) {
-        // todo janpeer check if filter isset and apply
-        // todo janpeer get information from DB 
+        $categories = Category::with('topic')->find($id);
 
-        $err = false;
-
-        if($err) {
-            abort(404, 'category not found');
+        if (empty($categories)) {
+            return response()->json([
+                'message' => 'Category not found',
+            ], 404);          
         }
 
-        $return = ['id' => '1', 'name' => 'testcategory'];
-
-        return response()->json($return);
+        return response()->json($categories->toArray());
     }
 
     /**
@@ -38,12 +36,15 @@ class CategoryController extends Controller
      * @return 200 {Array} - within this array several single objects as category
      */
     public function getAll(Request $request) {
-        // todo janpeer check if filter isset and apply
-        // todo janpeer check for error 409
+        $categories = Category::with('topic', 'job', 'company')->get();
+        $params = $request->all();
+        $filter = new Filter();
 
-        $return = [(object)['id' => '1', 'name' => 'testcategory'], (object)['id' => '2', 'name' => 'testcategory']];
+        // filter by given parameters 
+        $companyFilter  = $filter->byParameters($categories, $params, 'company');
+        $jobFilter      = $filter->byParameters($companyFilter, $params, 'job');
 
-        return response()->json($return);
+        return response()->json($jobFilter->toArray());
     }
 
     /**
