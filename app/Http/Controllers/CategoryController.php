@@ -38,13 +38,14 @@ class CategoryController extends Controller
     public function getAll(Request $request) {
         $categories = Category::with('topic', 'job', 'company')->get();
         $params = $request->all();
-        $filter = new Filter();
+        $filter = new Filter($categories);
 
         // filter by given parameters 
-        $companyFilter  = $filter->byParameters($categories, $params, 'company');
-        $jobFilter      = $filter->byParameters($companyFilter, $params, 'job');
+        $companyFilter  = $filter
+            ->byParameters($params, 'company')
+            ->byParameters($params, 'job');
 
-        return response()->json($jobFilter->toArray());
+        return response()->json($companyFilter->getArray()->toArray());
     }
 
     /**
