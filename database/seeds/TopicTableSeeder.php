@@ -30,8 +30,7 @@ class TopicTableSeeder extends Seeder
             'type_id' => $type[$type_random]->id,
             'title' => str_random(10),
             'description' => str_random(10),
-            'is_closed' => false,
-            'is_deleted' => false
+            'is_closed' => false
         ]);
     }
 }
