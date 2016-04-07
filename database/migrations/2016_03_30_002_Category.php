@@ -16,6 +16,7 @@ class Category extends Migration
             $table->increments('id');
             $table->string('title');
             $table->string('description');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

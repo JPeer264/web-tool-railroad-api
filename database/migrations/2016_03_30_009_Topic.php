@@ -23,7 +23,7 @@ class Topic extends Migration
             $table->string('title');
             $table->string('description');
             $table->tinyInteger('is_closed');
-            $table->tinyInteger('is_deleted');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

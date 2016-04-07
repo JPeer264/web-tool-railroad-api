@@ -24,6 +24,7 @@ class Company extends Migration
             // todo check if we can use -> laravel countries + prefixes for phonennumbers
             $table->string('phonenumber')->nullable();
             $table->string('email');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

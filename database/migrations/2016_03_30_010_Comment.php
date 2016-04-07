@@ -19,6 +19,7 @@ class Comment extends Migration
             $table->integer('topic_id')->unsigned();
             $table->foreign('topic_id')->references('id')->on('Topic');
             $table->string('content');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

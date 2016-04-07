@@ -48,6 +48,7 @@ class User extends Migration
             $table->timestamp('requested_at');
             $table->timestamp('token_refresh');
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
