@@ -57,8 +57,8 @@ $app->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], functi
     $app->post('category/{id}/topic', 'TopicController@create'); // created
 
     $app->get('topic/{id}', 'TopicController@get'); // created
-    $app->post('topic/{id}', 'TopicController'); // created
-    $app->delete('topic/{id}', 'TopicController'); // created
+    $app->post('topic/{id}', 'TopicController@update'); // created
+    $app->delete('topic/{id}', 'TopicController@delete'); // created
 
     // comment
     $app->post('topic/{id}/comment', 'CommentController@create');

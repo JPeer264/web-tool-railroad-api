@@ -212,10 +212,10 @@ class Filter
 
         // set own parameter for deleteFromPivot
         if (isset($idToDelete[$keyword])) {
-            $this->globalParameters[$keyword . '_unset'] = $idToDelete[$keyword];
+            $this->globalParameters[$keyword . '_unset'] = array_unique($idToDelete[$keyword]);
         }
 
-        $this->globalParameters[$keyword] = $idToAdd;
+        $this->globalParameters[$keyword] = array_unique($idToAdd);
 
         return $this;
     }

@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Category;
 use App\Http\Controllers\Filter;
-use App\Job;
 
 class CategoryController extends Controller
 {

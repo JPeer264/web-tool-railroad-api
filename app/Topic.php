@@ -12,7 +12,7 @@ class Topic extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'title', 'description',
+        'category_id', 'user_id', 'type_id', 'title', 'description'
     ];
 
     // LINK THIS MODEL TO OUR DATABASE TABLE ---------------------------------
@@ -32,7 +32,7 @@ class Topic extends Model
     }
 
     public function job() {
-        return $this->belongsToMany('App\Job', 'Topic_Job', 'top_id', 'job_id');
+        return $this->belongsToMany('App\Job', 'Topic_Job', 'topic_id', 'job_id');
     }
 
     public function comment() {

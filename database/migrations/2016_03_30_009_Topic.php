@@ -18,11 +18,11 @@ class Topic extends Migration
             $table->foreign('category_id')->references('id')->on('Category');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('User');
-            $table->integer('type_id')->unsigned();
+            $table->integer('type_id')->unsigned()->default(1);
             $table->foreign('type_id')->references('id')->on('Type');
             $table->string('title');
             $table->string('description');
-            $table->tinyInteger('is_closed');
+            $table->tinyInteger('is_closed')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
