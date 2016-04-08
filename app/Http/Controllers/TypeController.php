@@ -3,16 +3,70 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Type;
+use App\Http\Controllers\Filter;
 
 class TypeController extends Controller
 {
-    public function index() {
+    /**
+     * should get one specific type by id
+     *
+     * @return 200 {Object} - a json with one type
+     * @return 404 - type not found
+     */
+    public function get(Request $request, $id) {
+        $type = Type::find($id);
 
+        if (empty($type)) {
+            return response()->json([
+                'message' => 'Type not found',
+            ], 404);          
+        }
+
+        return response()->json($type);
     }
 
-    // todo create type
-    // (todo change type)
-    // (todo delete type) 
+    /**
+     * should create a new type
+     *
+     * @return 201 - type successfully created
+     */
+    public function create(Request $request) {
+        $params = $request->all();
 
+        $type = Type::create($params);
+
+        return response()->json([
+                'message' => 'Type successfully created',
+                'type_id' => $type->id
+            ], 201);
+    }
+
+    /**
+     * deletes a specific type by id
+     *
+     * @return 200 - successfully deleted
+     * @return 404 - type does not exist 
+     */
+    public function delete($id) {
+        // todo check if there is an already
+        // used topic with this as foreign key
+        $type = Type::find($id);
+
+        if ($type == NULL) {
+            return response()->json([
+                'message' => 'Type does not exist',
+            ], 404);
+        }
+
+        $type->delete();
+
+        return response()->json([
+                'message' => 'Type successfully deleted',
+            ], 200);
+    }
+
+    // (todo change type)
 }

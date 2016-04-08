@@ -9,10 +9,6 @@ use App\Comment;
 
 class CommentController extends Controller
 {
-    public function index() {
-
-    }
-
     /**
      * should create a new comment
      *
@@ -28,7 +24,7 @@ class CommentController extends Controller
 
         return response()->json([
                 'message' => 'Comment successfully created',
-                'topic_id' => $comment->id
+                'comment_id' => $comment->id
             ], 201);
     }
 

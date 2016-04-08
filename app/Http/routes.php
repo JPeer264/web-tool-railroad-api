@@ -63,9 +63,10 @@ $app->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], functi
     // comment
     $app->post('topic/{id}/comment', 'CommentController@create');
 
+    $app->post('type', 'TypeController@create'); // created
     $app->get('type/{id}', 'TypeController@get'); // created
     $app->post('type/{id}', 'TypeController'); // created
-    $app->delete('type/{id}', 'TypeController'); // created
+    $app->delete('type/{id}', 'TypeController@delete'); // created
     
     // todo add middleware to refresh token
     $app->post('refresh_token', function () use ($app) {
