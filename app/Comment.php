@@ -12,7 +12,7 @@ class Comment extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'content',
+        'user_id', 'topic_id', 'content',
     ];
 
     // LINK THIS MODEL TO OUR DATABASE TABLE ---------------------------------
