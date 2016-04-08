@@ -36,7 +36,7 @@ class Filter
             if (empty($item)) return [];
 
             // sort and cast parameters
-            foreach ($parameters[$keyword] as $id) {
+            foreach ($parameters[$keyword] as $count => $id) {
                 $filter[] = (int) $id;
             }
 
@@ -62,7 +62,6 @@ class Filter
     public function getUsedPivots($keyword) {
         $cachedArray = $this->globalArray;
         $parameters = $this->globalParameters;
-
         $pivots = $this->getPivot($keyword)->getObject();
 
         // check if there is a pivot table and return the $keywords id
@@ -102,7 +101,7 @@ class Filter
         }
 
         // sort and cast parameters
-        foreach ($parameters[$keyword] as $id) {
+        foreach ($parameters[$keyword] as $count => $id) {
             $filteredParams[] = (int) $id;
         }
 
@@ -153,32 +152,80 @@ class Filter
         return $this;
     }
 
-    // todo filter existing pivot to see which is to delete and which to save
-    // todo description
-    public function updatePivot($keyword) {
+    /**
+     * delete an existing pivot
+     *
+     * @param $keyword {String} keyword in the GET request -> ?job[]=2&job[]=1
+     *
+     * @return $this
+     */
+    public function deleteFromPivot($keyword) {
+        $array = $this->globalArray;
+        $parameters = $this->globalParameters;
+
+        if (!isset($parameters[$keyword . '_unset'])) {
+            return $this;
+        } 
+
+        foreach ($parameters[$keyword . '_unset'] as $p) {
+            $array->$keyword()->detach((int)$p);
+        }
+
+        $this->globalArray = $array;
+        return $this;
+    }
+
+    /**
+     * prepare the parameters for update the pivot
+     *
+     * @param $keyword {String} keyword in the GET request -> ?job[]=2&job[]=1
+     *
+     * @return $this
+     */
+    public function prepareParameterForPivotUpdate($keyword) {
         $parameters = $this->globalParameters;
         // todo filter which pivots exist
         $idToDelete = $this
             ->getUsedPivots($keyword)
             ->usedPivots;
 
-        $idToAdd = array_filter($parameters[$keyword], function ($item) use ($idToDelete) {
-            foreach ($idToDelete as $del) {
+        if (!isset($parameters[$keyword])) return $this;
+
+        // sort and cast parameters
+        foreach ($parameters[$keyword] as $count => $item) {
+            $filteredParams[] = (int) $item;
+        }
+
+        // adds values from $parameters[$keyword] which are not used in $idToDelete
+        $idToAdd = array_filter($parameters[$keyword], function ($item) use ($idToDelete, $keyword) {
+
+            if (!isset($idToDelete[$keyword])) return true;
+
+            foreach ($idToDelete[$keyword] as $del) {
                 if ((int)$item == (int)$del) {
                     return false;
-                }
-            } 
+                }   
+            }
 
             return true;
         });
 
+        // set own parameter for deleteFromPivot
+        if (isset($idToDelete[$keyword])) {
+            $this->globalParameters[$keyword . '_unset'] = $idToDelete[$keyword];
+        }
+
         $this->globalParameters[$keyword] = $idToAdd;
-        $this->globalParameters[$keyword . '_unset'] = $idToDelete[$keyword];
 
         return $this;
     }
 
-    //todo deleteFromPivot to delete pivots
+    public function updatePivot($keyword) { 
+        $this->saveToPivot($keyword);
+        $this->deleteFromPivot($keyword);
+
+        return $this;
+    }
 
     /**
      * same as byParameters but reset globalArray and
@@ -198,10 +245,9 @@ class Filter
             return $this;
         }
 
-
         // sort and cast parameters
-        foreach ($parameters[$keyword] as $id) {
-            $filteredParams[] = (int) $id;
+        foreach ($parameters[$keyword] as $count => $item) {
+            $filteredParams[] = (int) $item;
         }
 
         // sort part - sorts by 

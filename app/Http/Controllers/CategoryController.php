@@ -104,20 +104,19 @@ class CategoryController extends Controller
      * @return 409 - category already exist
     */
     public function update(Request $request, $id) {
-        // todo update pivottables
         $params = $request->all();
 
         // filter parameters for update pivot
         $categorypivot = Category::with('job', 'company')->where('id', $id)->get();
         $filterpivot = new Filter($categorypivot, $params);
         $pivotparams = $filterpivot
-            ->updatePivot('job')
-            ->updatePivot('company')
+            ->prepareParameterForPivotUpdate('job')
+            ->prepareParameterForPivotUpdate('company')
             ->globalParameters;
 
         // exist filter
-        // todo exlcude itself from search
         $exist = Category::with('job', 'company')
+            ->where('id','!=', $id)
             ->where('title', $params['title'])
             ->get();
         $existfilter = new Filter($exist, $params);    
@@ -153,10 +152,9 @@ class CategoryController extends Controller
                 ], 409); 
         }
 
-        // todo delete pivots
         $filter
-            ->saveToPivot('job')
-            ->saveToPivot('company');
+            ->updatePivot('job')
+            ->updatePivot('company');
 
         $update = $category->update($params);
 
@@ -172,8 +170,6 @@ class CategoryController extends Controller
      * @return 404 - category does not exist 
      */
     public function delete(Request $request, $id) {
-        // todo janpeer delete the category
-        // todo janpeer check for error 404
         $category = Category::find($id);
 
         if ($category == NULL) {
