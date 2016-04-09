@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Company;
+use App\Job;
+use App\User;
 
 class CompanyController extends Controller
 {
@@ -16,18 +18,17 @@ class CompanyController extends Controller
      * @return 404 - company not found
      */
     public function get(Request $request, $id) {
-        // todo janpeer check if filter isset and apply
-        // todo janpeer get information from DB 
+        // todo do not get all information from the user
+        // todo list all jobs used in a company
+        $company = Company::with('user')->find($id);
 
-        $err = false;
-
-        if($err) {
-            abort(404, 'company not found');
+        if (empty($company)) {
+            return response()->json([
+                'message' => 'Company not found',
+            ], 404);          
         }
 
-        $return = ['id' => '1', 'name' => 'testcompany'];
-
-        return response()->json($return);
+        return response()->json($company->toArray());
     }
 
     /**
@@ -39,29 +40,47 @@ class CompanyController extends Controller
      */
     public function getAll(Request $request) {
         // todo janpeer check if filter isset and apply
-        // todo janpeer check for error 409
 
-        $return = [(object)['id' => '1', 'name' => 'testcompany'], (object)['id' => '2', 'name' => 'testcompany']];
+        // important http://stackoverflow.com/questions/23756858/laravel-eloquent-join-2-tables
+        // todo if user works 
+        $params = $request->all();
 
-        return response()->json($return);
+        $companies = Company::get();
+
+        // $filter = new Filter($companies, $request->all());
+
+        // // filter by given parameters 
+        // $filtered  = $filter->byParameters('job');
+
+        return response()->json($companies->toArray());
     }
 
     /**
      * should create a new company
      *
-     * @return 200 - company successfully created
+     * @return 201 - company successfully created
      * @return 409 - company already exists
      */
     public function create(Request $request) {
-        // todo janpeer create a company with given information using $response()->all();
+        $params = $request->all();
+        $exist = Company::where('name', $params['name'])->get();
 
-        $err = false;
+        // check if there are name duplicates in name
+        if (count($exist) != 0) {
 
-        if($err) {
-            abort(409, 'company already exists');
+            return response()->json([
+                'message' => 'Categoryname already exist in the listed job or company',
+                'company' => $exist
+            ], 409); 
+
         }
 
-        return; // returns 200
+        $company = Company::create($params);
+
+        return response()->json([
+                'message' => 'Category successfully created',
+                'category_id' => $company->id
+            ], 201);
     }
 
     /**
@@ -69,18 +88,36 @@ class CompanyController extends Controller
      *
      * @return 200 - successfully updated
      * @return 404 - company does not exist
+     * @return 409 - companyname already exist
     */
     public function update(Request $request, $id) {
-        // todo janpeer update the company information using $response()->all();
-        // todo janpeer check for error 404
+        $params = $request->all();
+        $exist = Company::where('name', $params['name'])
+            ->where('id','!=', $id)
+            ->get();
+        $company = Company::find($id);
 
-        $err = false;
-
-        if($err) {
-            abort(404, 'company does not exists');
+        if (empty($company)) {
+            return response()->json([
+                'message' => 'Company does not exist',
+            ], 404);
         }
 
-        return; // returns 200
+        // check if there are name duplicates in name
+        if (count($exist) != 0) {
+
+            return response()->json([
+                'message' => 'Categoryname already exist in the listed job or company',
+                'company' => $exist
+            ], 409); 
+
+        }
+
+        $company = $company->update($params);
+
+        return response()->json([
+                'message' => 'Category successfully updated'
+            ], 200);
     }
 
     /**
