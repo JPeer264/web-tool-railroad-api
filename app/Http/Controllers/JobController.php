@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Job;
+use App\Company;
+use App\Http\Controllers\Filter;
 
 class JobController extends Controller
 {
@@ -16,18 +18,15 @@ class JobController extends Controller
      * @return 404 - job not found
      */
     public function get(Request $request, $id) {
-        // todo janpeer check if filter isset and apply
-        // todo janpeer get information from DB 
+        $job = Job::find($id);
 
-        $err = false;
-
-        if($err) {
-            abort(404, 'company not found');
+        if (empty($job)) {
+            return response()->json([
+                'message' => 'Job not found',
+            ], 404);          
         }
 
-        $return = ['id' => '1', 'name' => 'testjob'];
-
-        return response()->json($return);
+        return response()->json($job->toArray());
     }
 
     /**
@@ -39,12 +38,11 @@ class JobController extends Controller
      * @return 404 - no jobs found
      */
     public function getAll(Request $request) {
-        // todo janpeer check if filter isset and apply
-        // todo janpeer check for error 409
+        // todo check for company filter
 
-        $return = [(object)['id' => '1', 'name' => 'testjob'], (object)['id' => '2', 'name' => 'testjob']];
+        $jobs = Job::get();
 
-        return response()->json($return);
+        return response()->json($jobs->toArray());
     }
 
     /**
@@ -54,15 +52,25 @@ class JobController extends Controller
      * @return 409 - job already exists
      */
     public function create(Request $request) {
-        // todo janpeer create a job with given information using $response()->all();
+        $params = $request->all();
+        $exist = Job::where('title', $params['title'])->get();
 
-        $err = false;
+        // check if there are title duplicates in title
+        if (count($exist) != 0) {
 
-        if($err) {
-            abort(409, 'job already exists');
+            return response()->json([
+                'message' => 'Jobname already exist in job',
+                'job' => $exist
+            ], 409); 
+
         }
 
-        return; // returns 200
+        $job = Job::create($params);
+
+        return response()->json([
+                'message' => 'Job successfully created',
+                'job_id' => $job->id
+            ], 201);
     }
 
     /**
@@ -75,13 +83,33 @@ class JobController extends Controller
         // todo janpeer update the job information using $response()->all();
         // todo janpeer check for error 404
 
-        $err = false;
+        $params = $request->all();
+        $exist = Job::where('title', $params['title'])
+            ->where('id','!=', $id)
+            ->get();
+        $job = Job::find($id);
 
-        if($err) {
-            abort(404, 'job does not exists');
+        if (empty($job)) {
+            return response()->json([
+                'message' => 'Job does not exist',
+            ], 404);
         }
 
-        return; // returns 200
+        // check if there are title duplicates in title
+        if (count($exist) != 0) {
+
+            return response()->json([
+                'message' => 'Jobname already exist in the listed job',
+                'job' => $exist
+            ], 409); 
+
+        }
+
+        $job = $job->update($params);
+
+        return response()->json([
+                'message' => 'Job successfully updated'
+            ], 200);
     }
 
     /**
@@ -91,15 +119,20 @@ class JobController extends Controller
      * @return 404 - job does not exist 
      */
     public function delete(Request $request, $id) {
-        // todo janpeer delete the job
-        // todo janpeer check for error 404
+        // todo check if there is an already
+        // used user with this as foreign key
+        $job = Job::find($id);
 
-        $err = false;
-
-        if($err) {
-            abort(404, 'job does not exists');
+        if ($job == NULL) {
+            return response()->json([
+                'message' => 'Job does not exist',
+            ], 404);
         }
 
-        return; // returns 200
+        $job->delete();
+
+        return response()->json([
+                'message' => 'Job successfully deleted',
+            ], 200);
     }
 }
