@@ -127,15 +127,20 @@ class CompanyController extends Controller
      * @return 404 - category does not exist 
      */
     public function delete(Request $request, $id) {
-        // todo janpeer delete the category
-        // todo janpeer check for error 404
+        // todo check if there is an already
+        // used user with this as foreign key
+        $company = Company::find($id);
 
-        $err = false;
-
-        if($err) {
-            abort(404, 'category does not exists');
+        if ($company == NULL) {
+            return response()->json([
+                'message' => 'Company does not exist',
+            ], 404);
         }
 
-        return; // returns 200
+        $company->delete();
+
+        return response()->json([
+                'message' => 'Company successfully deleted',
+            ], 200);
     }
 }
