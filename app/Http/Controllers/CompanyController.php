@@ -11,6 +11,9 @@ use App\User;
 
 class CompanyController extends Controller
 {
+    public function __construct() {
+        $this->destinationPath = env('COMPANY_LOGO_PATH');
+    }
     /**
      * should get one specific category by id
      *
@@ -65,6 +68,7 @@ class CompanyController extends Controller
         $params = $request->all();
         $exist = Company::where('name', $params['name'])->get();
 
+
         // check if there are name duplicates in name
         if (count($exist) != 0) {
 
@@ -75,11 +79,15 @@ class CompanyController extends Controller
 
         }
 
-        $company = Company::create($params);
+        // $company = Company::create($params);
+
+        if ($request->hasFile('logo')) {
+            $request->file('logo')->move('Applications/XAMPP/xamppfiles/htdocs/web-tool-railroad-api/upload/compan');
+        }
 
         return response()->json([
                 'message' => 'Category successfully created',
-                'category_id' => $company->id
+                // 'category_id' => $company->id
             ], 201);
     }
 
