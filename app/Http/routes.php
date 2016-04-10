@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers;
+use App\Http\Controllers\AuthenticationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +18,8 @@ $app->get('/', function () use ($app) {
     return $app->version();
 });
 
-$app->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], function($app) {
+$app->group(['prefix' => 'api/v1',
+        'namespace' => 'App\Http\Controllers'], function($app) {
     // todo add specific method
     // @example UserController@method
 
@@ -72,6 +74,39 @@ $app->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], functi
     $app->post('refresh_token', function () use ($app) {
         return 'Should return a new token!';
     });
+    
+    $app->post('auth/token', [
+        'uses' => 'AuthenticationController@authenticate'
+    ]);
 });
 
-$app->get('test/{id}', 'UserController@index');
+$app->group(['middleware' => ['before' => 'jwt-auth'], 
+            'namespace' => 'App\Http\Controllers'], function () use ($app) {
+    
+    $app->get('/todo', function () use ($app) {
+        $user = $app['tymon.jwt.auth']->toUser();
+        return ['todos' => [
+            'items' => ['Code awesome stuff', 'Feed the cat'],
+            'owner' => $user->id,
+            'name' => $user->name,
+        ]];
+    });
+});
+
+$app->group(['prefix' => 'api'], function () use ($app) {
+});
+
+
+$app->get('/', function () {
+    $url = route('sign_in');
+
+    return <<<HTML
+<form method="post" action="$url">
+    <input type="email" name="email">
+    <input type="text" name="password">
+    <input type="submit" value="Submit">
+</form>
+HTML;
+
+});
+

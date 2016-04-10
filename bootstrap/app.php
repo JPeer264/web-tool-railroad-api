@@ -23,7 +23,7 @@ $app = new Laravel\Lumen\Application(
     realpath(__DIR__.'/../')
 );
 
-// $app->withFacades();
+$app->withFacades();
 $app->withEloquent();
 
 /*
@@ -62,9 +62,10 @@ $app->singleton(
 //    App\Http\Middleware\ExampleMiddleware::class
 // ]);
 
-// $app->routeMiddleware([
+$app->routeMiddleware([
+    'jwt-auth' => \Tymon\JWTAuth\Middleware\Authenticate::class,
 //     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -80,7 +81,8 @@ $app->singleton(
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
-
+$app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

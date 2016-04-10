@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
 
 class UserTableSeeder extends Seeder
 {
@@ -30,11 +31,11 @@ class UserTableSeeder extends Seeder
             'job_id' => $job[$job_random]->id,
             'firstname' => str_random(10),
             'lastname' => str_random(10),
-            'password' => 'secret',
+            'password' => Hash::make('secret'),
             'gender' => 'male',
             'picture_alt' => str_random(10),
             'picture_location' => '/path/to/picture/',
-            'email' => str_random(10).'@gmail.com',
+            'email' => 'admin@gmail.com',
             'country' => str_random(10),
             'city' => str_random(10),
             'address' => str_random(10),
