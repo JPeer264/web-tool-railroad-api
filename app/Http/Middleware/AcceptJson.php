@@ -17,8 +17,8 @@ class AcceptJson
     {
         if ($request->format() != 'json') {
             return response()->json([
-                    'message' => 'Accept header not valid',
-                ], 415); 
+                    'message' => 'Accept header not valid. Please use \'application/json\'',
+                ], 406); 
         } 
 
         return $next($request);
