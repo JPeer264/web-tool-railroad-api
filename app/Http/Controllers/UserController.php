@@ -33,7 +33,7 @@ class UserController extends Controller
        }
 
        /**
-        * should get every user
+        * should get every user 
         *
         * can be filtered by one or more companies, job
         *
