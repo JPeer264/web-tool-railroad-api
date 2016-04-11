@@ -19,13 +19,13 @@ $app->get('/', function () use ($app) {
 });
 
 $app->group(['prefix' => 'api/v1',
-        'namespace' => 'App\Http\Controllers'], function($app) {
+        'namespace' => 'App\Http\Controllers',
+        'middleware' => 'App\Http\Middleware\Authenticate'], function($app) {
     // todo add specific method
     // @example UserController@method
 
+    $app->get('user', 'UserController@getAll');    
     // user & register
-    $app->post('register', 'UserController@register');
-    $app->get('user', 'UserController@getAll');
     $app->get('user/{id}', 'UserController@get');
     $app->post('user/{id}', 'UserController@update');
     $app->delete('user/{id}', 'UserController@delete');
@@ -69,44 +69,16 @@ $app->group(['prefix' => 'api/v1',
     $app->get('type/{id}', 'TypeController@get'); // created
     $app->post('type/{id}', 'TypeController'); // created
     $app->delete('type/{id}', 'TypeController@delete'); // created
+
     
-    // todo add middleware to refresh token
-    $app->post('refresh_token', function () use ($app) {
-        return 'Should return a new token!';
-    });
-    
-    $app->post('auth/token', [
-        'uses' => 'AuthenticationController@authenticate'
-    ]);
 });
 
-$app->group(['middleware' => ['before' => 'jwt-auth'], 
-            'namespace' => 'App\Http\Controllers'], function () use ($app) {
-    
-    $app->get('/todo', function () use ($app) {
-        $user = $app['tymon.jwt.auth']->toUser();
-        return ['todos' => [
-            'items' => ['Code awesome stuff', 'Feed the cat'],
-            'owner' => $user->id,
-            'name' => $user->name,
-        ]];
-    });
-});
+$app->group(['prefix' => 'api/v1',
+        'namespace' => 'App\Http\Controllers'], function($app) {
 
-$app->group(['prefix' => 'api'], function () use ($app) {
-});
-
-
-$app->get('/', function () {
-    $url = route('sign_in');
-
-    return <<<HTML
-<form method="post" action="$url">
-    <input type="email" name="email">
-    <input type="text" name="password">
-    <input type="submit" value="Submit">
-</form>
-HTML;
+    $app->post('auth/token', 'AuthenticationController@authenticate');
+    $app->post('register', 'UserController@register');
 
 });
+
 
