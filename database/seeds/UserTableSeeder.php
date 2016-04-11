@@ -48,7 +48,6 @@ class UserTableSeeder extends Seeder
             'accepted' => mt_rand(1000000, 9999999),
             'accepted_at' => mt_rand(1000000, 9999999),
             'requested_at' => mt_rand(1000000, 9999999),
-            'token_refresh' => str_random(20),
         ]);
     }
 }
