@@ -5,12 +5,25 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Tymon\JWTAuth\JWTAuth;
 use App\Job;
 use App\Company;
 use App\Http\Controllers\Filter;
 
 class JobController extends Controller
 {
+    /**
+     * @var JWTAuth
+     */
+    private $auth;
+
+    /**
+     * @param JWTAuth $auth
+     */
+    public function __construct(JWTAuth $auth) {
+        $this->auth = $auth;
+    }
+
     /**
      * should get one specific job by id
      *
@@ -54,7 +67,15 @@ class JobController extends Controller
      */
     public function create(Request $request) {
         // todo validation
-        // todo check if user is allowed to make this request // only admins or companyadmins
+        $user = $this->auth->parseToken()->authenticate();
+
+        if ($user->role_id > 3) {
+            // only admins
+            return response()->json([
+                    'message' => 'Creating jobs is not available for users'
+                ], 401); 
+        } 
+
         $params = $request->all();
         $exist = Job::where('title', $params['title'])->get();
 
@@ -84,7 +105,15 @@ class JobController extends Controller
     */
     public function update(Request $request, $id) {
         // todo validation
-        // todo check if user is allowed to make this request // only admins
+        $user = $this->auth->parseToken()->authenticate();
+
+        if ($user->role_id > 2) {
+            // only admins
+            return response()->json([
+                    'message' => 'Creating jobs is just available for admins'
+                ], 401); 
+        } 
+
         $params = $request->all();
         $exist = Job::where('title', $params['title'])
             ->where('id','!=', $id)
@@ -121,9 +150,18 @@ class JobController extends Controller
      * @return 404 - job does not exist 
      */
     public function delete($id) {
+        // todo validation
         // todo check if there is an already
         // used user with this as foreign key
-        // todo check if user is allowed to see this request // only superadmins
+        $user = $this->auth->parseToken()->authenticate();
+
+        if ($user->role_id > 1) {
+            // only admins
+            return response()->json([
+                    'message' => 'Creating jobs is just available for admins'
+                ], 401); 
+        } 
+
         $job = Job::find($id);
 
         if ($job == NULL) {
