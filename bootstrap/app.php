@@ -64,6 +64,7 @@ $app->singleton(
 
 $app->routeMiddleware([
     'jwt-auth' => \Tymon\JWTAuth\Middleware\Authenticate::class,
+    'json' => App\Http\Middleware\AcceptJson::class,
 //     'auth' => App\Http\Middleware\Authenticate::class,
 ]);
 
