@@ -4,42 +4,86 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Job;
+use App\Company;
+use App\Http\Controllers\Filter;
 
 class UserController extends Controller
 {
-    public function index() {
 
-    }
-
-    // todo get user (one or all -> login)
-      public function getUser($id)
+    /**
+     * should get one specific user by id
+     *
+     * @return 200 {Object} - a json with one user
+     * @return 404 - user not found
+     */
+      public function get(Request $request, $id)
        {
-         $user  = User::findOrFail($id);
+         $user  = User::find($id);
 
-         return response()->json($user);
+         if (empty($user)) {
+             return response()->json([
+                 'message' => 'User not found',
+             ], 404);
+         }
+
+         return response()->json($user->toArray());
        }
 
-     public function getAllUsers()
+       /**
+        * should get every user
+        *
+        * can be filtered by one or more companies, job
+        *
+        * @return 200 {Array} - within this array several single objects as user
+        * @return 404 - no users found
+        */
+     public function getAll(Request $request)
       {
-          $user  = User::all()->value('id', 'name', 'job_id', 'company_id', 'picture_alt', 'picture_location');
-          return response()->json($user);
+          $user = User::with('role', 'job', 'company')->get();
+          $filter = new Filter($user, $request->all());
+
+          // filter by given parameters
+          $filtered  = $filter
+              ->byParams('company')
+              ->byParams('job');
+
+          return response()->json($user->toArray());
       }
 
-      public function getUsersJob($id)
-       {
-           $user  = User::where('company_id', $id)->value('id', 'name', 'job_id', 'company_id', 'picture_alt', 'picture_location');
-           return response()->json($user);
-       }
+      /**
+       * should create a new category, but fails if a name is duplicated
+       *
+       * @return 201 - category successfully created
+       * @return 409 - category already exists
+       */
+      public function register(Request $request)
+      {
+          $params = $request->all();
+          var_dump($params);
+          $exist = User::where('email', $params['email'])->get();
 
-       public function getUsersCompany($id)
-        {
-            $user  = User::where('job_id', $id)->value('id', 'name', 'job_id', 'company_id', 'picture_alt', 'picture_location');
-            return response()->json($user);
-        }
 
+          if(count($exist)!=0){
+              return response()->json([
+                  'message' => 'Email already exist in database',
+                  'existIn' => $existIn
+              ], 409);
+          }
+
+          $user = User::create($params);
+
+
+          return response()->json([
+                  'message' => 'User successfully created',
+                  'user_id' => $user->id
+              ], 201);
+      }
 
     // todo update user (just one)
-    public function updateUsers(Request $request, $id)
+    public function update(Request $request, $id)
      {
          $user  = User::find($id);
 
@@ -66,33 +110,27 @@ class UserController extends Controller
          return response()->json($user);
      }
 
-    // todo delete user (just one)
-    public function deleteUser($id)
+     /**
+      * deletes a specific user by id
+      *
+      * @return 200 - successfully deleted
+      * @return 404 - user does not exist
+      */    public function delete($id)
     {
         $user  = User::find($id);
+
+        if ($user == NULL) {
+            return response()->json([
+                'message' => 'User does not exist',
+            ], 404);
+        }
+
         $user->delete();
 
-        return response()->json('deleted user');
+        return response()->json([
+                'message' => 'User successfully deleted',
+            ], 200);
+
     }
-    // todo refresh token (returns a new one
-    // todo create user (one)
-    public function updateUsers(Request $request)
-     {
-       $user = new User;
 
-       $user->company_id = $request->input ('company_id');
-       $user->role_id = $request->input ('role_id');
-       $user->job_id = $request->input ('job_id');
-       $user->firstname = $request->input ('firstname');
-       $user->lastname = $request->input ('lastname');
-       $user->password = $request->input ('password');
-       $user->gender = $request->input ('gender');
-       $user->email = $request->input ('email');
-       $user->country = $request->input ('country');
-       $user->city = $request->input ('city');
-       $user->signup_comment = $request->input ('signup_comment');
-
-       $user->save();
-       return response()->json($user);
-     }
 }
