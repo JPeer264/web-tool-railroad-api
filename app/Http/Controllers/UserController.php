@@ -33,7 +33,7 @@ class UserController extends Controller
        }
 
        /**
-        * should get every user 
+        * should get every user
         *
         * can be filtered by one or more companies, job
         *
@@ -85,29 +85,19 @@ class UserController extends Controller
     // todo update user (just one)
     public function update(Request $request, $id)
      {
-         $user  = User::find($id);
+         $user = User::find($id);
+         if ($user == NULL) {
+             return response()->json([
+                 'message' => 'User does not exist',
+             ], 404);
+         }
+         $params = $request->all();
 
-         $user->company_id = $request->input ('company_id');
-         $user->role_id = $request->input ('role_id');
-         $user->job_id = $request->input ('job_id');
-         $user->firstname = $request->input ('firstname');
-         $user->lastname = $request->input ('lastname');
-         $user->password = $request->input ('password');
-         $user->gender = $request->input ('gender');
-         $user->picture_alt = $request->input ('picture_alt');
-         $user->picture_location = $request->input ('picture_location');
-         $user->email = $request->input ('email');
-         $user->country = $request->input ('country');
-         $user->city = $request->input ('city');
-         $user->address = $request->input ('address');
-         $user->birthday = $request->input ('birthday');
-         $user->Twitter = $request->input ('twitter');
-         $user->Facebook = $request->input ('facebook');
-         $user->LinkedIn = $request->input ('linkedin');
-         $user->Xing = $request->input ('xing');
+         $user->update($params);
 
-         $user->save();
-         return response()->json($user);
+         return response()->json([
+                 'message' => 'User successfully updated',
+             ], 200);
      }
 
      /**
