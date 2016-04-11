@@ -100,6 +100,7 @@ class Filter
             return $this;
         }
 
+
         // sort and cast parameters
         foreach ($parameters[$keyword] as $count => $id) {
             $filteredParams[] = (int) $id;
@@ -108,16 +109,30 @@ class Filter
         // filter part - filters elements by id in added foreign table named $keyword
         // e.g. filters Category::with('job')
         $array = $array->map(function($item) use ($filteredParams, $keyword) {
+
             if (empty($item)) return [];
 
-            foreach ($item->$keyword as $key) {
+            if (isset($item[$keyword . '_id'])) {
+                // check for belongsTo and hasOne relation
                 foreach ($filteredParams as $p) {
-                    if ((int)$key->id === $p) {
+                    if ((int)$item[$keyword . '_id'] === $p) {
+                        // return [];
                         return $item;
+                    }
+                }
+
+            } else {
+                // check for ManyToMany
+                foreach ($item->$keyword as $key) {
+                    foreach ($filteredParams as $p) {
+                        if ((int)$key->id === $p) {
+                            return $item;
+                        }
                     }
                 }
             }
 
+            // var_dump($item);
             return [];
         })
         ->reject(function($item) {

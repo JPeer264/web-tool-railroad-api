@@ -42,15 +42,15 @@ class UserController extends Controller
         */
      public function getAll(Request $request)
       {
-          $user = User::with('role', 'job', 'company')->get();
+          $user = User::get();
           $filter = new Filter($user, $request->all());
 
           // filter by given parameters
-          $filtered  = $filter
-              ->byParams('company')
-              ->byParams('job');
+          $filtered = $filter
+              ->byParameters('company')
+              ->byParameters('job');
 
-          return response()->json($user->toArray());
+          return response()->json($filtered->getArray());
       }
 
       /**

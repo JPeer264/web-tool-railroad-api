@@ -54,15 +54,15 @@ class User extends Model implements
 
     // DEFINE RELATIONSHIPS --------------------------------------------------
     public function company() {
-        return $this->belongsTo('App\Company');
+        return $this->hasOne('App\Company');
     }
 
     public function role() {
-        return $this->belongsTo('App\Role');
+        return $this->hasOne('App\Role');
     }
 
     public function job() {
-        return $this->belongsTo('App\Job');
+        return $this->hasOne('App\Job');
    }
 
    public function topic() {
