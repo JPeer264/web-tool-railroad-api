@@ -14,7 +14,7 @@ class User extends Migration
     {
         Schema::create('User', function (Blueprint $table) {
             $table->increments('id');
-            
+
             $table->integer('company_id')->unsigned();
             $table->foreign('company_id')
                 ->references('id')->on('Company');
@@ -33,7 +33,7 @@ class User extends Migration
             $table->string('gender', 10)->nullable();
             $table->string('picture_alt')->nullable();
             $table->string('picture_location')->nullable();
-            $table->string('email')->nullable();
+            $table->string('email');
             $table->string('country')->nullable();
             $table->string('city')->nullable();
             $table->string('address')->nullable();
