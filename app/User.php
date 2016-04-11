@@ -26,6 +26,7 @@ class User extends Model implements
      */
     protected $fillable = [
         'firstname', 'lastname', 'gender', 'picture_alt',
+        'company_id', 'job_id', 'role_id',
         'picture_location', 'email', 'country', 'city',
         'address', 'signup_comment', 'birthday', 'Twitter',
         'Twitter', 'LinkedIn', 'Xing',
