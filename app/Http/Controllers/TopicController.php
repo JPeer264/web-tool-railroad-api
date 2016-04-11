@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Tymon\JWTAuth\JWTAuth;
 use App\Topic;
 use App\Category;
 use Carbon\Carbon;
@@ -13,6 +14,18 @@ use App\Http\Controllers\Filter;
 class TopicController extends Controller
 {
     /**
+     * @var JWTAuth
+     */
+    private $auth;
+
+    /**
+     * @param JWTAuth $auth
+     */
+    public function __construct(JWTAuth $auth) {
+        $this->auth = $auth;
+    }
+
+    /**
      * should get one specific topic by id
      *
      * @return 200 {Object} - a json with one topic
@@ -20,13 +33,37 @@ class TopicController extends Controller
      */
     public function get(Request $request, $id) {
         // todo validation
-        // todo check if user is allowed to see this request // is user in the right company or job?
         $topics = Topic::with('user', 'comment', 'job')->find($id);
+        $user = $this->auth->parseToken()->authenticate();
+
+        // check if non admins have rights
+        if ($user->role_id > 2) {
+            // only admins
+            $companies = $topics->company;
+            $jobs = $topics->job;
+
+            $isCompanyUsed = false;
+            $isJobUsed = false;
+
+            foreach ($companies as $key) {
+                if ($key->id == $user->id) $isCompanyUsed = true;
+            }
+
+            foreach ($jobs as $key) {
+                if ($key->id == $user->id) $isJobUsed = true;
+            }
+
+            if (!$isCompanyUsed || !$isJobUsed) {
+                return response()->json([
+                        'message' => 'This topic is not listed in your company or job',
+                    ], 401); 
+            }
+        }
 
         if (empty($topics)) {
             return response()->json([
-                'message' => 'Topic not found',
-            ], 404);          
+                    'message' => 'Topic not found',
+                ], 404);          
         }
 
         return response()->json($topics->toArray());
