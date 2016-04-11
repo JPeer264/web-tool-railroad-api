@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\TopicController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Category;
+use App\Topic;
 use App\Http\Controllers\Filter;
 
 class CategoryController extends Controller
@@ -17,7 +19,15 @@ class CategoryController extends Controller
      * @return 404 - category not found
      */
     public function get(Request $request, $id) {
-        $categories = Category::with('topic')->find($id);
+        // todo check if user is allowed to see this request
+        // todo validation
+        $params = $request->all();
+        $categories = Category::find($id);
+        $topicController = new TopicController;
+        $topics = $topicController
+            ->getAllByCategoryLessInformation($request, $id)
+            ->getData();
+
 
         if (empty($categories)) {
             return response()->json([
@@ -25,7 +35,18 @@ class CategoryController extends Controller
             ], 404);          
         }
 
-        return response()->json($categories->toArray());
+        $categories = $categories->toArray();
+
+        foreach ($categories as $key => $value) {
+            foreach ($topics as $topic) {
+
+                if ($value == $topic->category_id) {
+                    $categories['topics'][] = $topic;
+                }
+            }
+        }
+
+        return response()->json($categories);
     }
 
     /**
@@ -36,7 +57,13 @@ class CategoryController extends Controller
      * @return 200 {Array} - within this array several single objects as category
      */
     public function getAll(Request $request) {
-        $categories = Category::with('topic', 'job', 'company')->get();
+        // todo validation
+        // todo dont show topics because of filtering problems
+        // todo check if user is allowed to see this request
+        // if user is not admin - dont show more than one job or company
+
+        $categories = Category::with('job', 'company')->get();
+
         $filter = new Filter($categories, $request->all());
 
         // filter by given parameters 
@@ -54,6 +81,8 @@ class CategoryController extends Controller
      * @return 409 - category already exists
      */
     public function create(Request $request) {
+        // todo check if user is allowed to make this request // only admins
+        // todo validation
         $params = $request->all();
         $exist = Category::with('job', 'company')
             ->where('title', $params['title'])
@@ -63,7 +92,7 @@ class CategoryController extends Controller
             ->byUsedPivots('company')
             ->byUsedPivots('job');
 
-        // check if there are name duplicates in job or company
+        // checks if there are name duplicates in job or company
         if ($existfilter->isUsedByPivots()) {
             // if there are already used filters in pivots
             $existIn = $existfilter
@@ -103,6 +132,8 @@ class CategoryController extends Controller
      * @return 409 - category already exist
     */
     public function update(Request $request, $id) {
+        // todo check if user is allowed to make this request // only admins
+        // todo validation
         $params = $request->all();
 
         // filter parameters for update pivot
@@ -168,7 +199,8 @@ class CategoryController extends Controller
      * @return 200 - successfully deleted
      * @return 404 - category does not exist 
      */
-    public function delete(Request $request, $id) {
+    public function delete($id) {
+        // todo check if user is allowed to make this request // only admins
         $category = Category::find($id);
 
         if ($category == NULL) {

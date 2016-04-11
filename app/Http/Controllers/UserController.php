@@ -38,6 +38,7 @@ class UserController extends Controller
      */
     public function get(Request $request, $id) {
         // todo validation
+        // todo check if user is allowed to make this request // accessible for everybody? - at least same company
         $user  = User::find($id);
 
         if (empty($user)) {

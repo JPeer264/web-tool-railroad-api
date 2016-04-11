@@ -18,6 +18,7 @@ class JobController extends Controller
      * @return 404 - job not found
      */
     public function get(Request $request, $id) {
+        // todo validation
         $job = Job::find($id);
 
         if (empty($job)) {
@@ -38,8 +39,8 @@ class JobController extends Controller
      * @return 404 - no jobs found
      */
     public function getAll(Request $request) {
+        // todo validation
         // todo check for company filter
-
         $jobs = Job::get();
 
         return response()->json($jobs->toArray());
@@ -52,6 +53,8 @@ class JobController extends Controller
      * @return 409 - job already exists
      */
     public function create(Request $request) {
+        // todo validation
+        // todo check if user is allowed to make this request // only admins or companyadmins
         $params = $request->all();
         $exist = Job::where('title', $params['title'])->get();
 
@@ -80,9 +83,8 @@ class JobController extends Controller
      * @return 404 - job does not exist
     */
     public function update(Request $request, $id) {
-        // todo janpeer update the job information using $response()->all();
-        // todo janpeer check for error 404
-
+        // todo validation
+        // todo check if user is allowed to make this request // only admins
         $params = $request->all();
         $exist = Job::where('title', $params['title'])
             ->where('id','!=', $id)
@@ -118,9 +120,10 @@ class JobController extends Controller
      * @return 200 - successfully deleted
      * @return 404 - job does not exist 
      */
-    public function delete(Request $request, $id) {
+    public function delete($id) {
         // todo check if there is an already
         // used user with this as foreign key
+        // todo check if user is allowed to see this request // only superadmins
         $job = Job::find($id);
 
         if ($job == NULL) {

@@ -18,6 +18,8 @@ class CompanyController extends Controller
      * @return 404 - company not found
      */
     public function get(Request $request, $id) {
+        // todo validation
+        // todo check if user is allowed to see this request // only admins or same company -/- or all
         // todo do not get all information from the user
         // todo list all jobs used in a company
         $company = Company::with('user')->find($id);
@@ -39,6 +41,8 @@ class CompanyController extends Controller
      * @return 200 {Array} - within this array several single objects as company
      */
     public function getAll(Request $request) {
+        // todo validation
+        // todo check if user is allowed to see this request // from all?
         // todo janpeer check if filter isset and apply
 
         // important http://stackoverflow.com/questions/23756858/laravel-eloquent-join-2-tables
@@ -62,6 +66,8 @@ class CompanyController extends Controller
      * @return 409 - company already exists
      */
     public function create(Request $request) {
+        // todo validation
+        // todo check if user is allowed to make this request // only admins and companyadmins
         $params = $request->all();
         $exist = Company::where('name', $params['name'])->get();
 
@@ -91,6 +97,8 @@ class CompanyController extends Controller
      * @return 409 - companyname already exist
     */
     public function update(Request $request, $id) {
+        // todo validation
+        // todo check if user is allowed to make this request // only admins
         $params = $request->all();
         $exist = Company::where('name', $params['name'])
             ->where('id','!=', $id)
@@ -126,9 +134,10 @@ class CompanyController extends Controller
      * @return 200 - successfully deleted
      * @return 404 - category does not exist 
      */
-    public function delete(Request $request, $id) {
+    public function delete($id) {
         // todo check if there is an already
         // used user with this as foreign key
+        // todo check if user is allowed to make this request // only superadmins
         $company = Company::find($id);
 
         if ($company == NULL) {

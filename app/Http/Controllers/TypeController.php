@@ -17,6 +17,7 @@ class TypeController extends Controller
      * @return 404 - type not found
      */
     public function get(Request $request, $id) {
+        // todo validation
         $type = Type::find($id);
 
         if (empty($type)) {
@@ -34,6 +35,8 @@ class TypeController extends Controller
      * @return 201 - type successfully created
      */
     public function create(Request $request) {
+        // todo validation
+        // todo check if user is allowed to make this request // only admins
         $params = $request->all();
 
         $type = Type::create($params);
@@ -53,6 +56,7 @@ class TypeController extends Controller
     public function delete($id) {
         // todo check if there is an already
         // used topic with this as foreign key
+        // todo check if user is allowed to make this request // only admins
         $type = Type::find($id);
 
         if ($type == NULL) {

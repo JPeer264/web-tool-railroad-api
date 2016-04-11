@@ -15,7 +15,9 @@ class CommentController extends Controller
      * @return 201 - comment successfully created
      */
     public function create(Request $request, $id) {
+        // todo validation
         // todo update real user
+        // todo check if user is allowed to make this request // allowed to see topic??
         $params = $request->all();
         $params['user_id'] = 1;
         $params['topic_id'] = $id;
