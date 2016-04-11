@@ -5,12 +5,25 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Tymon\JWTAuth\JWTAuth;
 use App\Company;
 use App\Job;
 use App\User;
 
 class CompanyController extends Controller
-{
+{   
+    /**
+     * @var JWTAuth
+     */
+    private $auth;
+
+    /**
+     * @param JWTAuth $auth
+     */
+    public function __construct(JWTAuth $auth) {
+        $this->auth = $auth;
+    }
+
     /**
      * should get one specific category by id
      *
@@ -43,18 +56,11 @@ class CompanyController extends Controller
     public function getAll(Request $request) {
         // todo validation
         // todo check if user is allowed to see this request // from all?
-        // todo janpeer check if filter isset and apply
+        // todo check if filter isset and apply
 
         // important http://stackoverflow.com/questions/23756858/laravel-eloquent-join-2-tables
         // todo if user works 
-        $params = $request->all();
-
         $companies = Company::get();
-
-        // $filter = new Filter($companies, $request->all());
-
-        // // filter by given parameters 
-        // $filtered  = $filter->byParameters('job');
 
         return response()->json($companies->toArray());
     }
@@ -67,8 +73,16 @@ class CompanyController extends Controller
      */
     public function create(Request $request) {
         // todo validation
-        // todo check if user is allowed to make this request // only admins and companyadmins
         $params = $request->all();
+        $user = $this->auth->parseToken()->authenticate();
+
+        if ($user->role_id > 2) {
+            // only admins
+            return response()->json([
+                    'message' => 'Creating companies is just available for admins'
+                ], 401); 
+        } 
+
         $exist = Company::where('name', $params['name'])->get();
 
         // check if there are name duplicates in name
@@ -100,6 +114,20 @@ class CompanyController extends Controller
         // todo validation
         // todo check if user is allowed to make this request // only admins
         $params = $request->all();
+        $user = $this->auth->parseToken()->authenticate();
+
+        if ($user->role_id == 4) {
+            // normal
+            return response()->json([
+                    'message' => 'Updating companies is just available for admins and companyadmins'
+                ], 401); 
+        } else if ($user->role_id == 3 && $user->company_id != $id) {
+            // company admin && in another company
+            return response()->json([
+                    'message' => 'It is forbidden to update another company than your own.'
+                ], 401); 
+        } 
+
         $exist = Company::where('name', $params['name'])
             ->where('id','!=', $id)
             ->get();
@@ -139,6 +167,14 @@ class CompanyController extends Controller
         // used user with this as foreign key
         // todo check if user is allowed to make this request // only superadmins
         $company = Company::find($id);
+        $user = $this->auth->parseToken()->authenticate();
+
+        if ($user->role_id > 1) {
+            // only superadmins
+            return response()->json([
+                    'message' => 'Deleting companies is just available for superadmins'
+                ], 401); 
+        }
 
         if ($company == NULL) {
             return response()->json([
