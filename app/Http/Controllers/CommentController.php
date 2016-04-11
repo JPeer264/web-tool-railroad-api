@@ -3,12 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\TopicController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Tymon\JWTAuth\JWTAuth;
 use App\Comment;
 
 class CommentController extends Controller
 {
+    /**
+     * @var JWTAuth
+     */
+    private $auth;
+
+    /**
+     * @param JWTAuth $auth
+     */
+    public function __construct(JWTAuth $auth) {
+        $this->auth = $auth;
+    }
+
     /**
      * should create a new comment
      *
@@ -16,10 +30,11 @@ class CommentController extends Controller
      */
     public function create(Request $request, $id) {
         // todo validation
-        // todo update real user
-        // todo check if user is allowed to make this request // allowed to see topic??
+        // todo check if user is allowed to make this request // allowed to see topic?
         $params = $request->all();
-        $params['user_id'] = 1;
+        $user = $this->auth->parseToken()->authenticate();
+
+        $params['user_id'] = $user->id;
         $params['topic_id'] = $id;
 
         $comment = Comment::create($params);
