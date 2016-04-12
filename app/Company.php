@@ -41,4 +41,8 @@ class Company extends Model
     public function user() {
         return $this->hasMany('App\User');
     }
+
+    public function administrator() {
+        return $this->hasOne('App\User', 'user_id','administrator');
+    }
 }
