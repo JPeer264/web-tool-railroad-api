@@ -37,7 +37,7 @@ class UserController extends Controller
      * @return 404 - user not found
      */
     public function get(Request $request, $id) {
-        // todo validation
+
         // todo check if user is allowed to make this request // accessible for everybody? - at least same company
          $user  = User::find($id);
 
@@ -60,7 +60,11 @@ class UserController extends Controller
     */
     public function getAll(Request $request)
     {
-        // todo validation
+        $this->validate($request, [
+       'company' => 'array|integer',
+       'job' => 'array|integer',
+        ]);
+
         $user = User::get();
           $filter = new Filter($user, $request->all());
 
@@ -89,15 +93,44 @@ class UserController extends Controller
                 'existIn' => $existIn
                 ], 409);
           }
-          /* if(ranking= admin)
+           if(true)//ranking= admin
           {
-          less stuff required with validate and accepted to true
-        }*/
+              //less stuff required with validate and accepted to true
+              $this->validate($request, [
+                 'email' => 'required|email',
+                 'password' => 'required',
+              ]);
+              $params['accepted']=1;
 
-          if(isset($params['accepted'])
-          {
-              $params['accepted']=0;
-        }
+          }else{
+              if(isset($params['accepted'])
+              {
+                  $params['accepted']=0;
+              }
+
+              $this->validate($request, [
+                  'email' => 'required|email',
+                  'password' => 'required',
+                  'firstname'=> 'required|string',
+                  'lastname'=>'required|string',
+                  'gender'=>'required|string',
+                  'birthday'=>'required|integer',
+                  'country'=>'required|string',
+                  'signup_comment'=>'required|string|max:1000',
+                  'company_id'=>'required|integer',
+                  'job_id'=>'required|integer',
+                  'role_id'=>'integer',
+                  'city'=>'string',
+                  'address'=>'string',
+                  'Twitter'=>'string',
+                  'Facebook'=>'string',
+                  'LinkedIn'=>'string'
+                  'Xing'=>'string',
+
+              ]);
+
+          }
+
 
           $user = User::create($params);
 
@@ -112,6 +145,27 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         // todo validation
+        $this->validate($request, [
+            'email' => 'required|email',
+            'password' => 'required',
+            'firstname'=> 'required|string',
+            'lastname'=>'required|string',
+            'gender'=>'required|string',
+            'birthday'=>'required|integer',
+            'country'=>'required|string',
+            'signup_comment'=>'required|string|max:1000',
+            'company_id'=>'required|integer',
+            'job_id'=>'required|integer',
+            'city'=>'string',
+            'address'=>'string',
+            'Twitter'=>'string',
+            'Facebook'=>'string',
+            'LinkedIn'=>'string'
+            'Xing'=>'string',
+            'picture_alt'=>'string',
+            'picture_location'=>'image',
+
+        ]);
         $user = User::find($id);
 
         if ($user == NULL) {
