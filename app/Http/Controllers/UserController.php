@@ -61,8 +61,8 @@ class UserController extends Controller
     public function getAll(Request $request)
     {
         $this->validate($request, [
-       'company' => 'array|integer',
-       'job' => 'array|integer',
+           'company' => 'array|integer',
+           'job' => 'array|integer',
         ]);
 
         $user = User::get();
@@ -144,7 +144,6 @@ class UserController extends Controller
     // todo update user (just one)
     public function update(Request $request, $id)
     {
-        // todo validation
         $this->validate($request, [
             'email' => 'required|email',
             'password' => 'required',
@@ -163,7 +162,6 @@ class UserController extends Controller
             'LinkedIn'=>'string'
             'Xing'=>'string',
             'picture_alt'=>'string',
-            'picture_location'=>'image',
 
         ]);
         $user = User::find($id);

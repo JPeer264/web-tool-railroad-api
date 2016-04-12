@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
@@ -11,7 +11,7 @@ use App\Job;
 use App\User;
 
 class CompanyController extends Controller
-{   
+{
     /**
      * @var JWTAuth
      */
@@ -30,8 +30,7 @@ class CompanyController extends Controller
      * @return 200 {Object} - a json with one category
      * @return 404 - company not found
      */
-    public function get(Request $request, $id) {
-        // todo validation
+    public function get($id) {
         // todo check if user is allowed to see this request // only admins or same company -/- or all
         // todo do not get all information from the user
         // todo list all jobs used in a company
@@ -40,7 +39,7 @@ class CompanyController extends Controller
         if (empty($company)) {
             return response()->json([
                 'message' => 'Company not found',
-            ], 404);          
+            ], 404);
         }
 
         return response()->json($company->toArray());
@@ -54,12 +53,11 @@ class CompanyController extends Controller
      * @return 200 {Array} - within this array several single objects as company
      */
     public function getAll(Request $request) {
-        // todo validation
         // todo check if user is allowed to see this request // from all?
         // todo check if filter isset and apply
 
         // important http://stackoverflow.com/questions/23756858/laravel-eloquent-join-2-tables
-        // todo if user works 
+        // todo if user works
         $companies = Company::get();
 
         return response()->json($companies->toArray());
@@ -72,7 +70,18 @@ class CompanyController extends Controller
      * @return 409 - company already exists
      */
     public function create(Request $request) {
-        // todo validation
+        $this->validate($request, [
+           'administrator' => 'required|integer',
+           'name' => 'required|string',
+           'logo_alt'=>'string',
+           'country'=>'required|string',
+           'city'=>'required|string',
+           'address'=>'required|string',
+           'phonenumber'=>'required|string',
+           'email'=>'required|email',
+
+        ]);
+
         $params = $request->all();
         $user = $this->auth->parseToken()->authenticate();
 
@@ -80,8 +89,8 @@ class CompanyController extends Controller
             // only admins
             return response()->json([
                     'message' => 'Creating companies is just available for admins'
-                ], 401); 
-        } 
+                ], 401);
+        }
 
         $exist = Company::where('name', $params['name'])->get();
 
@@ -91,7 +100,7 @@ class CompanyController extends Controller
             return response()->json([
                 'message' => 'Categoryname already exist in the listed job or company',
                 'company' => $exist
-            ], 409); 
+            ], 409);
 
         }
 
@@ -111,8 +120,17 @@ class CompanyController extends Controller
      * @return 409 - companyname already exist
     */
     public function update(Request $request, $id) {
-        // todo validation
-        // todo check if user is allowed to make this request // only admins
+        $this->validate($request, [
+           'administrator' => 'required|integer',
+           'name' => 'required|string',
+           'logo_alt'=>'string',
+           'country'=>'required|string',
+           'city'=>'required|string',
+           'address'=>'required|string',
+           'phonenumber'=>'required|string',
+           'email'=>'required|email',
+       ]);
+                  // todo check if user is allowed to make this request // only admins
         $params = $request->all();
         $user = $this->auth->parseToken()->authenticate();
 
@@ -120,13 +138,13 @@ class CompanyController extends Controller
             // normal
             return response()->json([
                     'message' => 'Updating companies is just available for admins and companyadmins'
-                ], 401); 
+                ], 401);
         } else if ($user->role_id == 3 && $user->company_id != $id) {
             // company admin && in another company
             return response()->json([
                     'message' => 'It is forbidden to update another company than your own.'
-                ], 401); 
-        } 
+                ], 401);
+        }
 
         $exist = Company::where('name', $params['name'])
             ->where('id','!=', $id)
@@ -145,7 +163,7 @@ class CompanyController extends Controller
             return response()->json([
                 'message' => 'Categoryname already exist in the listed job or company',
                 'company' => $exist
-            ], 409); 
+            ], 409);
 
         }
 
@@ -160,7 +178,7 @@ class CompanyController extends Controller
      * deletes a specific category by id
      *
      * @return 200 - successfully deleted
-     * @return 404 - category does not exist 
+     * @return 404 - category does not exist
      */
     public function delete($id) {
         // todo check if there is an already
@@ -173,7 +191,7 @@ class CompanyController extends Controller
             // only superadmins
             return response()->json([
                     'message' => 'Deleting companies is just available for superadmins'
-                ], 401); 
+                ], 401);
         }
 
         if ($company == NULL) {
