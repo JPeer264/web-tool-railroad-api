@@ -35,7 +35,7 @@ class TypeController extends Controller
      */
     public function create(Request $request) {
         $this->validate($request, [
-           'title' => 'required|string',
+           'title' => 'required|string|unique:type',
            'description' => 'required|string',
         ]);
 

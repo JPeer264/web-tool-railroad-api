@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
@@ -30,14 +30,13 @@ class JobController extends Controller
      * @return 200 {Object} - a json with one job
      * @return 404 - job not found
      */
-    public function get(Request $request, $id) {
-        // todo validation
+    public function get($id) {
         $job = Job::find($id);
 
         if (empty($job)) {
             return response()->json([
                 'message' => 'Job not found',
-            ], 404);          
+            ], 404);
         }
 
         return response()->json($job->toArray());
@@ -52,7 +51,6 @@ class JobController extends Controller
      * @return 404 - no jobs found
      */
     public function getAll(Request $request) {
-        // todo validation
         // todo check for company filter
         $jobs = Job::get();
 
@@ -66,15 +64,19 @@ class JobController extends Controller
      * @return 409 - job already exists
      */
     public function create(Request $request) {
-        // todo validation
+        $this->validate($request, [
+            'title' => 'required|string|unique:job',
+            'description' => 'required|string',
+        ]);
+
         $user = $this->auth->parseToken()->authenticate();
 
         if ($user->role_id > 3) {
             // only admins
             return response()->json([
                     'message' => 'Creating jobs is not available for users'
-                ], 401); 
-        } 
+                ], 401);
+        }
 
         $params = $request->all();
         $exist = Job::where('title', $params['title'])->get();
@@ -85,7 +87,7 @@ class JobController extends Controller
             return response()->json([
                 'message' => 'Jobname already exist in job',
                 'job' => $exist
-            ], 409); 
+            ], 409);
 
         }
 
@@ -104,15 +106,20 @@ class JobController extends Controller
      * @return 404 - job does not exist
     */
     public function update(Request $request, $id) {
-        // todo validation
+
+        $this->validate($request, [
+            'title' => 'required|string|unique:job',
+            'description' => 'required|string',
+        ]);
+
         $user = $this->auth->parseToken()->authenticate();
 
         if ($user->role_id > 2) {
             // only admins
             return response()->json([
                     'message' => 'Creating jobs is just available for admins'
-                ], 401); 
-        } 
+                ], 401);
+        }
 
         $params = $request->all();
         $exist = Job::where('title', $params['title'])
@@ -132,7 +139,7 @@ class JobController extends Controller
             return response()->json([
                 'message' => 'Jobname already exist in the listed job',
                 'job' => $exist
-            ], 409); 
+            ], 409);
 
         }
 
@@ -147,7 +154,7 @@ class JobController extends Controller
      * deletes a specific job by id
      *
      * @return 200 - successfully deleted
-     * @return 404 - job does not exist 
+     * @return 404 - job does not exist
      */
     public function delete($id) {
         // todo validation
@@ -159,8 +166,8 @@ class JobController extends Controller
             // only admins
             return response()->json([
                     'message' => 'Creating jobs is just available for admins'
-                ], 401); 
-        } 
+                ], 401);
+        }
 
         $job = Job::find($id);
 
