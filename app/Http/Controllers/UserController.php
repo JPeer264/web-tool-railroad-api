@@ -64,13 +64,20 @@ class UserController extends Controller
           $params = $request->all();
           var_dump($params);
           $exist = User::where('email', $params['email'])->get();
-
-
           if(count($exist)!=0){
               return response()->json([
                   'message' => 'Email already exist in database',
                   'existIn' => $existIn
               ], 409);
+          }
+          /* if(ranking= admin)
+          {
+          less stuff required with validate and accepted to true
+        }*/
+
+          if(isset($params['accepted'])
+          {
+              $params['accepted']=0;
           }
 
           $user = User::create($params);
