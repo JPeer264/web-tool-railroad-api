@@ -28,7 +28,7 @@ class User extends Model implements
         'firstname', 'lastname', 'gender', 'picture_alt',
         'company_id', 'job_id', 'role_id',
         'picture_location', 'email', 'country', 'city',
-        'address', 'signup_comment', 'birthday', 'Twitter',
+        'address', 'signup_comment', 'birthday', 'Facebook',
         'Twitter', 'LinkedIn', 'Xing',
     ];
 
