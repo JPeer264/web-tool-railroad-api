@@ -38,7 +38,7 @@ class CategoryController extends Controller
         $user = $this->auth->parseToken()->authenticate();
 
         $categories = Category::where('id', $id)->get();
-        $topicController = new TopicController;
+        $topicController = new TopicController($this->auth);
         $topics = $topicController
             ->getAllByCategoryLessInformation($request, $id)
             ->getData();
