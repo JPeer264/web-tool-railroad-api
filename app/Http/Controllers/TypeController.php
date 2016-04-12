@@ -16,14 +16,13 @@ class TypeController extends Controller
      * @return 200 {Object} - a json with one type
      * @return 404 - type not found
      */
-    public function get(Request $request, $id) {
-        // todo validation
+    public function get($id) {
         $type = Type::find($id);
 
         if (empty($type)) {
             return response()->json([
                 'message' => 'Type not found',
-            ], 404);          
+            ], 404);
         }
 
         return response()->json($type);
@@ -35,7 +34,11 @@ class TypeController extends Controller
      * @return 201 - type successfully created
      */
     public function create(Request $request) {
-        // todo validation
+        $this->validate($request, [
+           'title' => 'required|string',
+           'description' => 'required|string',
+        ]);
+
         // todo check if user is allowed to make this request // only admins
         $params = $request->all();
 
@@ -51,7 +54,7 @@ class TypeController extends Controller
      * deletes a specific type by id
      *
      * @return 200 - successfully deleted
-     * @return 404 - type does not exist 
+     * @return 404 - type does not exist
      */
     public function delete($id) {
         // todo check if there is an already
