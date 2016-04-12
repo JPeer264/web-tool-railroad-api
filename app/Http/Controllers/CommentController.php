@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
@@ -29,8 +29,14 @@ class CommentController extends Controller
      * @return 201 - comment successfully created
      */
     public function create(Request $request, $id) {
-        // todo validation
-        // todo check if user is allowed to make this request // allowed to see topic?
+
+        $this->validate($request, [
+           'user_id' => 'required|integer',
+           'topic_id' => 'required|integer',
+           'content'=>'required|string',
+        ]);
+
+         // todo check if user is allowed to make this request // allowed to see topic?
         $params = $request->all();
         $user = $this->auth->parseToken()->authenticate();
 
@@ -46,6 +52,6 @@ class CommentController extends Controller
     }
 
     // (todo change comment)
-    // (todo delete comment) 
+    // (todo delete comment)
 
 }
