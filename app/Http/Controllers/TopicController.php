@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
@@ -32,7 +32,7 @@ class TopicController extends Controller
      * @return 404 - topic not found
      */
     public function get(Request $request, $id) {
-        // todo validation
+
         $topics = Topic::with('user', 'comment', 'job')->find($id);
         $user = $this->auth->parseToken()->authenticate();
 
@@ -56,14 +56,14 @@ class TopicController extends Controller
             if (!$isCompanyUsed || !$isJobUsed) {
                 return response()->json([
                         'message' => 'This topic is not listed in your company or job',
-                    ], 401); 
+                    ], 401);
             }
         }
 
         if (empty($topics)) {
             return response()->json([
                     'message' => 'Topic not found',
-                ], 404);          
+                ], 404);
         }
 
         return response()->json($topics->toArray());
@@ -76,7 +76,10 @@ class TopicController extends Controller
      * @return 404 - category not found
      */
     public function getAllByCategory(Request $request, $id) {
-        // todo validation
+        $this->validate($request, [
+           'company' => 'array|integer',
+           'job' => 'array|integer',
+        ]);
         // todo check if user is allowed to see this request // is user in the right company or job?
         $topics = Topic::with('user')
             ->where('category_id', $id)
@@ -92,7 +95,7 @@ class TopicController extends Controller
         if (empty($category)) {
             return response()->json([
                 'message' => 'Category not found',
-            ], 404);          
+            ], 404);
         }
 
         return response()->json($filtered->getArray());
@@ -106,7 +109,11 @@ class TopicController extends Controller
      * @return 404 - category not found
      */
     public function getAllByCategoryLessInformation(Request $request, $id) {
-        // todo validation
+        $this->validate($request, [
+           'company' => 'array|integer',
+           'job' => 'array|integer',
+        ]);
+        
         // todo check if user is allowed to see this request // is user in the right company or job?
         $topics = Topic::where('category_id', $id)->get();
 
@@ -121,7 +128,7 @@ class TopicController extends Controller
         if (empty($category)) {
             return response()->json([
                 'message' => 'Category not found',
-            ], 404);          
+            ], 404);
         }
 
         $topics = $filtered->getArray();
@@ -147,7 +154,14 @@ class TopicController extends Controller
      * @return 409 - topic already exists
      */
     public function create(Request $request, $id) {
-        // todo validation
+        $this->validate($request, [
+           'title' => 'required|string|unique:type',
+           'description' => 'required|string',
+           'category_id'=>'required|integer',
+           'user_id'=>'required|integer',
+           'type_id'=>'required|integer',
+        ]);
+
         // todo update real user and type
         // todo check if user is allowed to make this request // admins for all companys and jobs - user just in their own
         $params = $request->all();
@@ -158,7 +172,7 @@ class TopicController extends Controller
         $exist = Topic::with('job', 'company')
             ->where('title', $params['title'])
             ->get();
-        $existfilter = new Filter($exist, $params);    
+        $existfilter = new Filter($exist, $params);
         $existfilter
             ->byUsedPivots('company')
             ->byUsedPivots('job');
@@ -174,12 +188,12 @@ class TopicController extends Controller
             return response()->json([
                 'message' => 'Topicname already exist in the listed job or company',
                 'existIn' => $existIn
-            ], 409); 
+            ], 409);
 
         } else if (count($exist) != 0) {
             return response()->json([
                     'message' => 'Topicname already exist'
-                ], 409); 
+                ], 409);
         }
 
         $topic = Topic::create($params);
@@ -203,12 +217,19 @@ class TopicController extends Controller
      * @return 405 - topic cannot be changed anymore
     */
     public function update(Request $request, $id) {
-        // todo validation
+        $this->validate($request, [
+           'title' => 'required|string|unique:type',
+           'description' => 'required|string',
+           'category_id'=>'required|integer',
+           'user_id'=>'required|integer',
+           'type_id'=>'required|integer',
+        ]);
+
         // todo check if user is allowed to make this request // only admins or users who created the specific topic
         $params = $request->all();
         $unchangeInMin = 10; // minutes
 
-        // check if topic is changable 
+        // check if topic is changable
         $date = Topic::find($id)->created_at;
         $now = Carbon::now();
 
@@ -231,7 +252,7 @@ class TopicController extends Controller
             ->where('id','!=', $id)
             ->where('title', $params['title'])
             ->get();
-        $existfilter = new Filter($exist, $params);    
+        $existfilter = new Filter($exist, $params);
         $existfilter
             ->byUsedPivots('company')
             ->byUsedPivots('job');
@@ -256,12 +277,12 @@ class TopicController extends Controller
             return response()->json([
                 'message' => 'Topicname already exist in the listed job or company',
                 'existIn' => $existIn
-            ], 409); 
+            ], 409);
 
         } else if (count($exist) != 0) {
             return response()->json([
                     'message' => 'Topicname already exist'
-                ], 409); 
+                ], 409);
         }
 
         $filter
@@ -279,7 +300,7 @@ class TopicController extends Controller
      * deletes a specific topic by id
      *
      * @return 200 - successfully deleted
-     * @return 404 - topic does not exist 
+     * @return 404 - topic does not exist
      */
     public function delete($id) {
         // todo check if user is allowed to make this request // only superadmins
