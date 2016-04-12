@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Tymon\JWTAuth\JWTAuth;
 use App\Job;
 use App\Company;
 use App\Http\Controllers\Filter;
@@ -12,12 +13,25 @@ use App\Http\Controllers\Filter;
 class JobController extends Controller
 {
     /**
+     * @var JWTAuth
+     */
+    private $auth;
+
+    /**
+     * @param JWTAuth $auth
+     */
+    public function __construct(JWTAuth $auth) {
+        $this->auth = $auth;
+    }
+
+    /**
      * should get one specific job by id
      *
      * @return 200 {Object} - a json with one job
      * @return 404 - job not found
      */
     public function get(Request $request, $id) {
+        // todo validation
         $job = Job::find($id);
 
         if (empty($job)) {
@@ -38,8 +52,8 @@ class JobController extends Controller
      * @return 404 - no jobs found
      */
     public function getAll(Request $request) {
+        // todo validation
         // todo check for company filter
-
         $jobs = Job::get();
 
         return response()->json($jobs->toArray());
@@ -52,6 +66,16 @@ class JobController extends Controller
      * @return 409 - job already exists
      */
     public function create(Request $request) {
+        // todo validation
+        $user = $this->auth->parseToken()->authenticate();
+
+        if ($user->role_id > 3) {
+            // only admins
+            return response()->json([
+                    'message' => 'Creating jobs is not available for users'
+                ], 401); 
+        } 
+
         $params = $request->all();
         $exist = Job::where('title', $params['title'])->get();
 
@@ -80,8 +104,15 @@ class JobController extends Controller
      * @return 404 - job does not exist
     */
     public function update(Request $request, $id) {
-        // todo janpeer update the job information using $response()->all();
-        // todo janpeer check for error 404
+        // todo validation
+        $user = $this->auth->parseToken()->authenticate();
+
+        if ($user->role_id > 2) {
+            // only admins
+            return response()->json([
+                    'message' => 'Creating jobs is just available for admins'
+                ], 401); 
+        } 
 
         $params = $request->all();
         $exist = Job::where('title', $params['title'])
@@ -118,9 +149,19 @@ class JobController extends Controller
      * @return 200 - successfully deleted
      * @return 404 - job does not exist 
      */
-    public function delete(Request $request, $id) {
+    public function delete($id) {
+        // todo validation
         // todo check if there is an already
         // used user with this as foreign key
+        $user = $this->auth->parseToken()->authenticate();
+
+        if ($user->role_id > 1) {
+            // only admins
+            return response()->json([
+                    'message' => 'Creating jobs is just available for admins'
+                ], 401); 
+        } 
+
         $job = Job::find($id);
 
         if ($job == NULL) {

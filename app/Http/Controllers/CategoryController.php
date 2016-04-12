@@ -3,13 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\TopicController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Tymon\JWTAuth\JWTAuth;
 use App\Category;
+use App\Topic;
 use App\Http\Controllers\Filter;
 
 class CategoryController extends Controller
 {
+
+    /**
+     * @var JWTAuth
+     */
+    private $auth;
+
+    /**
+     * @param JWTAuth $auth
+     */
+    public function __construct(JWTAuth $auth) {
+        $this->auth = $auth;
+    }
+
     /**
      * should get one specific category by id
      *
@@ -17,7 +33,28 @@ class CategoryController extends Controller
      * @return 404 - category not found
      */
     public function get(Request $request, $id) {
-        $categories = Category::with('topic')->find($id);
+        // todo validation
+        $params = $request->all();
+        $user = $this->auth->parseToken()->authenticate();
+
+        $categories = Category::where('id', $id)->get();
+        $topicController = new TopicController;
+        $topics = $topicController
+            ->getAllByCategoryLessInformation($request, $id)
+            ->getData();
+
+        // check if user is normal user or companyadmin and 
+        // change to his own company and job
+        if ($user->role_id > 3) {
+            $params['job'] = array($user->job_id);
+            $params['company'] = array($user->company_id);
+        }
+
+        // filter by given parameters 
+        $filter = new Filter($categories, $params);
+        $filtered = $filter
+            ->byParameters('company')
+            ->byParameters('job');
 
         if (empty($categories)) {
             return response()->json([
@@ -25,7 +62,19 @@ class CategoryController extends Controller
             ], 404);          
         }
 
-        return response()->json($categories->toArray());
+        // to array before foreach
+        $categories = $filtered->getArray();
+
+        foreach ($categories as $key => $value) {
+            foreach ($topics as $topic) {
+
+                if ($value == $topic->category_id) {
+                    $categories['topics'][] = $topic;
+                }
+            }
+        }
+
+        return response()->json($categories);
     }
 
     /**
@@ -36,7 +85,19 @@ class CategoryController extends Controller
      * @return 200 {Array} - within this array several single objects as category
      */
     public function getAll(Request $request) {
-        $categories = Category::with('topic', 'job', 'company')->get();
+        // todo validation
+        // todo show topics - not shown because of filtering problems
+        $categories = Category::with('job', 'company')->get();
+        $user = $this->auth->parseToken()->authenticate();
+
+        // check if user is normal user or companyadmin and 
+        // change to his own company and job
+        if ($user->role_id > 2) {
+            // normal user
+            $params['job'] = array($user->job_id);
+            $params['company'] = array($user->company_id);
+        }
+
         $filter = new Filter($categories, $request->all());
 
         // filter by given parameters 
@@ -54,16 +115,30 @@ class CategoryController extends Controller
      * @return 409 - category already exists
      */
     public function create(Request $request) {
+        // todo validation
         $params = $request->all();
+        $user = $this->auth->parseToken()->authenticate();
         $exist = Category::with('job', 'company')
             ->where('title', $params['title'])
             ->get();
+
+        if ($user->role_id == 4) {
+            // normal user
+            return response()->json([
+                    'message' => 'You cannot add a new category as a normal user'
+                ], 401); 
+        } else if ($user->role_id == 3) {
+            // company admin can create categories
+            // but just for his own company
+            $params['company'] = array($user->company_id);
+        }
+
         $existfilter = new Filter($exist, $params);    
         $existfilter
             ->byUsedPivots('company')
             ->byUsedPivots('job');
 
-        // check if there are name duplicates in job or company
+        // checks if there are name duplicates in job or company
         if ($existfilter->isUsedByPivots()) {
             // if there are already used filters in pivots
             $existIn = $existfilter
@@ -103,10 +178,26 @@ class CategoryController extends Controller
      * @return 409 - category already exist
     */
     public function update(Request $request, $id) {
+        // todo validation
         $params = $request->all();
+        $user = $this->auth->parseToken()->authenticate();
+
+        if ($user->role_id == 4) {
+            // normal user
+            return response()->json([
+                    'message' => 'You cannot update a category as a normal user'
+                ], 401); 
+        } else if ($user->role_id == 3) {
+            // company admin can create categories
+            // but just for his own company
+            // let array blank that company does not update
+            $params['company'] = array();
+        }
 
         // filter parameters for update pivot
-        $categorypivot = Category::with('job', 'company')->where('id', $id)->get();
+        $categorypivot = Category::with('job', 'company')
+            ->where('id', $id)
+            ->get();
         $filterpivot = new Filter($categorypivot, $params);
         $pivotparams = $filterpivot
             ->prepareParameterForPivotUpdate('job')
@@ -168,7 +259,17 @@ class CategoryController extends Controller
      * @return 200 - successfully deleted
      * @return 404 - category does not exist 
      */
-    public function delete(Request $request, $id) {
+    public function delete($id) {
+        $user = $this->auth->parseToken()->authenticate();
+
+        // check for right permission
+        if ($user->role_id > 2) {
+            // admins only
+            return response()->json([
+                    'message' => 'Just admins are allowed to delete categories.'
+                ], 401); 
+        }
+
         $category = Category::find($id);
 
         if ($category == NULL) {
