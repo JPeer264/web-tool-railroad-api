@@ -35,7 +35,7 @@ class CategoryController extends Controller
     public function get(Request $request, $id) {
 
         // todo add with('subcategory')
-        $categories = Category::find($id);
+        $categories = Category::with('subcategory')->find($id);
 
         if (empty($categories)) {
             return response()->json([
@@ -47,19 +47,15 @@ class CategoryController extends Controller
     }
 
     /**
-     * should get every category
-     *
-     * can be filtered by one or more jobs, companies and limit_topics
+     * should get every category with subcategories
      *
      * @return 200 {Array} - within this array several single objects as category
      */
     public function getAll(Request $request) {
 
-        // todo show topics - not shown because of filtering problems
-        $categories = Category::with('job', 'company')->get();
-        $user = $this->auth->parseToken()->authenticate();
+        $categories = Category::with('subcategory')->get();
 
-        return response()->json($filtered->getArray());
+        return response()->json($categories->toArray());
     }
 
     /**
@@ -70,57 +66,31 @@ class CategoryController extends Controller
      */
     public function create(Request $request) {
 
+        // todo check if it is a superadmin (1)
         $this->validate($request, [
            'title' => 'required|string|unique:type',
         ]);
 
         $params = $request->all();
         $user = $this->auth->parseToken()->authenticate();
-        $exist = Category::with('job', 'company')
-            ->where('title', $params['title'])
-            ->get();
 
-        if ($user->role_id == 4) {
-            // normal user
+        // check for right permission
+        if ($user->role_id == 1) {
+            // superadmins only
             return response()->json([
-                    'message' => 'You cannot add a new category as a normal user'
+                    'message' => 'Just admins are allowed to update categories.'
                 ], 401);
-        } else if ($user->role_id == 3) {
-            // company admin can create categories
-            // but just for his own company
-            $params['company'] = array($user->company_id);
         }
 
-        $existfilter = new Filter($exist, $params);
-        $existfilter
-            ->byUsedPivots('company')
-            ->byUsedPivots('job');
+        $exist = Category::where('title', $params['title'])->get();
 
-        // checks if there are name duplicates in job or company
-        if ($existfilter->isUsedByPivots()) {
-            // if there are already used filters in pivots
-            $existIn = $existfilter
-                ->getUsedPivots('company')
-                ->getUsedPivots('job')
-                ->usedPivots;
-
-            return response()->json([
-                'message' => 'Categoryname already exist in the listed job or company',
-                'existIn' => $existIn
-            ], 409);
-
-        } else if (count($exist) != 0) {
+        if (!count($exist->toArray()) == 0) {
             return response()->json([
                     'message' => 'Categoryname already exist'
                 ], 409);
         }
 
         $categories = Category::create($params);
-        $categoriesfilter = new Filter($categories, $params);
-        // save into necessary pivottables if no error
-        $categoriesfilter
-            ->saveToPivot('job')
-            ->saveToPivot('company');
 
         return response()->json([
                 'message' => 'Category successfully created',
@@ -137,6 +107,7 @@ class CategoryController extends Controller
     */
     public function update(Request $request, $id) {
 
+        // todo check if it is a superadmin (1)
         $this->validate($request, [
            'title' => 'required|string|unique:type',
            'description' => 'required|string',
@@ -145,41 +116,19 @@ class CategoryController extends Controller
         $params = $request->all();
         $user = $this->auth->parseToken()->authenticate();
 
-        if ($user->role_id == 4) {
-            // normal user
+        // check for right permission
+        if ($user->role_id == 1) {
+            // superadmins only
             return response()->json([
-                    'message' => 'You cannot update a category as a normal user'
+                    'message' => 'Just admins are allowed to update categories.'
                 ], 401);
-        } else if ($user->role_id == 3) {
-            // company admin can create categories
-            // but just for his own company
-            // let array blank that company does not update
-            $params['company'] = array();
         }
 
-        // filter parameters for update pivot
-        $categorypivot = Category::with('job', 'company')
-            ->where('id', $id)
-            ->get();
-        $filterpivot = new Filter($categorypivot, $params);
-        $pivotparams = $filterpivot
-            ->prepareParameterForPivotUpdate('job')
-            ->prepareParameterForPivotUpdate('company')
-            ->globalParameters;
-
-        // exist filter
-        $exist = Category::with('job', 'company')
-            ->where('id','!=', $id)
-            ->where('title', $params['title'])
-            ->get();
-        $existfilter = new Filter($exist, $params);
-        $existfilter
-            ->byUsedPivots('company')
-            ->byUsedPivots('job');
-
-        // filter for updating
         $category = Category::find($id);
-        $filter = new Filter($category, $pivotparams);
+        $exist = Category::
+            where('title', $params['title'])
+            ->where('id', '!=', $id)
+            ->get();
 
         if ($category == NULL) {
             return response()->json([
@@ -187,27 +136,11 @@ class CategoryController extends Controller
             ], 404);
         }
 
-        if ($existfilter->isUsedByPivots()) {
-            // if there are already used filters in pivots
-            $existIn = $existfilter
-                ->getUsedPivots('company')
-                ->getUsedPivots('job')
-                ->usedPivots;
-
-            return response()->json([
-                'message' => 'Categoryname already exist in the listed job or company',
-                'existIn' => $existIn
-            ], 409);
-
-        } else if (count($exist) != 0) {
+        if (!count($exist->toArray()) == 0) {
             return response()->json([
                     'message' => 'Categoryname already exist'
                 ], 409);
         }
-
-        $filter
-            ->updatePivot('job')
-            ->updatePivot('company');
 
         $update = $category->update($params);
 
@@ -226,8 +159,8 @@ class CategoryController extends Controller
         $user = $this->auth->parseToken()->authenticate();
 
         // check for right permission
-        if ($user->role_id > 2) {
-            // admins only
+        if ($user->role_id == 1) {
+            // superadmins only
             return response()->json([
                     'message' => 'Just admins are allowed to delete categories.'
                 ], 401);
