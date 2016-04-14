@@ -23,7 +23,7 @@ class CommentTableSeeder extends Seeder
         DB::table('Comment')->insert([
             'user_id' => $user[$user_random]->id,
             'topic_id' => $topic[$topic_random]->id,
-            'content' => str_random(10)
+            'content' => 'Content_'.str_random(10)
         ]);
     }
 }

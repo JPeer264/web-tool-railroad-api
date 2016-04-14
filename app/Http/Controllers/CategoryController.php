@@ -34,7 +34,8 @@ class CategoryController extends Controller
      */
     public function get(Request $request, $id) {
 
-        $categories = Category::with('subcategory')->find($id);
+        // todo add with('subcategory')
+        $categories = Category::find($id);
 
         if (empty($categories)) {
             return response()->json([

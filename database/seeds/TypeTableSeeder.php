@@ -13,8 +13,8 @@ class TypeTableSeeder extends Seeder
     public function run()
     {
         DB::table('Type')->insert([
-            'title' => str_random(10),
-            'description' => str_random(10)
+            'title' => 'Typetitle_'.str_random(10),
+            'description' => 'Typedescription_' . str_random(10)
         ]);
     }
 }

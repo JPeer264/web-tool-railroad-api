@@ -12,8 +12,13 @@ class SubcategoryTableSeeder extends Seeder
      */
     public function run()
     {
+        $category = DB::table('Category')->get();
+        $category_count = count($category);
+        $category_random = mt_rand(0, $category_count-1);
+
         DB::table('subcategory')->insert([
-            'title' => str_random(10)
+            'title' => 'Subcategory_' . str_random(10),
+            'category_id' => $category[$category_random]->id,
         ]);
     }
 }

@@ -14,8 +14,8 @@ class Topic extends Migration
     {
         Schema::create('Topic', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('category_id')->unsigned();
-            $table->foreign('category_id')->references('id')->on('Category');
+            $table->integer('subcategory_id')->unsigned();
+            $table->foreign('subcategory_id')->references('id')->on('Subcategory');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('User');
             $table->integer('type_id')->unsigned()->default(1);

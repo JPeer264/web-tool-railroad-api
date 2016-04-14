@@ -13,8 +13,8 @@ class JobTableSeeder extends Seeder
     public function run()
     {
         DB::table('Job')->insert([
-            'title' => str_random(10),
-            'description' => str_random(10)
+            'title' => 'Jobtitle_'.str_random(10),
+            'description' => 'Jobdescription_'.str_random(10)
         ]);
     }
 }

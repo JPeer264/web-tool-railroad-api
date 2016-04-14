@@ -12,9 +12,9 @@ class TopicTableSeeder extends Seeder
      */
     public function run()
     {
-        $category = DB::table('Category')->get();
-        $category_count = count($category);
-        $category_random = mt_rand(0, $category_count-1);
+        $subcategory = DB::table('Subcategory')->get();
+        $subcategory_count = count($subcategory);
+        $subcategory_random = mt_rand(0, $subcategory_count-1);
 
         $user = DB::table('User')->get();
         $user_count = count($user);
@@ -25,7 +25,7 @@ class TopicTableSeeder extends Seeder
         $type_random = mt_rand(0, $type_count-1);
 
         DB::table('Topic')->insert([
-            'category_id' => $category[$category_random]->id,
+            'subcategory_id' => $subcategory[$subcategory_random]->id,
             'user_id' => $user[$user_random]->id,
             'type_id' => $type[$type_random]->id,
             'title' => str_random(10),
