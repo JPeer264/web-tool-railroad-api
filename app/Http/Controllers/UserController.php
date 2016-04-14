@@ -31,24 +31,24 @@ class UserController extends Controller
 {
 
     /**
-     * should get one specific user by id
-     *
-     * @return 200 {Object} - a json with one user
-     * @return 404 - user not found
-     */
+    * should get one specific user by id
+    *
+    * @return 200 {Object} - a json with one user
+    * @return 404 - user not found
+    */
     public function get(Request $request, $id) {
 
         // todo check if user is allowed to make this request // accessible for everybody? - at least same company
-         $user  = User::find($id);
+        $user  = User::find($id);
 
-         if (empty($user)) {
-             return response()->json([
-                 'message' => 'User not found',
-             ], 404);
-         }
+        if (empty($user)) {
+            return response()->json([
+                    'message' => 'User not found',
+                ], 404);
+        }
 
-         return response()->json($user->toArray());
-       }
+        return response()->json($user->toArray());
+    }
 
     /**
     * should get every user
@@ -61,12 +61,12 @@ class UserController extends Controller
     public function getAll(Request $request)
     {
         $this->validate($request, [
-           'company' => 'array|integer',
-           'job' => 'array|integer',
+            'company' => 'array|integer',
+            'job' => 'array|integer',
         ]);
 
         $user = User::get();
-          $filter = new Filter($user, $request->all());
+        $filter = new Filter($user, $request->all());
 
         // filter by given parameters
         $filtered = $filter
@@ -87,59 +87,57 @@ class UserController extends Controller
         $params = $request->all();
         var_dump($params);
         $exist = User::where('email', $params['email'])->get();
+        
         if (count($exist)!=0){
             return response()->json([
-                'message' => 'Email already exist in database',
-                'existIn' => $existIn
+                    'message' => 'Email already exist in database',
+                    'existIn' => $existIn
                 ], 409);
-          }
-           if(true)//ranking= admin
-          {
-              //less stuff required with validate and accepted to true
-              $this->validate($request, [
-                 'email' => 'required|email',
-                 'password' => 'required',
-              ]);
-              $params['accepted']=1;
+        }
+        if(true) {
+            //ranking= admin
+            //less stuff required with validate and accepted to true
+            $this->validate($request, [
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
 
-          }else{
-              if(isset($params['accepted'])
-              {
-                  $params['accepted']=0;
-              }
+            $params['accepted']=1;
 
-              $this->validate($request, [
-                  'email' => 'required|email|unique:user',
-                  'password' => 'required',
-                  'firstname'=> 'required|string',
-                  'lastname'=>'required|string',
-                  'gender'=>'required|string',
-                  'birthday'=>'required|integer',
-                  'country'=>'required|string',
-                  'signup_comment'=>'required|string|max:1000',
-                  'company_id'=>'required|integer',
-                  'job_id'=>'required|integer',
-                  'role_id'=>'integer',
-                  'city'=>'string',
-                  'address'=>'string',
-                  'Twitter'=>'string',
-                  'Facebook'=>'string',
-                  'LinkedIn'=>'string'
-                  'Xing'=>'string',
+        } else {
+            if(isset($params['accepted']) {
+                $params['accepted']=0;
+            }
 
-              ]);
+            $this->validate($request, [
+                'email' => 'required|email|unique:user',
+                'password' => 'required',
+                'firstname'=> 'required|string',
+                'lastname'=>'required|string',
+                'gender'=>'required|string',
+                'birthday'=>'required|integer',
+                'country'=>'required|string',
+                'signup_comment'=>'required|string|max:1000',
+                'company_id'=>'required|integer',
+                'job_id'=>'required|integer',
+                'role_id'=>'integer',
+                'city'=>'string',
+                'address'=>'string',
+                'Twitter'=>'string',
+                'Facebook'=>'string',
+                'LinkedIn'=>'string'
+                'Xing'=>'string',
 
-          }
+            ]);
+        }
 
+        $user = User::create($params);
 
-          $user = User::create($params);
-
-
-          return response()->json([
-                  'message' => 'User successfully created',
-                  'user_id' => $user->id
-              ], 201);
-      }
+        return response()->json([
+                'message' => 'User successfully created',
+                'user_id' => $user->id
+            ], 201);
+    }
 
     // todo update user (just one)
     public function update(Request $request, $id)
@@ -162,13 +160,13 @@ class UserController extends Controller
             'LinkedIn'=>'string'
             'Xing'=>'string',
             'picture_alt'=>'string',
-
         ]);
+        
         $user = User::find($id);
 
         if ($user == NULL) {
             return response()->json([
-                'message' => 'User does not exist',
+                    'message' => 'User does not exist',
                 ], 404);
         }
 
@@ -176,7 +174,7 @@ class UserController extends Controller
         $user->update($params);
 
         return response()->json([
-            'message' => 'User successfully updated',
+                'message' => 'User successfully updated',
             ], 200);
     }
 
@@ -185,21 +183,21 @@ class UserController extends Controller
     *
     * @return 200 - successfully deleted
     * @return 404 - user does not exist
-    */    public function delete($id)
+    */    
+    public function delete($id)
     {
         $user  = User::find($id);
 
         if ($user == NULL) {
             return response()->json([
-                'message' => 'User does not exist',
+                    'message' => 'User does not exist',
                 ], 404);
         }
 
         $user->delete();
 
         return response()->json([
-            'message' => 'User successfully deleted',
+                'message' => 'User successfully deleted',
             ], 200);
     }
-
 }

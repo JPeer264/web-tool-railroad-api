@@ -157,7 +157,6 @@ class JobController extends Controller
      * @return 404 - job does not exist
      */
     public function delete($id) {
-        // todo validation
         // todo check if there is an already
         // used user with this as foreign key
         $user = $this->auth->parseToken()->authenticate();
