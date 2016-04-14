@@ -26,9 +26,26 @@ use Illuminate\Http\Response;
 use App\Job;
 use App\Company;
 use App\Http\Controllers\Filter;
+use Tymon\JWTAuth\JWTAuth;
+
+use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
+
+    /**
+     * @var JWTAuth
+     */
+    private $auth;
+
+    /**
+     * @param JWTAuth $auth
+     */
+    public function __construct(JWTAuth $auth) {
+        $this->auth = $auth;
+    }
+
 
     /**
     * should get one specific user by id
@@ -102,15 +119,29 @@ class UserController extends Controller
             //less stuff required with validate and accepted to true
             $this->validate($request, [
                 'email' => 'required|email',
-                'password' => 'required',
+                'company_id'=>'required|integer'
             ]);
 
             $params['accepted']=1;
+            $password=str_random(6);
+            $params['password']= Hash::make($password);
+            $invite_expire=Crypt::encrypt(Carbon::now()->addDay(5));
+
+            $data = [
+               'password' => $password,
+               'invite_expire' => $invite_expire
+            ];
+
+            Mail::send('emails.invite', $data, function ($message) {
+                $message->from('joerailtest@gmail.com', 'Railway Museum');
+                $message->to($params['email']);
+            });
 
         } else {
-            if(isset($params['accepted']) {
+            if(isset($params['accepted'])) {
                 $params['accepted']=0;
             }
+
 
             $this->validate($request, [
                 'email' => 'required|email|unique:user',
@@ -128,10 +159,13 @@ class UserController extends Controller
                 'address'=>'string',
                 'Twitter'=>'string',
                 'Facebook'=>'string',
-                'LinkedIn'=>'string'
+                'LinkedIn'=>'string',
                 'Xing'=>'string',
-
             ]);
+
+            $params['password']= Hash::make($params['password']);
+
+
         }
 
         $user = User::create($params);
@@ -160,10 +194,12 @@ class UserController extends Controller
             'address'=>'string',
             'Twitter'=>'string',
             'Facebook'=>'string',
-            'LinkedIn'=>'string'
+            'LinkedIn'=>'string',
             'Xing'=>'string',
             'picture_alt'=>'string',
         ]);
+
+        $params['password']= Hash::make($params['password']);
 
         $user = User::find($id);
 
