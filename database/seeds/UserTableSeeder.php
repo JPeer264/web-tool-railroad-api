@@ -49,5 +49,30 @@ class UserTableSeeder extends Seeder
             'accepted_at' => mt_rand(1000000, 9999999),
             'requested_at' => mt_rand(1000000, 9999999),
         ]);
+
+        DB::table('User')->insert([
+            'company_id' => $company[$company_random]->id,
+            'role_id' => 1,
+            'job_id' => $job[$job_random]->id,
+            'firstname' => str_random(10),
+            'lastname' => str_random(10),
+            'password' => Hash::make('secret'),
+            'gender' => 'male',
+            'picture_alt' => str_random(10),
+            'picture_location' => '/path/to/picture/',
+            'email' => 'superadmin@gmail.com',
+            'country' => str_random(10),
+            'city' => str_random(10),
+            'address' => str_random(10),
+            'signup_comment' => str_random(100),
+            'birthday' => mt_rand(1000000, 9999999),
+            'Twitter' => 'www.twitter.com',
+            'Facebook' => 'fb.me',
+            'LinkedIn' => 'www.linkedin.com',
+            'Xing' => 'www.xing.com',
+            'accepted' => mt_rand(1000000, 9999999),
+            'accepted_at' => mt_rand(1000000, 9999999),
+            'requested_at' => mt_rand(1000000, 9999999),
+        ]);
     }
 }
