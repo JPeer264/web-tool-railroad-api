@@ -34,49 +34,12 @@ class CategoryController extends Controller
      */
     public function get(Request $request, $id) {
 
-        $this->validate($request, [
-           'company' => 'array|integer',
-           'job' => 'array|integer',
-        ]);
-
-        $params = $request->all();
-        $user = $this->auth->parseToken()->authenticate();
-
-        $categories = Category::where('id', $id)->get();
-        $topicController = new TopicController($this->auth);
-        $topics = $topicController
-            ->getAllByCategoryLessInformation($request, $id)
-            ->getData();
-
-        // check if user is normal user or companyadmin and
-        // change to his own company and job
-        if ($user->role_id > 3) {
-            $params['job'] = array($user->job_id);
-            $params['company'] = array($user->company_id);
-        }
-
-        // filter by given parameters
-        $filter = new Filter($categories, $params);
-        $filtered = $filter
-            ->byParameters('company')
-            ->byParameters('job');
+        $categories = Category::with('subcategory')->find($id);
 
         if (empty($categories)) {
             return response()->json([
                 'message' => 'Category not found',
             ], 404);
-        }
-
-        // to array before foreach
-        $categories = $filtered->getArray();
-
-        foreach ($categories as $key => $value) {
-            foreach ($topics as $topic) {
-
-                if ($value == $topic->category_id) {
-                    $categories['topics'][] = $topic;
-                }
-            }
         }
 
         return response()->json($categories);

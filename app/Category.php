@@ -27,8 +27,7 @@ class Category extends Model
     protected $dates = ['deleted_at'];
 
     // DEFINE RELATIONSHIPS --------------------------------------------------
-    public function topic() {
+    public function subcategory() {
         return $this->hasMany('App\Subcategory');
     }
-
 }

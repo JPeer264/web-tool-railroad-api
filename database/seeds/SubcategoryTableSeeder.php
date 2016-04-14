@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 
-class CategoryTableSeeder extends Seeder
+class SubcategoryTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,7 +12,7 @@ class CategoryTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('category')->insert([
+        DB::table('subcategory')->insert([
             'title' => str_random(10)
         ]);
     }
