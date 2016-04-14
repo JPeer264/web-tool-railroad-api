@@ -17,7 +17,7 @@ class Category extends Model
 
     // LINK THIS MODEL TO OUR DATABASE TABLE ---------------------------------
     // since the plural of user isnt what we named our database table we have to define it
-    protected $table = 'category';
+    protected $table = 'subcategory';
 
     /**
      * The attributes that should be mutated to dates.
@@ -28,7 +28,12 @@ class Category extends Model
 
     // DEFINE RELATIONSHIPS --------------------------------------------------
     public function topic() {
-        return $this->hasMany('App\Subcategory');
+        return $this->hasMany('App\Topic');
     }
+
+    public function category() {
+        return $this->belongsTo('App\Category');
+    }
+
 
 }

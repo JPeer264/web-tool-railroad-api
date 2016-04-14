@@ -91,29 +91,9 @@ class CategoryController extends Controller
      */
     public function getAll(Request $request) {
 
-        $this->validate($request, [
-           'company' => 'array|integer',
-           'job' => 'array|integer',
-        ]);
-
         // todo show topics - not shown because of filtering problems
         $categories = Category::with('job', 'company')->get();
         $user = $this->auth->parseToken()->authenticate();
-
-        // check if user is normal user or companyadmin and
-        // change to his own company and job
-        if ($user->role_id > 2) {
-            // normal user
-            $params['job'] = array($user->job_id);
-            $params['company'] = array($user->company_id);
-        }
-
-        $filter = new Filter($categories, $request->all());
-
-        // filter by given parameters
-        $filtered  = $filter
-            ->byParameters('company')
-            ->byParameters('job');
 
         return response()->json($filtered->getArray());
     }
@@ -128,7 +108,6 @@ class CategoryController extends Controller
 
         $this->validate($request, [
            'title' => 'required|string|unique:type',
-           'description' => 'required|string',
         ]);
 
         $params = $request->all();

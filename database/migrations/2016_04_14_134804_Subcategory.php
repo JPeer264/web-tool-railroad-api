@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CategoryJob extends Migration
+class Subcategory extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,10 @@ class CategoryJob extends Migration
      */
     public function up()
     {
-        Schema::create('Category_Job', function (Blueprint $table) {
+        Schema::create('Subcategory', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('category_id')->unsigned();
-            $table->foreign('category_id')->references('id')->on('Category');
-            $table->integer('job_id')->unsigned();
-            $table->foreign('job_id')->references('id')->on('Job');
+            $table->string('title');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ class CategoryJob extends Migration
      */
     public function down()
     {
-        Schema::drop('Category_Job');
+        //
     }
 }
