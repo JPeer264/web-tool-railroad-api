@@ -54,6 +54,14 @@ $app->group(['prefix' => 'api/v1',
     $app->post('category/{id}', 'CategoryController@update'); // created
     $app->delete('category/{id}', 'CategoryController@delete'); // created
 
+    // subcategory
+    $app->get('subcategory', 'SubcategoryController@getAll'); // created
+    $app->post('subcategory', 'SubcategoryController@create'); // created
+
+    $app->get('subcategory/{id}', 'SubcategoryController@get'); // created
+    $app->post('subcategory/{id}', 'SubcategoryController@update'); // created
+    $app->delete('subcategory/{id}', 'SubcategoryController@delete'); // created
+
     // topic
     $app->get('category/{id}/topic', 'TopicController@getAllByCategory'); // created
     $app->post('category/{id}/topic', 'TopicController@create'); // created
