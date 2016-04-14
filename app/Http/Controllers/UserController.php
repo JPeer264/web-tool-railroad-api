@@ -27,6 +27,8 @@ use App\Job;
 use App\Company;
 use App\Http\Controllers\Filter;
 use Tymon\JWTAuth\JWTAuth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
 
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;

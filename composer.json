@@ -9,7 +9,8 @@
         "laravel/lumen-framework": "5.2.*",
         "vlucas/phpdotenv": "~2.2",
         "tymon/jwt-auth": "0.6.*@dev",
-        "nesbot/carbon": "~1.18"
+        "nesbot/carbon": "~1.18",
+        "illuminate/mail": "5.2.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
