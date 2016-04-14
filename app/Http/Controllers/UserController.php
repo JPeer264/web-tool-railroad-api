@@ -87,14 +87,17 @@ class UserController extends Controller
         $params = $request->all();
         var_dump($params);
         $exist = User::where('email', $params['email'])->get();
-        
+
         if (count($exist)!=0){
             return response()->json([
                     'message' => 'Email already exist in database',
                     'existIn' => $existIn
                 ], 409);
         }
-        if(true) {
+
+        $user = $this->auth->parseToken()->authenticate();
+
+        if($user->role_id == 1) {
             //ranking= admin
             //less stuff required with validate and accepted to true
             $this->validate($request, [
@@ -161,7 +164,7 @@ class UserController extends Controller
             'Xing'=>'string',
             'picture_alt'=>'string',
         ]);
-        
+
         $user = User::find($id);
 
         if ($user == NULL) {
@@ -183,7 +186,7 @@ class UserController extends Controller
     *
     * @return 200 - successfully deleted
     * @return 404 - user does not exist
-    */    
+    */
     public function delete($id)
     {
         $user  = User::find($id);
