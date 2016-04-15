@@ -50,7 +50,7 @@ $app->group(['prefix' => 'api/v1',
     $app->get('category', 'CategoryController@getAll'); // created
     $app->post('category', 'CategoryController@create'); // created
 
-    $app->get('category/{id}', 'CategoryController@get'); // created
+    // $app->get('category/{id}', 'CategoryController@get'); // do we show single categories?
     $app->post('category/{id}', 'CategoryController@update'); // created
     $app->delete('category/{id}', 'CategoryController@delete'); // created
 
