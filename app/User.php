@@ -27,7 +27,7 @@ class User extends Model implements
     protected $fillable = [
         'firstname', 'lastname', 'gender', 'picture_alt',
         'company_id', 'job_id', 'role_id',
-        'picture_location', 'email', 'country', 'city',
+        'picture_location', 'email', 'country_id', 'city',
         'address', 'signup_comment', 'birthday', 'Facebook',
         'Twitter', 'LinkedIn', 'Xing',
     ];
@@ -55,6 +55,12 @@ class User extends Model implements
     // DEFINE RELATIONSHIPS --------------------------------------------------
     public function company() {
         return $this->hasOne('App\Company');
+    }
+
+    public function country() {
+        return $this
+            ->hasOne('App\Country', 'id', 'country_id')
+            ->select('id', 'name');
     }
 
     public function role() {

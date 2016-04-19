@@ -34,7 +34,7 @@ class CompanyController extends Controller
         // todo check if user is allowed to see this request // only admins or same company -/- or all
         // todo do not get all information from the user
         // todo list all jobs used in a company
-        $company = Company::with('user')->find($id);
+        $company = Company::with('user', 'country')->find($id);
 
         if (empty($company)) {
             return response()->json([

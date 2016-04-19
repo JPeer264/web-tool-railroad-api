@@ -13,7 +13,7 @@ class Company extends Model
 
     protected $fillable = [
         'administrator', 'name', 'logo_alt', 'logo_location',
-        'country', 'city', 'address', 'phonenumber', 'email',
+        'country_id', 'city', 'address', 'phonenumber', 'email',
 
     ];
 
@@ -32,6 +32,12 @@ class Company extends Model
     // DEFINE RELATIONSHIPS --------------------------------------------------
     public function category() {
         return $this->belongsToMany('App\Category', 'Category_Company', 'category_id', 'company_id');
+    }
+
+    public function country() {
+        return $this
+            ->hasOne('App\Country', 'id', 'country_id')
+            ->select('id', 'name');
     }
 
     public function topic() {
