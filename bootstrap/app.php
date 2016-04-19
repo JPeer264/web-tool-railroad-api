@@ -26,6 +26,9 @@ $app = new Laravel\Lumen\Application(
 $app->withFacades();
 $app->withEloquent();
 
+class_alias('Webpatser\Countries\CountriesFacade', 'Countries');
+class_alias('Illuminate\Support\Facades\Config', 'Config');
+
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
@@ -85,6 +88,7 @@ $app->routeMiddleware([
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register(App\Providers\AppServiceProvider::class);
+$app->register(Webpatser\Countries\CountriesServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
