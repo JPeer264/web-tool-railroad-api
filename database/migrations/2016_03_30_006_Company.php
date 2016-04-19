@@ -18,7 +18,7 @@ class Company extends Migration
             $table->string('name');
             $table->string('logo_alt');
             $table->string('logo_location');
-            $table->string('country');
+            $table->integer('country_id')->unsigned();
             $table->string('city');
             $table->string('address');
             // todo check if we can use -> laravel countries + prefixes for phonennumbers

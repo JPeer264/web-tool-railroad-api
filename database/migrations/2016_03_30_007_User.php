@@ -34,7 +34,7 @@ class User extends Migration
             $table->string('picture_alt')->nullable();
             $table->string('picture_location')->nullable();
             $table->string('email');
-            $table->string('country')->nullable();
+            $table->integer('country_id')->unsigned();
             $table->string('city')->nullable();
             $table->string('address')->nullable();
             $table->text('signup_comment')->nullable();

@@ -15,7 +15,7 @@ class CompanyTableSeeder extends Seeder
         DB::table('Company')->insert([
             'name' => 'Museum Vilanova i la Geltrú',
             'logo_alt' => 'Picture Mueseum Vilanova',
-            'country' => 'Spain',
+            'country_id' => 724,
             'city' => 'Vilanova',
             'phonenumber' => mt_rand(1000000, 9999999)
         ]);
