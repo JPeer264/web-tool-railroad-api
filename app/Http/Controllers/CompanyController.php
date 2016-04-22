@@ -74,7 +74,7 @@ class CompanyController extends Controller
            'administrator' => 'required|integer',
            'name' => 'required|string|unique:company',
            'logo_alt'=>'string',
-           'country'=>'required|string',
+           'country_id'=>'required|string',
            'city'=>'required|string',
            'address'=>'required|string',
            'phonenumber'=>'required|string',
@@ -121,14 +121,14 @@ class CompanyController extends Controller
     */
     public function update(Request $request, $id) {
         $this->validate($request, [
-           'administrator' => 'required|integer',
-           'name' => 'required|string',
+           'administrator' => 'integer',
+           'name' => 'string',
            'logo_alt'=>'string',
-           'country'=>'required|string',
-           'city'=>'required|string',
-           'address'=>'required|string',
-           'phonenumber'=>'required|string',
-           'email'=>'required|email',
+           'country_id'=>'string',
+           'city'=>'string',
+           'address'=>'string',
+           'phonenumber'=>'string',
+           'email'=>'email',
        ]);
                   // todo check if user is allowed to make this request // only admins
         $params = $request->all();

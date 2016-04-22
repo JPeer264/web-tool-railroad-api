@@ -108,8 +108,8 @@ class JobController extends Controller
     public function update(Request $request, $id) {
 
         $this->validate($request, [
-            'title' => 'required|string|unique:job',
-            'description' => 'required|string',
+            'title' => 'string',
+            'description' => 'string',
         ]);
 
         $user = $this->auth->parseToken()->authenticate();
