@@ -217,12 +217,13 @@ class TopicController extends Controller
     */
     public function update(Request $request, $id) {
         $this->validate($request, [
-           'title' => 'required|string|unique:type',
-           'description' => 'required|string',
-           'subcategory_id'=>'required|integer',
-           'user_id'=>'required|integer',
-           'type_id'=>'required|integer',
+           'title' => 'string|unique:type',
+           'description' => 'string',
+           'subcategory_id'=>'integer',
+           'user_id'=>'integer',
+           'type_id'=>'integer',
         ]);
+
 
         // todo check if user is allowed to make this request // only admins or users who created the specific topic
         $params = $request->all();
@@ -232,11 +233,12 @@ class TopicController extends Controller
         $date = Topic::find($id)->created_at;
         $now = Carbon::now();
 
-        if ($now->diffInMinutes($date->addMinutes($unchangeInMin)) > 0) {
-            return response()->json([
-                'message' => 'Topic cannot be changed anymore',
-            ], 405);
-        }
+        // todo uncomment in production -> Cors error in angular development!!!!!
+        // if ($now->diffInMinutes($date->addMinutes($unchangeInMin)) > 0) {
+        //     return response()->json([
+        //         'message' => 'Topic cannot be changed anymore',
+        //     ], 405);
+        // }
 
         // filter parameters for update pivot
         $topicpivot = Topic::with('job', 'company')->where('id', $id)->get();
