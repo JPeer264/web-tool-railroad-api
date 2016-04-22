@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Tymon\JWTAuth\JWTAuth;
 use App\Topic;
-use App\Category;
+use App\Subcategory;
 use Carbon\Carbon;
 use App\Http\Controllers\Filter;
 
@@ -73,18 +73,18 @@ class TopicController extends Controller
      * should get every topic
      *
      * @return 200 {Array} - within this array several single objects as topic
-     * @return 404 - category not found
+     * @return 404 - subcategory not found
      */
-    public function getAllByCategory(Request $request, $id) {
+    public function getAllBySubategory(Request $request, $id) {
         $this->validate($request, [
            'company' => 'array|integer',
            'job' => 'array|integer',
         ]);
         // todo check if user is allowed to see this request // is user in the right company or job?
         $topics = Topic::with('user')
-            ->where('category_id', $id)
+            ->where('subcategory_id', $id)
             ->get();
-        $category = Category::find((int)$id);
+        $subcategory = Subcategory::find((int)$id);
 
         $filter = new Filter($topics, $request->all());
 
@@ -92,9 +92,9 @@ class TopicController extends Controller
             ->byParameters('job')
             ->byParameters('company');
 
-        if (empty($category)) {
+        if (empty($subcategory)) {
             return response()->json([
-                'message' => 'Category not found',
+                'message' => 'Subcategory not found',
             ], 404);
         }
 
@@ -109,42 +109,42 @@ class TopicController extends Controller
      * @return 404 - category not found
      */
     public function getAllByCategoryLessInformation(Request $request, $id) {
-        $this->validate($request, [
-           'company' => 'array|integer',
-           'job' => 'array|integer',
-        ]);
+        // $this->validate($request, [
+        //    'company' => 'array|integer',
+        //    'job' => 'array|integer',
+        // ]);
         
-        // todo check if user is allowed to see this request // is user in the right company or job?
-        $topics = Topic::where('category_id', $id)->get();
+        // // todo check if user is allowed to see this request // is user in the right company or job?
+        // $topics = Topic::where('category_id', $id)->get();
 
-        $category = Category::find((int)$id);
+        // $category = Category::find((int)$id);
 
-        $filter = new Filter($topics, $request->all());
+        // $filter = new Filter($topics, $request->all());
 
-        $filtered = $filter
-            ->byParameters('job')
-            ->byParameters('company');
+        // $filtered = $filter
+        //     ->byParameters('job')
+        //     ->byParameters('company');
 
-        if (empty($category)) {
-            return response()->json([
-                'message' => 'Category not found',
-            ], 404);
-        }
+        // if (empty($category)) {
+        //     return response()->json([
+        //         'message' => 'Category not found',
+        //     ], 404);
+        // }
 
-        $topics = $filtered->getArray();
+        // $topics = $filtered->getArray();
 
-        // delete added elquents and return filtered topics
-        $count = 0;
-        foreach ($topics as $topic) {
-            unset($topic['job']);
-            unset($topic['company']);
+        // // delete added elquents and return filtered topics
+        // $count = 0;
+        // foreach ($topics as $topic) {
+        //     unset($topic['job']);
+        //     unset($topic['company']);
 
-            $topics[$count] = $topic;
+        //     $topics[$count] = $topic;
 
-            $count++;
-        }
+        //     $count++;
+        // }
 
-        return response()->json($topics);
+        // return response()->json($topics);
     }
 
     /**
@@ -157,15 +157,14 @@ class TopicController extends Controller
         $this->validate($request, [
            'title' => 'required|string|unique:type',
            'description' => 'required|string',
-           'category_id'=>'required|integer',
-           'user_id'=>'required|integer',
-           'type_id'=>'required|integer',
+           'subcategory_id'=>'integer',
+           'type_id'=>'integer',
         ]);
 
         // todo update real user and type
         // todo check if user is allowed to make this request // admins for all companys and jobs - user just in their own
         $params = $request->all();
-        $params['category_id'] = $id;
+        $params['subcategory_id'] = $id;
         $params['user_id'] = 1;
         $params['type_id'] = 1;
 
@@ -220,7 +219,7 @@ class TopicController extends Controller
         $this->validate($request, [
            'title' => 'required|string|unique:type',
            'description' => 'required|string',
-           'category_id'=>'required|integer',
+           'subcategory_id'=>'required|integer',
            'user_id'=>'required|integer',
            'type_id'=>'required|integer',
         ]);

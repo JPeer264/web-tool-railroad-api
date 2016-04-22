@@ -12,7 +12,7 @@ class Topic extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'category_id', 'user_id', 'type_id', 'title', 'description'
+        'subcategory_id', 'user_id', 'type_id', 'title', 'description'
     ];
 
     // LINK THIS MODEL TO OUR DATABASE TABLE ---------------------------------
