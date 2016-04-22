@@ -17,7 +17,7 @@ class CountriesSeeder extends Seeder {
         //Get all of the countries
         $countries = Countries::getList();
         foreach ($countries as $countryId => $country){
-            DB::table('countries')->insert(array(
+            DB::table('Countries')->insert(array(
                 'id' => $countryId,
                 'capital' => ((isset($country['capital'])) ? $country['capital'] : null),
                 'citizenship' => ((isset($country['citizenship'])) ? $country['citizenship'] : null),

@@ -17,7 +17,7 @@ class Subcategory extends Model
 
     // LINK THIS MODEL TO OUR DATABASE TABLE ---------------------------------
     // since the plural of user isnt what we named our database table we have to define it
-    protected $table = 'subcategory';
+    protected $table = 'Subcategory';
 
     /**
      * The attributes that should be mutated to dates.

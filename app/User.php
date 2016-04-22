@@ -50,7 +50,7 @@ class User extends Model implements
 
     // LINK THIS MODEL TO OUR DATABASE TABLE ---------------------------------
     // since the plural of user isnt what we named our database table we have to define it
-    protected $table = 'user';
+    protected $table = 'User';
 
     // DEFINE RELATIONSHIPS --------------------------------------------------
     public function company() {
