@@ -56,7 +56,7 @@ $app->group(['prefix' => 'api/v1',
 
     // subcategory
     $app->get('subcategory', 'SubcategoryController@getAll'); // created
-    $app->post('subcategory', 'SubcategoryController@create'); // created
+    $app->post('category/{id}/subcategory', 'SubcategoryController@create'); // created
 
     $app->get('subcategory/{id}', 'SubcategoryController@get'); // created
     $app->post('subcategory/{id}', 'SubcategoryController@update'); // created

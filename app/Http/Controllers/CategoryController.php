@@ -68,7 +68,7 @@ class CategoryController extends Controller
 
         // todo check if it is a superadmin (1)
         $this->validate($request, [
-           'title' => 'required|string|unique:type',
+           'title' => 'required|string',
         ]);
 
         $params = $request->all();
@@ -109,8 +109,7 @@ class CategoryController extends Controller
 
         // todo check if it is a superadmin (1)
         $this->validate($request, [
-           'title' => 'required|string|unique:type',
-           'description' => 'required|string',
+           'title' => 'required|string',
         ]);
 
         $params = $request->all();

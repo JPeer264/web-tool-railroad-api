@@ -33,7 +33,7 @@ class SubcategoryController extends Controller
     public function get(Request $request, $id) {
 
         // todo add with('subcategory')
-        $subcategories = Subcategory::with('subcategory')->find($id);
+        $subcategories = Subcategory::with('category')->find($id);
 
         if (empty($subcategories)) {
             return response()->json([
@@ -51,7 +51,7 @@ class SubcategoryController extends Controller
      */
     public function getAll(Request $request) {
 
-        $subcategories = Subcategory::with('subcategory')->get();
+        $subcategories = Subcategory::with('category')->get();
 
         return response()->json($subcategories->toArray());
     }
@@ -62,7 +62,7 @@ class SubcategoryController extends Controller
      * @return 201 - subcategory successfully created
      * @return 409 - subcategory already exists
      */
-    public function create(Request $request) {
+    public function create(Request $request, $category_id) {
 
         // todo check if it is a superadmin (1)
         $this->validate($request, [
@@ -70,6 +70,7 @@ class SubcategoryController extends Controller
         ]);
 
         $params = $request->all();
+        $params['category_id'] = $category_id;
         $user = $this->auth->parseToken()->authenticate();
 
         // check for right permission
@@ -108,7 +109,6 @@ class SubcategoryController extends Controller
         // todo check if it is a superadmin (1)
         $this->validate($request, [
            'title' => 'required|string|unique:type',
-           'description' => 'required|string',
         ]);
 
         $params = $request->all();

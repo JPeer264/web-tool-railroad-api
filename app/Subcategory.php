@@ -12,7 +12,7 @@ class Subcategory extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'title',
+        'title', 'category_id'
     ];
 
     // LINK THIS MODEL TO OUR DATABASE TABLE ---------------------------------
