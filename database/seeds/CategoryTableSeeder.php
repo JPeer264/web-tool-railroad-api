@@ -12,8 +12,30 @@ class CategoryTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('Category')->delete();
+
         DB::table('Category')->insert([
-            'title' => 'Category_' . str_random(10)
+            'title' => 'Conservation'
+        ]);
+
+        DB::table('Category')->insert([
+            'title' => 'Documentation'
+        ]);
+
+        DB::table('Category')->insert([
+            'title' => 'Investigation'
+        ]);
+
+        DB::table('Category')->insert([
+            'title' => 'Diffusion'
+        ]);
+
+        DB::table('Category')->insert([
+            'title' => 'Education'
+        ]);
+
+        DB::table('Category')->insert([
+            'title' => 'Cultural Animation (Activities)'
         ]);
     }
 }
