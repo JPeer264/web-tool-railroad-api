@@ -32,16 +32,43 @@ class SubcategoryController extends Controller
      */
     public function get(Request $request, $id) {
 
-        // todo add with('subcategory')
-        $subcategories = Subcategory::with('category')->find($id);
+        // get topics with their comment and user
+        // comments are sorted by created_at desc
+        $subcategory = Subcategory::with('category')
+            ->with(['topic' => function ($q) {
+                $q->select('id', 'subcategory_id', 'user_id', 'type_id')
+                    ->with(['comment' => function ($q) {
+                        $q->select('id', 'user_id', 'topic_id')
+                            ->orderBy('created_at', 'desc')
+                            ->with(['user' => function ($q) {
+                                $q->select('id', 'firstname', 'lastname', 'picture_location');
+                            }]);
+                    }]);
+            }])
+            ->find($id);
 
-        if (empty($subcategories)) {
+        // filter the latest comment per topic
+        foreach ($subcategory['topic'] as $topics) {
+            if (isset($topics['comment'][0])) {
+                $comment = $topics['comment'][0];
+
+                // clear object
+                unset($topics['comment']);
+
+                // regenerate object
+                $topics['comment'] = $comment;
+            }
+        }
+
+        unset($subcategory->deleted_at);    
+
+        if (empty($subcategory)) {
             return response()->json([
                 'message' => 'Subcategory not found',
             ], 404);
         }
 
-        return response()->json($subcategories);
+        return response()->json($subcategory);
     }
 
     /**

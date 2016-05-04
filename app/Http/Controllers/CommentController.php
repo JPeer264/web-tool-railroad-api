@@ -31,8 +31,6 @@ class CommentController extends Controller
     public function create(Request $request, $id) {
 
         $this->validate($request, [
-           'user_id' => 'required|integer',
-           'topic_id' => 'required|integer',
            'content'=>'required|string',
         ]);
 
