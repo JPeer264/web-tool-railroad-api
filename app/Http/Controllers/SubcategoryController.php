@@ -57,6 +57,8 @@ class SubcategoryController extends Controller
 
                 // regenerate object
                 $topics['comment'] = $comment;
+            } else {
+                unset($topics['comment'][0]);
             }
         }
 
