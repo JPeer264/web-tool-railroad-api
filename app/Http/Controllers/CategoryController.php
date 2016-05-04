@@ -53,7 +53,38 @@ class CategoryController extends Controller
      */
     public function getAll(Request $request) {
 
-        $categories = Category::with('subcategory')->get();
+        $categories = Category::with(['subcategory' => function ($q) {
+                $q->select('id', 'title', 'category_id')
+                    ->with(['topic' => function ($q) {
+                        $q->with(['comment' => function ($q) {
+                            $q->select('id', 'user_id', 'topic_id')
+                                ->orderBy('created_at', 'desc')
+                                ->with(['user' => function ($q) {
+                                    $q->select('id', 'firstname', 'lastname');
+                                }]);
+                        }]);
+                    }]);
+            }])
+            ->select('id', 'title')
+            ->get();
+
+        foreach ($categories as $category) {
+            foreach ($category->subcategory as $subcategory) {
+                // get topic count of each subcategory
+                $subcategory->topic_count = $subcategory->topicCount();
+                
+                // keep the first comment
+                foreach ($subcategory->topic as $topic) {
+                    if (isset($topic->comment[0])) {
+                        $comment = $topic->comment[0];
+                        unset($topic->comment);
+                        $topic->comment = $comment;
+                    } else {
+                        unset($topic->comment);
+                    }
+                }
+            }
+        }
 
         return response()->json($categories->toArray());
     }

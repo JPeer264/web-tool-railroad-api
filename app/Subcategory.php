@@ -35,4 +35,8 @@ class Subcategory extends Model
         return $this->belongsTo('App\Category')->select('id', 'title');
     }
 
+    public function topicCount() {
+        return $this->topic()->count();
+    }
+
 }
