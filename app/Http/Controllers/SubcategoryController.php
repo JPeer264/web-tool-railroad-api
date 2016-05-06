@@ -36,13 +36,16 @@ class SubcategoryController extends Controller
         // comments are sorted by created_at desc
         $subcategory = Subcategory::with('category')
             ->with(['topic' => function ($q) {
-                $q->select('id', 'subcategory_id', 'user_id', 'type_id')
+                $q->select('id', 'title', 'subcategory_id', 'user_id', 'type_id', 'created_at')
                     ->with(['comment' => function ($q) {
                         $q->select('id', 'user_id', 'topic_id')
                             ->orderBy('created_at', 'desc')
                             ->with(['user' => function ($q) {
                                 $q->select('id', 'firstname', 'lastname', 'picture_location');
                             }]);
+                    }])
+                    ->with(['user' => function ($q) {
+                        $q->select('id', 'firstname', 'lastname');
                     }]);
             }])
             ->find($id);
@@ -56,9 +59,9 @@ class SubcategoryController extends Controller
                 unset($topics['comment']);
 
                 // regenerate object
-                $topics['comment'] = $comment;
+                $topics['latest_comment'] = $comment;
             } else {
-                unset($topics['comment'][0]);
+                unset($topics['comment']);
             }
         }
 

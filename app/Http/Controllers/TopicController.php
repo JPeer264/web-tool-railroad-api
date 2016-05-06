@@ -33,7 +33,15 @@ class TopicController extends Controller
      */
     public function get(Request $request, $id) {
 
-        $topics = Topic::with('user', 'comment', 'job')->find($id);
+        $topics = Topic::with(['user' => function ($q) {
+                $q->select('id', 'firstname', 'lastname');
+            }])
+            ->with('comment')
+            ->with('job')
+            ->with(['subcategory' => function ($q) {
+                $q->select('id', 'title');
+            }])
+            ->find($id);
         $user = $this->auth->parseToken()->authenticate();
 
         // check if non admins have rights

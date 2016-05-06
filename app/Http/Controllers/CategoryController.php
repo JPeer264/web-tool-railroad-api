@@ -57,10 +57,14 @@ class CategoryController extends Controller
                 $q->select('id', 'title', 'category_id')
                     ->with(['topic' => function ($q) {
                         $q->with(['comment' => function ($q) {
-                            $q->select('id', 'user_id', 'topic_id')
+                            $q->select('id', 'user_id', 'topic_id', 'created_at')
                                 ->orderBy('created_at', 'desc')
                                 ->with(['user' => function ($q) {
                                     $q->select('id', 'firstname', 'lastname');
+                                }])
+                                ->with(['topic' => function ($q) {
+                                    $q->select('id', 'title', 'type_id')
+                                        ->with('type');
                                 }]);
                         }]);
                     }]);
@@ -77,11 +81,9 @@ class CategoryController extends Controller
                 foreach ($subcategory->topic as $topic) {
                     if (isset($topic->comment[0])) {
                         $comment = $topic->comment[0];
-                        unset($topic->comment);
-                        $topic->comment = $comment;
-                    } else {
-                        unset($topic->comment);
+                        $subcategory->latest_comment = $comment;
                     }
+                    unset($topic);
                 }
             }
         }
