@@ -47,7 +47,12 @@ class AuthenticationController extends Controller
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
 
+        $user = $this->auth->user();
+
         // all good so return the token
-        return response()->json(compact('token'));
+        return response()->json([
+            'token' => $token,
+            'user' => $user
+        ]);
     }
 }
