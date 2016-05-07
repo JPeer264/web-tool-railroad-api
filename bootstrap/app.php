@@ -25,9 +25,11 @@ $app = new Laravel\Lumen\Application(
 
 $app->withFacades();
 $app->withEloquent();
+$app->configure('image');
 
 class_alias('Webpatser\Countries\CountriesFacade', 'Countries');
 class_alias('Illuminate\Support\Facades\Config', 'Config');
+class_alias('Folklore\Image\Facades\Image','Image');
 
 /*
 |--------------------------------------------------------------------------
@@ -89,6 +91,7 @@ $app->routeMiddleware([
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(Webpatser\Countries\CountriesServiceProvider::class);
+$app->register('Folklore\Image\ImageServiceProvider');
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

@@ -9,6 +9,7 @@ use Tymon\JWTAuth\JWTAuth;
 use App\Company;
 use App\Job;
 use App\User;
+use App\Http\Controllers\FileController;
 
 class CompanyController extends Controller
 {
@@ -124,13 +125,15 @@ class CompanyController extends Controller
            'administrator' => 'integer',
            'name' => 'string',
            'logo_alt'=>'string',
+           'fileUpload' => 'image',
            'country_id'=>'string',
            'city'=>'string',
            'address'=>'string',
            'phonenumber'=>'string',
            'email'=>'email',
        ]);
-                  // todo check if user is allowed to make this request // only admins
+
+        // todo check if user is allowed to make this request // only admins
         $params = $request->all();
         $user = $this->auth->parseToken()->authenticate();
 
@@ -165,6 +168,15 @@ class CompanyController extends Controller
                 'company' => $exist
             ], 409);
 
+        }
+
+        // fileupload
+        $file = new FileController($request);
+        $fileMeta = $file->save('company', 'logo_alt', 1);
+
+        // check, if not it will overwrite the database
+        if ($fileMeta) {
+            $params['logo_location'] = $fileMeta['filepath'];
         }
 
         $company = $company->update($params);
