@@ -68,7 +68,7 @@ class User extends Model implements
     }
 
     public function job() {
-        return $this->hasOne('App\Job');
+        return $this->hasOne('App\Job', 'id', 'job_id');
    }
 
    public function topic() {

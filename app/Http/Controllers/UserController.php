@@ -58,7 +58,7 @@ class UserController extends Controller
     public function get(Request $request, $id) {
 
         // todo check if user is allowed to make this request // accessible for everybody? - at least same company
-        $user  = User::find($id);
+        $user  = User::with('country', 'job')->find($id);
 
         if (empty($user)) {
             return response()->json([
