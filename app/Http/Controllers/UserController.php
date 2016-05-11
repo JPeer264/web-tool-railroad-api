@@ -126,15 +126,15 @@ class UserController extends Controller
             $params['accepted']=1;
             $password=str_random(6);
             $params['password']= Hash::make($password);
-    
+
             $invite_expire=Crypt::encrypt(Carbon::now()->addDay(5));
 
             $data = [
                'password' => $password,
                'invite_expire' => $invite_expire
             ];
-            Mail::send('emails.invite', $data, function ($message) {
-                //$message->to($params['email']);
+            Mail::send('emails.invite', $data, function ($message) use($params){
+                $message->to($params['email']);
             });
 
         } else {
