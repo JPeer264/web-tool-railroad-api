@@ -104,13 +104,12 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $params = $request->all();
-        var_dump($params);
         $exist = User::where('email', $params['email'])->get();
 
         if (count($exist)!=0){
             return response()->json([
                     'message' => 'Email already exist in database',
-                    'existIn' => $existIn
+                    //'existIn' => $existIn
                 ], 409);
         }
 
@@ -127,16 +126,15 @@ class UserController extends Controller
             $params['accepted']=1;
             $password=str_random(6);
             $params['password']= Hash::make($password);
+    
             $invite_expire=Crypt::encrypt(Carbon::now()->addDay(5));
 
             $data = [
                'password' => $password,
                'invite_expire' => $invite_expire
             ];
-
             Mail::send('emails.invite', $data, function ($message) {
-                $message->from('joerailtest@gmail.com', 'Railway Museum');
-                $message->to($params['email']);
+                //$message->to($params['email']);
             });
 
         } else {
@@ -152,7 +150,7 @@ class UserController extends Controller
                 'lastname'=>'required|string',
                 'gender'=>'required|string',
                 'birthday'=>'required|integer',
-                'country'=>'required|string',
+                'country_id'=>'required|integer',
                 'signup_comment'=>'required|string|max:1000',
                 'company_id'=>'required|integer',
                 'job_id'=>'required|integer',
@@ -167,9 +165,8 @@ class UserController extends Controller
 
             $params['password']= Hash::make($params['password']);
 
-
         }
-
+        var_dump($params);
         $user = User::create($params);
 
         return response()->json([
@@ -188,7 +185,7 @@ class UserController extends Controller
             'lastname'=>'required|string',
             'gender'=>'required|string',
             'birthday'=>'required|integer',
-            'country'=>'required|string',
+            'country_id'=>'required|integer',
             'signup_comment'=>'required|string|max:1000',
             'company_id'=>'required|integer',
             'job_id'=>'required|integer',
