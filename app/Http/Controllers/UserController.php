@@ -197,7 +197,10 @@ class UserController extends Controller
             'LinkedIn'=>'string',
             'Xing'=>'string',
             'picture_alt'=>'string',
+            'fileUpload' => 'image',
         ]);
+
+        $params = $request->all();
 
         $params['password']= Hash::make($params['password']);
 
@@ -209,7 +212,15 @@ class UserController extends Controller
                 ], 404);
         }
 
-        $params = $request->all();
+        // fileupload
+        $file = new FileController($request);
+        $fileMeta = $file->save('user', 'picture_alt', 1);
+
+        // check, if not it will overwrite the database
+        if ($fileMeta) {
+            $params['picture_location'] = $fileMeta['filepath'];
+        }
+
         $user->update($params);
 
         return response()->json([
