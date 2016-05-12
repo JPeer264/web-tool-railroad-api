@@ -2,6 +2,11 @@
 
 return array(
 
+    $this->mail_from  = env('MAIL_FROM'),
+    $this->mail_name  = env('MAIL_NAME'),
+    $this->mail_password   = env('MAIL_PASSWORD'),
+    $this->mail_host   = env('MAIL_HOST'),
+
     /*
     |--------------------------------------------------------------------------
     | Mail Driver
@@ -28,7 +33,7 @@ return array(
     |
     */
 
-    'host' => 'smtp.gmail.com',
+    'host' => $this->mail_host,
 
     /*
     |--------------------------------------------------------------------------
@@ -54,7 +59,7 @@ return array(
     |
     */
 
-    'from' => array('address' => 'railroadtryout@gmail.com', 'name' => 'Railroad Museum'),
+    'from' => array('address' => $this->mail_from, 'name' => $this->mail_name),
 
     /*
     |--------------------------------------------------------------------------
@@ -80,7 +85,7 @@ return array(
     |
     */
 
-    'username' => 'railroadtryout@gmail.com',
+    'username' => $this->mail_from,
 
     /*
     |--------------------------------------------------------------------------
@@ -93,7 +98,7 @@ return array(
     |
     */
 
-    'password' => 'EPSpain2016',
+    'password' =>$this->mail_password,
 
     /*
     |--------------------------------------------------------------------------

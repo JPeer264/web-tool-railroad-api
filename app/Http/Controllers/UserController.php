@@ -46,6 +46,7 @@ class UserController extends Controller
      */
     public function __construct(JWTAuth $auth) {
         $this->auth = $auth;
+        $this->mail_subject = env('MAIL_SUBJECT');
     }
 
 
@@ -134,7 +135,7 @@ class UserController extends Controller
                'invite_expire' => $invite_expire
             ];
             Mail::send('emails.invite', $data, function ($message) use($params){
-                $message->to($params['email']);
+                $message->to($params['email'])->subject($this->mail_subject);
             });
 
         } else {
