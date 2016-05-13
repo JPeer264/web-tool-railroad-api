@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class UserTableSeeder extends Seeder
 {
@@ -25,8 +26,8 @@ class UserTableSeeder extends Seeder
             'company_id' => $company[$company_random]->id,
             'role_id' => 1,
             'job_id' => $job[$job_random]->id,
-            'firstname' => str_random(10),
-            'lastname' => str_random(10),
+            'firstname' => 'Superadmin',
+            'lastname' => str_random(5),
             'password' => Hash::make('secret'),
             'gender' => 'male',
             'picture_alt' => str_random(10),
@@ -41,19 +42,23 @@ class UserTableSeeder extends Seeder
             'Facebook' => 'fb.me',
             'LinkedIn' => 'www.linkedin.com',
             'Xing' => 'www.xing.com',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'accepted' => mt_rand(1000000, 9999999),
             'accepted_at' => mt_rand(1000000, 9999999),
             'requested_at' => mt_rand(1000000, 9999999),
         ]);
 
+        $job_random = mt_rand(0, $job_count-1);
+        $company_random = mt_rand(0, $company_count-1);
+
         DB::table('User')->insert([
             'company_id' => $company[$company_random]->id,
             'role_id' => 2,
             'job_id' => $job[$job_random]->id,
-            'firstname' => str_random(10),
-            'lastname' => str_random(10),
+            'firstname' => 'Admin',
+            'lastname' => str_random(5),
             'password' => Hash::make('secret'),
-            'gender' => 'male',
+            'gender' => 'female',
             'picture_alt' => str_random(10),
             'picture_location' => '/path/to/picture/',
             'email' => 'admin@gmail.com',
@@ -66,17 +71,21 @@ class UserTableSeeder extends Seeder
             'Facebook' => 'fb.me',
             'LinkedIn' => 'www.linkedin.com',
             'Xing' => 'www.xing.com',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'accepted' => mt_rand(1000000, 9999999),
             'accepted_at' => mt_rand(1000000, 9999999),
             'requested_at' => mt_rand(1000000, 9999999),
         ]);
 
+        $job_random = mt_rand(0, $job_count-1);
+        $company_random = mt_rand(0, $company_count-1);
+
         DB::table('User')->insert([
             'company_id' => $company[$company_random]->id,
-            'role_id' => 2,
+            'role_id' => 3,
             'job_id' => $job[$job_random]->id,
-            'firstname' => str_random(10),
-            'lastname' => str_random(10),
+            'firstname' => 'Companyadmin',
+            'lastname' => str_random(5),
             'password' => Hash::make('secret'),
             'gender' => 'male',
             'picture_alt' => str_random(10),
@@ -91,19 +100,23 @@ class UserTableSeeder extends Seeder
             'Facebook' => 'fb.me',
             'LinkedIn' => 'www.linkedin.com',
             'Xing' => 'www.xing.com',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'accepted' => mt_rand(1000000, 9999999),
             'accepted_at' => mt_rand(1000000, 9999999),
             'requested_at' => mt_rand(1000000, 9999999),
         ]);
 
+        $job_random = mt_rand(0, $job_count-1);
+        $company_random = mt_rand(0, $company_count-1);
+
         DB::table('User')->insert([
             'company_id' => $company[$company_random]->id,
-            'role_id' => 2,
+            'role_id' => 4,
             'job_id' => $job[$job_random]->id,
-            'firstname' => str_random(10),
-            'lastname' => str_random(10),
+            'firstname' => 'User',
+            'lastname' => str_random(5),
             'password' => Hash::make('secret'),
-            'gender' => 'male',
+            'gender' => 'female',
             'picture_alt' => str_random(10),
             'picture_location' => '/path/to/picture/',
             'email' => 'user@gmail.com',
@@ -116,9 +129,41 @@ class UserTableSeeder extends Seeder
             'Facebook' => 'fb.me',
             'LinkedIn' => 'www.linkedin.com',
             'Xing' => 'www.xing.com',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'accepted' => mt_rand(1000000, 9999999),
             'accepted_at' => mt_rand(1000000, 9999999),
             'requested_at' => mt_rand(1000000, 9999999),
         ]);
+
+        for ($i = 0; $i < 20; $i++) {
+            $job_random = mt_rand(0, $job_count-1);
+            $company_random = mt_rand(0, $company_count-1);
+
+            DB::table('User')->insert([
+                'company_id' => $company[$company_random]->id,
+                'role_id' => 4,
+                'job_id' => $job[$job_random]->id,
+                'firstname' => 'User',
+                'lastname' => str_random(5),
+                'password' => Hash::make('secret'),
+                'gender' => 'female',
+                'picture_alt' => str_random(10),
+                'picture_location' => '/path/to/picture/',
+                'email' => str_random(5) . '@gmail.com',
+                'country_id' => 724,
+                'city' => 'A small city in spain',
+                'address' => str_random(10),
+                'signup_comment' => str_random(100),
+                'birthday' => mt_rand(1000000, 9999999),
+                'Twitter' => 'www.twitter.com',
+                'Facebook' => 'fb.me',
+                'LinkedIn' => 'www.linkedin.com',
+                'Xing' => 'www.xing.com',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'accepted' => mt_rand(1000000, 9999999),
+                'accepted_at' => mt_rand(1000000, 9999999),
+                'requested_at' => mt_rand(1000000, 9999999),
+            ]);
+        }
     }
 }

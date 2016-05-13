@@ -19,5 +19,21 @@ class CompanyTableSeeder extends Seeder
             'city' => 'Vilanova',
             'phonenumber' => mt_rand(1000000, 9999999)
         ]);
+
+        DB::table('Company')->insert([
+            'name' => 'Museum Madrid',
+            'logo_alt' => 'Picture Mueseum Madrid',
+            'country_id' => 724,
+            'city' => 'Madrid',
+            'phonenumber' => mt_rand(1000000, 9999999)
+        ]);
+
+        DB::table('Company')->insert([
+            'name' => 'Museum Vienna',
+            'logo_alt' => 'Picture Mueseum Vienna',
+            'country_id' => 40,
+            'city' => 'Madrid',
+            'phonenumber' => mt_rand(1000000, 9999999)
+        ]);
     }
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class CategoryTableSeeder extends Seeder
 {
@@ -15,27 +16,33 @@ class CategoryTableSeeder extends Seeder
         DB::table('Category')->delete();
 
         DB::table('Category')->insert([
-            'title' => 'Conservation'
+            'title' => 'Conservation',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
 
         DB::table('Category')->insert([
-            'title' => 'Documentation'
+            'title' => 'Documentation',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
 
         DB::table('Category')->insert([
-            'title' => 'Investigation'
+            'title' => 'Investigation',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
 
         DB::table('Category')->insert([
-            'title' => 'Diffusion'
+            'title' => 'Diffusion',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
 
         DB::table('Category')->insert([
-            'title' => 'Education'
+            'title' => 'Education',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
 
         DB::table('Category')->insert([
-            'title' => 'Cultural Animation (Activities)'
+            'title' => 'Cultural Animation (Activities)',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
     }
 }
