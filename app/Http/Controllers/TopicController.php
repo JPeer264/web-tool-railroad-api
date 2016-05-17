@@ -37,8 +37,10 @@ class TopicController extends Controller
                 $q->select('id', 'firstname', 'lastname');
             }])
             ->with(['comment' => function ($q) {
-                    $q->with('user');
-                }])
+                $q->with(['user' => function ($q) {
+                    $q->select('id', 'firstname', 'lastname');
+                }]);
+            }])
             ->with('job')
             ->with(['subcategory' => function ($q) {
                 $q->select('id', 'title');
@@ -123,7 +125,7 @@ class TopicController extends Controller
         //    'company' => 'array|integer',
         //    'job' => 'array|integer',
         // ]);
-
+        
         // // todo check if user is allowed to see this request // is user in the right company or job?
         // $topics = Topic::where('category_id', $id)->get();
 
