@@ -54,7 +54,7 @@ class User extends Model implements
 
     // DEFINE RELATIONSHIPS --------------------------------------------------
     public function company() {
-        return $this->hasOne('App\Company');
+        return $this->hasOne('App\Company','id', 'company_id');
     }
 
     public function country() {
