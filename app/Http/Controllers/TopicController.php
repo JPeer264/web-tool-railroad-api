@@ -176,8 +176,10 @@ class TopicController extends Controller
         // todo update real user and type
         // todo check if user is allowed to make this request // admins for all companys and jobs - user just in their own
         $params = $request->all();
+        $user = $this->auth->parseToken()->authenticate();
+
         $params['subcategory_id'] = $id;
-        $params['user_id'] = 1;
+        $params['user_id'] = $user->id;
         $params['type_id'] = 1;
 
         $exist = Topic::with('job', 'company')
