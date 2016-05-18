@@ -34,7 +34,6 @@ class CategoryController extends Controller
      */
     public function get(Request $request, $id) {
 
-        // todo add with('subcategory')
         $categories = Category::with('subcategory')->find($id);
 
         if (empty($categories)) {
@@ -52,7 +51,7 @@ class CategoryController extends Controller
      * @return 200 {Array} - within this array several single objects as category
      */
     public function getAll(Request $request) {
-
+        // todo every user still see all topiccounts...
         $categories = Category::with(['subcategory' => function ($q) {
                 $q->select('id', 'title', 'category_id')
                     ->with(['topic' => function ($q) {
