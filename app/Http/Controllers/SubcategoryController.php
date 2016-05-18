@@ -31,6 +31,7 @@ class SubcategoryController extends Controller
      * @return 404 - subcategory not found
      */
     public function get(Request $request, $id) {
+        $user = $this->auth->user();
 
         // get topics with their comment and user
         // comments are sorted by created_at desc
@@ -46,26 +47,83 @@ class SubcategoryController extends Controller
                     }])
                     ->with(['user' => function ($q) {
                         $q->select('id', 'firstname', 'lastname');
+                    }])
+                    ->with(['job' => function ($q) {
+                        $q->select('id');
+                    }])
+                    ->with(['company' => function ($q) {
+                        $q->select('id');
                     }]);
             }])
             ->find($id);
 
         // filter the latest comment per topic
-        foreach ($subcategory['topic'] as $topics) {
-            if (isset($topics['comment'][0])) {
-                $comment = $topics['comment'][0];
+        foreach ($subcategory['topic'] as $topicKey => $topic) {
+            // todo delete topics not shown topics for normal users
+            // todo shown for all admins < 4
+
+            if (isset($topic['comment'][0])) {
+                $comment = $topic['comment'][0];
 
                 // clear object
-                unset($topics['comment']);
+                unset($topic['comment']);
 
                 // regenerate object
-                $topics['latest_comment'] = $comment;
+                $topic['latest_comment'] = $comment;
             } else {
-                unset($topics['comment']);
+                unset($topic['comment']);
+            }
+
+            if ($user->role_id >= 4) {
+                $isCompanyFilterSet = false;
+                $isJobFilterSet = false;
+                $isInCompany = false;
+                $isInJob = false;
+
+                if (isset($topic['company'][0])) {
+                    $isCompanyFilterSet = true;
+
+                    foreach ($topic['company'] as $company) {
+                        if ($company->id == $user->company_id) {
+                            $isInCompany = true;
+                        }
+                    }
+                }
+
+                if (isset($topic['job'][0])) {
+                    $isJobFilterSet = true;
+
+                    foreach ($topic['job'] as $job) {
+                        if ($job->id == $user->job_id) {
+                            $isInJob = true;
+                        }
+                    }
+                }
+
+                // if both filter are set
+                if ($isCompanyFilterSet && $isJobFilterSet) {
+                    if (!$isInJob || !$isInCompany) {
+                        unset($subcategory['topic'][$topicKey]);
+                    }
+                }
+
+                // if just company filter isset
+                if ($isCompanyFilterSet && !$isJobFilterSet) {
+                    if (!$isInCompany) {
+                        unset($subcategory['topic'][$topicKey]);
+                    }
+                }
+
+                // if just job filter isset
+                if (!$isCompanyFilterSet && $isJobFilterSet) {
+                    if (!$isInJob) {
+                        unset($subcategory['topic'][$topicKey]);
+                    }
+                }
             }
         }
 
-        unset($subcategory->deleted_at);    
+        unset($subcategory->deleted_at);
 
         if (empty($subcategory)) {
             return response()->json([

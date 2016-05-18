@@ -57,12 +57,23 @@ class TopicController extends Controller
             $isCompanyUsed = false;
             $isJobUsed = false;
 
+
+            // if there is no filter on companies or job
+            // set the booleans to true (user has all rights)
+            if (count($companies) == 0) {
+                $isCompanyUsed = true;
+            }
+
+            if (count($jobs) == 0) {
+                $isJobUsed = true;
+            }
+
             foreach ($companies as $key) {
-                if ($key->id == $user->id) $isCompanyUsed = true;
+                if ($key->id == $user->company_id) $isCompanyUsed = true;
             }
 
             foreach ($jobs as $key) {
-                if ($key->id == $user->id) $isJobUsed = true;
+                if ($key->id == $user->job_id) $isJobUsed = true;
             }
 
             if (!$isCompanyUsed || !$isJobUsed) {

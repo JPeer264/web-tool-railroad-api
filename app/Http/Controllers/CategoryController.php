@@ -76,7 +76,7 @@ class CategoryController extends Controller
             foreach ($category->subcategory as $subcategory) {
                 // get topic count of each subcategory
                 $subcategory->topic_count = $subcategory->topicCount();
-                
+
                 // keep the first comment
                 foreach ($subcategory->topic as $topic) {
                     if (isset($topic->comment[0])) {
