@@ -48,12 +48,7 @@ class SubcategoryController extends Controller
                     ->with(['user' => function ($q) {
                         $q->select('id', 'firstname', 'lastname');
                     }])
-                    ->with(['job' => function ($q) {
-                        $q->select('id');
-                    }])
-                    ->with(['company' => function ($q) {
-                        $q->select('id');
-                    }]);
+                    ->with('job', 'company');
             }])
             ->find($id);
 

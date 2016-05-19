@@ -51,6 +51,8 @@ class CategoryController extends Controller
      * @return 200 {Array} - within this array several single objects as category
      */
     public function getAll(Request $request) {
+        $user = $this->auth->user();
+
         // todo every user still see all topiccounts...
         $categories = Category::with(['subcategory' => function ($q) {
                 $q->select('id', 'title', 'category_id')
@@ -65,7 +67,8 @@ class CategoryController extends Controller
                                     $q->select('id', 'title', 'type_id')
                                         ->with('type');
                                 }]);
-                        }]);
+                        }])
+                        ->with('job', 'company');
                     }]);
             }])
             ->select('id', 'title')
@@ -73,8 +76,73 @@ class CategoryController extends Controller
 
         foreach ($categories as $category) {
             foreach ($category->subcategory as $subcategory) {
+                // filter the latest comment per topic
+                foreach ($subcategory['topic'] as $topicKey => $topic) {
+                    // todo delete topics not shown topics for normal users
+                    // todo shown for all admins < 4
+
+                    if (isset($topic['comment'][0])) {
+                        $comment = $topic['comment'][0];
+
+                        // clear object
+                        unset($topic['comment']);
+
+                        // regenerate object
+                        $topic['latest_comment'] = $comment;
+                    } else {
+                        unset($topic['comment']);
+                    }
+
+                    if ($user->role_id >= 4) {
+                        $isCompanyFilterSet = false;
+                        $isJobFilterSet = false;
+                        $isInCompany = false;
+                        $isInJob = false;
+
+                        if (isset($topic['company'][0])) {
+                            $isCompanyFilterSet = true;
+
+                            foreach ($topic['company'] as $company) {
+                                if ($company->id == $user->company_id) {
+                                    $isInCompany = true;
+                                }
+                            }
+                        }
+
+                        if (isset($topic['job'][0])) {
+                            $isJobFilterSet = true;
+
+                            foreach ($topic['job'] as $job) {
+                                if ($job->id == $user->job_id) {
+                                    $isInJob = true;
+                                }
+                            }
+                        }
+
+                        // if both filter are set
+                        if ($isCompanyFilterSet && $isJobFilterSet) {
+                            if (!$isInJob || !$isInCompany) {
+                                unset($subcategory['topic'][$topicKey]);
+                            }
+                        }
+
+                        // if just company filter isset
+                        if ($isCompanyFilterSet && !$isJobFilterSet) {
+                            if (!$isInCompany) {
+                                unset($subcategory['topic'][$topicKey]);
+                            }
+                        }
+
+                        // if just job filter isset
+                        if (!$isCompanyFilterSet && $isJobFilterSet) {
+                            if (!$isInJob) {
+                                unset($subcategory['topic'][$topicKey]);
+                            }
+                        }
+                    }
+                }
                 // get topic count of each subcategory
-                $subcategory->topic_count = $subcategory->topicCount();
+                $subcategory->topic_count = count($subcategory->topic);
 
                 // keep the first comment
                 foreach ($subcategory->topic as $topic) {
