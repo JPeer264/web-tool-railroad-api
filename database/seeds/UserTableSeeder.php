@@ -43,9 +43,9 @@ class UserTableSeeder extends Seeder
             'LinkedIn' => 'www.linkedin.com',
             'Xing' => 'www.xing.com',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-            'accepted' => mt_rand(1000000, 9999999),
-            'accepted_at' => mt_rand(1000000, 9999999),
-            'requested_at' => mt_rand(1000000, 9999999),
+            'accepted' => 1,
+            'accepted_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'requested_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
 
         $job_random = mt_rand(0, $job_count-1);
@@ -72,9 +72,9 @@ class UserTableSeeder extends Seeder
             'LinkedIn' => 'www.linkedin.com',
             'Xing' => 'www.xing.com',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-            'accepted' => mt_rand(1000000, 9999999),
-            'accepted_at' => mt_rand(1000000, 9999999),
-            'requested_at' => mt_rand(1000000, 9999999),
+            'accepted' => 1,
+            'accepted_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'requested_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
 
         $job_random = mt_rand(0, $job_count-1);
@@ -101,9 +101,9 @@ class UserTableSeeder extends Seeder
             'LinkedIn' => 'www.linkedin.com',
             'Xing' => 'www.xing.com',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-            'accepted' => mt_rand(1000000, 9999999),
-            'accepted_at' => mt_rand(1000000, 9999999),
-            'requested_at' => mt_rand(1000000, 9999999),
+            'accepted' => 1,
+            'accepted_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'requested_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
 
         $job_random = mt_rand(0, $job_count-1);
@@ -130,9 +130,9 @@ class UserTableSeeder extends Seeder
             'LinkedIn' => 'www.linkedin.com',
             'Xing' => 'www.xing.com',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-            'accepted' => mt_rand(1000000, 9999999),
-            'accepted_at' => mt_rand(1000000, 9999999),
-            'requested_at' => mt_rand(1000000, 9999999),
+            'accepted' => 1,
+            'accepted_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'requested_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
 
         for ($i = 0; $i < 20; $i++) {
@@ -160,9 +160,8 @@ class UserTableSeeder extends Seeder
                 'LinkedIn' => 'www.linkedin.com',
                 'Xing' => 'www.xing.com',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'accepted' => mt_rand(1000000, 9999999),
-                'accepted_at' => mt_rand(1000000, 9999999),
-                'requested_at' => mt_rand(1000000, 9999999),
+                'accepted' => mt_rand(0, 1),
+                'requested_at' => Carbon::now()->format('Y-m-d H:i:s'),
             ]);
         }
     }

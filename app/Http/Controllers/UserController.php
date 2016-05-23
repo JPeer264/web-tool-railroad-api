@@ -94,8 +94,14 @@ class UserController extends Controller
             'job' => 'array|integer',
         ]);
 
-        $user = User::get();
-        $filter = new Filter($user, $request->all());
+        $user = User::with(['company' => function ($q) {
+                $q->select('id', 'name');
+            }])
+            ->with(['job' => function ($q) {
+                $q->select('id', 'title');
+            }]);
+
+        $filter = new Filter($user->get(), $request->all());
 
         // filter by given parameters
         $filtered = $filter
@@ -189,16 +195,16 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'email' => 'required|email',
-            'password' => 'required',
-            'firstname'=> 'required|string',
-            'lastname'=>'required|string',
-            'gender'=>'required|string',
-            'birthday'=>'required|integer',
-            'country_id'=>'required|integer',
-            'signup_comment'=>'required|string|max:1000',
-            'company_id'=>'required|integer',
-            'job_id'=>'required|integer',
+            'email' => 'email',
+            'password' => 'string',
+            'firstname'=> 'string',
+            'lastname'=>'string',
+            'gender'=>'string',
+            'birthday'=>'integer',
+            'country_id'=>'integer',
+            'signup_comment'=>'string|max:1000',
+            'company_id'=>'integer',
+            'job_id'=>'integer',
             'city'=>'string',
             'address'=>'string',
             'Twitter'=>'string',
@@ -211,7 +217,9 @@ class UserController extends Controller
 
         $params = $request->all();
 
-        $params['password']= Hash::make($params['password']);
+        if (isset($params['password'])) {
+            $params['password'] = Hash::make($params['password']);
+        }
 
         $user = User::find($id);
 
