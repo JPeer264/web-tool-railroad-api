@@ -200,7 +200,7 @@ class UserController extends Controller
             'firstname'=> 'string',
             'lastname'=>'string',
             'gender'=>'string',
-            'birthday'=>'integer',
+            'birthday'=>'date',
             'country_id'=>'integer',
             'signup_comment'=>'string|max:1000',
             'company_id'=>'integer',

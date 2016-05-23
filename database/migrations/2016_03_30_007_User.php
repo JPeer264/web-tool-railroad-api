@@ -38,7 +38,7 @@ class User extends Migration
             $table->string('city')->nullable();
             $table->string('address')->nullable();
             $table->text('signup_comment')->nullable();
-            $table->timestamp('birthday')->nullable();
+            $table->date('birthday')->nullable();
             $table->string('Twitter')->nullable();
             $table->string('Facebook')->nullable();
             $table->string('LinkedIn')->nullable();
