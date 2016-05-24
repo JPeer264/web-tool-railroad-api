@@ -72,7 +72,7 @@ class UserController extends Controller
 
         if (empty($user)) {
             return response()->json([
-                    'message' => 'User not found',
+                    'error' => 'User not found',
                 ], 404);
         }
 
@@ -126,7 +126,7 @@ class UserController extends Controller
 
             if (count($exist)!=0){
                 return response()->json([
-                        'message' => 'Email already exist in database',
+                        'error' => 'Email already exist in database',
                         //'existIn' => $existIn
                     ], 409);
             }
@@ -195,7 +195,7 @@ class UserController extends Controller
 
                 if (count($exist)!=0){
                     return response()->json([
-                            'message' => 'Email already exist in database',
+                            'error' => 'Email already exist in database',
                             //'existIn' => $existIn
                         ], 409);
                 }
@@ -250,7 +250,7 @@ class UserController extends Controller
 
         if ($user == NULL) {
             return response()->json([
-                    'message' => 'User does not exist',
+                    'error' => 'User does not exist',
                 ], 404);
         }
 
@@ -282,7 +282,7 @@ class UserController extends Controller
 
         if ($user == NULL) {
             return response()->json([
-                    'message' => 'User does not exist',
+                    'error' => 'User does not exist',
                 ], 404);
         }
 
@@ -329,13 +329,13 @@ class UserController extends Controller
 
                 if ($user == NULL) {
                     return response()->json([
-                        'message' => 'User does not exist',
+                        'error' => 'User does not exist',
                     ], 404);
                 }
 
                 if($user->accepted!=1){
                     return response()->json([
-                        'message' => 'User not allowed to do make this request',
+                        'error' => 'User not allowed to do make this request',
                     ], 403);
                 }
                 $params['role_id']=$user->role_id;
@@ -346,12 +346,12 @@ class UserController extends Controller
 
             }else{
                 return response()->json([
-                        'message' => 'The token has expired',
+                        'error' => 'The token has expired',
                     ], 404);
             }
         }else{
             return response()->json([
-                    'message' => 'There is no token.',
+                    'error' => 'There is no token.',
                 ], 403);
         }
 
