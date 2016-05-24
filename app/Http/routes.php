@@ -24,7 +24,7 @@ $app->group(['prefix' => 'api/v1',
     // todo add specific method
     // @example UserController@method
 
-    $app->get('user', 'UserController@getAll');    
+    $app->get('user', 'UserController@getAll');
     // user & register
     $app->get('user/{id}', 'UserController@get');
     $app->post('user/{id}', 'UserController@update');
@@ -78,7 +78,7 @@ $app->group(['prefix' => 'api/v1',
     $app->post('type/{id}', 'TypeController'); // created
     $app->delete('type/{id}', 'TypeController@delete'); // created
 
-    
+
 });
 
 $app->group(['prefix' => 'api/v1',
@@ -86,7 +86,7 @@ $app->group(['prefix' => 'api/v1',
 
     $app->post('auth/token', 'AuthenticationController@authenticate');
     $app->post('register', 'UserController@register');
+    $app->post('register/{invite_token}', 'UserController@registerInvite');
+
 
 });
-
-

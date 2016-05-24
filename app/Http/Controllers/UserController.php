@@ -120,25 +120,18 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $params = $request->all();
-        $exist = User::where('email', $params['email'])->get();
 
-        if (count($exist)!=0){
-            return response()->json([
-                    'message' => 'Email already exist in database',
-                    //'existIn' => $existIn
-                ], 409);
-        }
+        if($this->auth->user()){
+            $exist = User::where('email', $params['email'])->get();
 
-        $user = $this->auth->parseToken()->authenticate();
+            if (count($exist)!=0){
+                return response()->json([
+                        'message' => 'Email already exist in database',
+                        //'existIn' => $existIn
+                    ], 409);
+            }
 
-        if($user->role_id == 1) {
-            //ranking= admin
-            //less stuff required with validate and accepted to true
-            $this->validate($request, [
-                'email' => 'required|email',
-                'company_id'=>'required|integer'
-            ]);
-
+            $user = $this->auth->parseToken()->authenticate();
             $params['accepted']=1;
             $password=str_random(6);
             $params['password']= Hash::make($password);
@@ -151,38 +144,99 @@ class UserController extends Controller
             ];
             Mail::send('emails.invite', $data, function ($message) use($params){
                 $message->to($params['email'])->subject($this->mail_subject);
+            });            if($user->role_id == 1 || $user->role_id == 2 || $user->role_id == 3) {
+                //ranking= admin
+                //less stuff required with validate and accepted to true
+                $this->validate($request, [
+                    'email' => 'required|email',
+                ]);
+
+                if($user->role_id == 3){
+                    $params['company_id']=$user->company_id;
+                }else{
+                    $params['company_id']=1;
+                }
+
+            }else if ($user->role_id == 3){
+                $this->validate($request, [
+                    'email' => 'required|email',
+                ]);
+                $params['company_id']=$user->company_id;
+            }
+
+            $params['accepted']=1;
+            $password=str_random(6);
+            $params['password']= Hash::make($password);
+            $params['role_id']=4;
+            $params['job_id']=4;
+
+            $invite_expire=Crypt::encrypt(Carbon::now()->addDay(5));
+
+            $data = [
+               'password' => $password,
+               'invite_expire' => $invite_expire
+            ];
+            Mail::send('emails.invite', $data, function ($message) use($params){
+                $message->to($params['email'])->subject($this->mail_subject);
             });
 
-        } else {
-            if(isset($params['accepted'])) {
-                $params['accepted']=0;
+        }else {
+            if($invite_token!=null) {
+                $invite_expireDate=Crypt::decrypt($invite_token);
+                if(Carbon::now()->diffInDays($invite_expireDate, false)>=0){
+                    $params['accepted']=1;
+                    $userInvite=User::where('email', $params['email'])->first();
+                    $params['role_id']=$userInvite->role_id;
+                    $params['job_id']=$userInvite->job_id;
+                    $params['company_id']=$userInvite->company_id;
+
+
+                }else{
+                    return response()->json([
+                            'message' => 'The token has expired',
+                        ], 403);
+                }
+            }else{
+                $exist = User::where('email', $params['email'])->get();
+
+                if (count($exist)!=0){
+                    return response()->json([
+                            'message' => 'Email already exist in database',
+                            //'existIn' => $existIn
+                        ], 409);
+                }
+
+                $params['password']= Hash::make($params['password']);
+
+                if(isset($params['accepted'])) {
+                    $params['accepted']=0;
+                }
             }
 
 
-            $this->validate($request, [
-                'email' => 'required|email|unique:user',
-                'password' => 'required',
-                'firstname'=> 'required|string',
-                'lastname'=>'required|string',
-                'gender'=>'required|string',
-                'birthday'=>'required|integer',
-                'country_id'=>'required|integer',
-                'signup_comment'=>'required|string|max:1000',
-                'company_id'=>'required|integer',
-                'job_id'=>'required|integer',
-                'role_id'=>'integer',
-                'city'=>'string',
-                'address'=>'string',
-                'Twitter'=>'string',
-                'Facebook'=>'string',
-                'LinkedIn'=>'string',
-                'Xing'=>'string',
-            ]);
-
-            $params['password']= Hash::make($params['password']);
+                /*$this->validate($request, [
+                    'email' => 'required|email|unique:user',
+                    'password' => 'required',
+                    'firstname'=> 'required|string',
+                    'lastname'=>'required|string',
+                    'gender'=>'required|string',
+                    'birthday'=>'required|date',
+                    'country_id'=>'required|integer',
+                    'signup_comment'=>'required|string|max:1000',
+                    'company_id'=>'required|integer',
+                    'job_id'=>'required|integer',
+                    'role_id'=>'integer',
+                    'city'=>'string',
+                    'address'=>'string',
+                    'Twitter'=>'string',
+                    'Facebook'=>'string',
+                    'LinkedIn'=>'string',
+                    'Xing'=>'string',
+                ]);*/
 
         }
-        var_dump($params);
+
+
         $user = User::create($params);
 
         return response()->json([
@@ -267,4 +321,43 @@ class UserController extends Controller
                 'message' => 'User successfully deleted',
             ], 200);
     }
+
+    /**
+    * deletes a specific user by id
+    *
+    * @return 200 - successfully deleted
+    * @return 404 - user does not exist
+    */
+    public function registerInvite(Request $request, $invite_token = NULL){
+
+        $params = $request->all();
+
+        if($invite_token!=null) {
+            $invite_expireDate=Crypt::decrypt($invite_token);
+            if(Carbon::now()->diffInDays($invite_expireDate, false)>=0){
+                $params['accepted']=1;
+                $user=User::where('email', $params['email'])->first();
+                $params['role_id']=$user->role_id;
+                $params['job_id']=$user->job_id;
+                $params['company_id']=$user->company_id;
+
+
+            }else{
+                return response()->json([
+                        'message' => 'The token has expired',
+                    ], 403);
+            }
+        }else{
+            return response()->json([
+                    'message' => 'There is no token.',
+                ], 403);
+        }
+
+        $user->update($params);
+
+        return response()->json([
+                'message' => 'User successfully updated',
+            ], 200);
+    }
+
 }

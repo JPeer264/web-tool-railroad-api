@@ -15,7 +15,7 @@
                 <td  style="padding: 20px 20px 20px 20px; text-align: center">
                     You have been invited to join the railway forum.<br>
                     You can login with your email and the password is "{{$password}}".<br><br>
-                    <a href="{{URL::to('register/invite/' . $invite_expire)}}" style="color:black; background:#ffc72c; padding: 5px 5px 5px 5px; border-radius: 5px 5px 5px 5px">JOIN</a><br/>
+                    <a href="{{URL::to('api/v1/register/' . $invite_expire)}}" style="color:black; background:#ffc72c; padding: 5px 5px 5px 5px; border-radius: 5px 5px 5px 5px">JOIN</a><br/>
 
                 </td>
             </tr>
