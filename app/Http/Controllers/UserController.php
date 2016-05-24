@@ -165,6 +165,7 @@ class UserController extends Controller
                'password' => $password,
                'invite_expire' => $invite_expire
             ];
+
             Mail::send('emails.invite', $data, function ($message) use($params){
                 $message->to($params['email'])->subject($this->mail_subject);
             });
@@ -340,6 +341,7 @@ class UserController extends Controller
                 $params['role_id']=$user->role_id;
                 $params['job_id']=$user->job_id;
                 $params['company_id']=$user->company_id;
+                $params['accepted']=2;
 
 
             }else{
