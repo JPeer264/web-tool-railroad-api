@@ -68,6 +68,16 @@ class UserController extends Controller
                                 }]);
                         }]);
                 }])
+                ->with(['topic' =>function($q){
+                    $q->orderBy('created_at', 'desc')
+                        ->take(3)
+                        ->get();
+                }])
+                ->with(['comment' =>function($q){
+                    $q->orderBy('created_at', 'desc')
+                        ->take(3)
+                        ->get();
+                }])
                 ->find($id);
 
         if (empty($user)) {
