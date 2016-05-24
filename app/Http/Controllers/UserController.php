@@ -132,19 +132,8 @@ class UserController extends Controller
             }
 
             $user = $this->auth->parseToken()->authenticate();
-            $params['accepted']=1;
-            $password=str_random(6);
-            $params['password']= Hash::make($password);
 
-            $invite_expire=Crypt::encrypt(Carbon::now()->addDay(5));
-
-            $data = [
-               'password' => $password,
-               'invite_expire' => $invite_expire
-            ];
-            Mail::send('emails.invite', $data, function ($message) use($params){
-                $message->to($params['email'])->subject($this->mail_subject);
-            });            if($user->role_id == 1 || $user->role_id == 2 || $user->role_id == 3) {
+            if($user->role_id == 1 || $user->role_id == 2 || $user->role_id == 3) {
                 //ranking= admin
                 //less stuff required with validate and accepted to true
                 $this->validate($request, [
@@ -181,22 +170,26 @@ class UserController extends Controller
             });
 
         }else {
-            if($invite_token!=null) {
-                $invite_expireDate=Crypt::decrypt($invite_token);
-                if(Carbon::now()->diffInDays($invite_expireDate, false)>=0){
-                    $params['accepted']=1;
-                    $userInvite=User::where('email', $params['email'])->first();
-                    $params['role_id']=$userInvite->role_id;
-                    $params['job_id']=$userInvite->job_id;
-                    $params['company_id']=$userInvite->company_id;
+            $this->validate($request, [
+                'email' => 'required|email|unique:user',
+                'password' => 'required',
+                'firstname'=> 'required|string',
+                'lastname'=>'required|string',
+                'gender'=>'required|string',
+                'birthday'=>'required|date',
+                'country_id'=>'required|integer',
+                'signup_comment'=>'required|string|max:1000',
+                'company_id'=>'required|integer',
+                'job_id'=>'required|integer',
+                'role_id'=>'integer',
+                'city'=>'string',
+                'address'=>'string',
+                'Twitter'=>'string',
+                'Facebook'=>'string',
+                'LinkedIn'=>'string',
+                'Xing'=>'string',
+            ]);
 
-
-                }else{
-                    return response()->json([
-                            'message' => 'The token has expired',
-                        ], 403);
-                }
-            }else{
                 $exist = User::where('email', $params['email'])->get();
 
                 if (count($exist)!=0){
@@ -212,29 +205,6 @@ class UserController extends Controller
                     $params['accepted']=0;
                 }
             }
-
-
-                /*$this->validate($request, [
-                    'email' => 'required|email|unique:user',
-                    'password' => 'required',
-                    'firstname'=> 'required|string',
-                    'lastname'=>'required|string',
-                    'gender'=>'required|string',
-                    'birthday'=>'required|date',
-                    'country_id'=>'required|integer',
-                    'signup_comment'=>'required|string|max:1000',
-                    'company_id'=>'required|integer',
-                    'job_id'=>'required|integer',
-                    'role_id'=>'integer',
-                    'city'=>'string',
-                    'address'=>'string',
-                    'Twitter'=>'string',
-                    'Facebook'=>'string',
-                    'LinkedIn'=>'string',
-                    'Xing'=>'string',
-                ]);*/
-
-        }
 
 
         $user = User::create($params);
@@ -332,11 +302,41 @@ class UserController extends Controller
 
         $params = $request->all();
 
+        $this->validate($request, [
+            'email' => 'email',
+            'password' => 'string',
+            'firstname'=> 'string',
+            'lastname'=>'string',
+            'gender'=>'string',
+            'birthday'=>'date',
+            'country_id'=>'integer',
+            'company_id'=>'integer',
+            'job_id'=>'integer',
+            'city'=>'string',
+            'address'=>'string',
+            'Twitter'=>'string',
+            'Facebook'=>'string',
+            'LinkedIn'=>'string',
+            'Xing'=>'string',
+            'picture_alt'=>'string',
+        ]);
+
         if($invite_token!=null) {
             $invite_expireDate=Crypt::decrypt($invite_token);
             if(Carbon::now()->diffInDays($invite_expireDate, false)>=0){
-                $params['accepted']=1;
                 $user=User::where('email', $params['email'])->first();
+
+                if ($user == NULL) {
+                    return response()->json([
+                        'message' => 'User does not exist',
+                    ], 404);
+                }
+
+                if($user->accepted!=1){
+                    return response()->json([
+                        'message' => 'User not allowed to do make this request',
+                    ], 403);
+                }
                 $params['role_id']=$user->role_id;
                 $params['job_id']=$user->job_id;
                 $params['company_id']=$user->company_id;
@@ -345,7 +345,7 @@ class UserController extends Controller
             }else{
                 return response()->json([
                         'message' => 'The token has expired',
-                    ], 403);
+                    ], 404);
             }
         }else{
             return response()->json([
