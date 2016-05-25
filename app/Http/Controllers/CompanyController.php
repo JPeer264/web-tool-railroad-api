@@ -66,7 +66,10 @@ class CompanyController extends Controller
 
         // important http://stackoverflow.com/questions/23756858/laravel-eloquent-join-2-tables
         // todo if user works
-        $companies = Company::get();
+        $companies = Company::with(['country' => function ($q) {
+            $q->select('id', 'name');
+        }])
+            ->get();
 
         return response()->json($companies->toArray());
     }
