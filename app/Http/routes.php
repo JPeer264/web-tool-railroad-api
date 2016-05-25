@@ -30,6 +30,10 @@ $app->group(['prefix' => 'api/v1',
     $app->post('user/{id}', 'UserController@update');
     $app->delete('user/{id}', 'UserController@delete');
 
+    // country
+    $app->get('country/{id}', 'CountryController@get'); // created
+    $app->get('country', 'CountryController@getAll'); // created
+
     // job
     $app->get('job', 'JobController@getAll'); // created
     $app->post('job', 'JobController@create'); // created
