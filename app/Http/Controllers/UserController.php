@@ -100,8 +100,8 @@ class UserController extends Controller
     public function getAll(Request $request)
     {
         $this->validate($request, [
-            'company' => 'array|integer',
-            'job' => 'array|integer',
+            'company' => 'array',
+            'job' => 'array',
         ]);
 
         $user = User::with(['company' => function ($q) {
