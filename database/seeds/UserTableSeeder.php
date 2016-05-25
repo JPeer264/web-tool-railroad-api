@@ -130,7 +130,7 @@ class UserTableSeeder extends Seeder
             'LinkedIn' => 'www.linkedin.com',
             'Xing' => 'www.xing.com',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-            'accepted' => 1,
+            'accepted' => 2,
             'accepted_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'requested_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
