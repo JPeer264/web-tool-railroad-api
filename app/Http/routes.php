@@ -32,7 +32,6 @@ $app->group(['prefix' => 'api/v1',
 
     // country
     $app->get('country/{id}', 'CountryController@get'); // created
-    $app->get('country', 'CountryController@getAll'); // created
 
     // job
     $app->get('job', 'JobController@getAll'); // created
@@ -94,5 +93,6 @@ $app->group(['prefix' => 'api/v1',
 
     $app->get('job', 'JobController@getAll'); // created
     $app->get('company', 'CompanyController@getAll'); // created
+    $app->get('country', 'CountryController@getAll'); // created
 
 });
