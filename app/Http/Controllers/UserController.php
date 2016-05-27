@@ -192,7 +192,6 @@ class UserController extends Controller
                 'signup_comment'=>'required|string|max:1000',
                 'company_id'=>'required|integer',
                 'job_id'=>'required|integer',
-                'role_id'=>'integer',
                 'city'=>'string',
                 'address'=>'string',
                 'Twitter'=>'string',
@@ -215,6 +214,7 @@ class UserController extends Controller
                 if(isset($params['accepted'])) {
                     $params['accepted']=0;
                 }
+                $params["role_id"]=4;
             }
 
 
@@ -247,7 +247,6 @@ class UserController extends Controller
             'LinkedIn'=>'string',
             'Xing'=>'string',
             'picture_alt'=>'string',
-            'fileUpload' => 'image',
         ]);
 
         $params = $request->all();
