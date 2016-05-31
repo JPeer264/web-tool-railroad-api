@@ -90,6 +90,7 @@ $app->group(['prefix' => 'api/v1',
     $app->post('auth/token', 'AuthenticationController@authenticate');
     $app->post('register', 'UserController@register');
     $app->post('register/{invite_token}', 'UserController@registerInvite');
+    $app->post('forgot', 'UserController@forgotPassword');
 
     $app->get('job', 'JobController@getAll'); // created
     $app->get('company', 'CompanyController@getAll'); // created

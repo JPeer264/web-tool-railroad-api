@@ -46,7 +46,8 @@ class UserController extends Controller
      */
     public function __construct(JWTAuth $auth) {
         $this->auth = $auth;
-        $this->mail_subject = env('MAIL_SUBJECT');
+        $this->mail_subject_invite = env('MAIL_SUBJECT_INVITE');
+        $this->mail_subject_forgot = env('MAIL_SUBJECT_FORGOT');
     }
 
 
@@ -177,7 +178,7 @@ class UserController extends Controller
             ];
 
             Mail::send('emails.invite', $data, function ($message) use($params){
-                $message->to($params['email'])->subject($this->mail_subject);
+                $message->to($params['email'])->subject($this->mail_subject_invite);
             });
 
         }else {
@@ -303,10 +304,13 @@ class UserController extends Controller
     }
 
     /**
-    * deletes a specific user by id
+    * updates/activates an invited user
     *
-    * @return 200 - successfully deleted
+    * @return 200 - successfully activated/updates
     * @return 404 - user does not exist
+    * @return 404 - token does not exist
+    * @return 403 - user is not allowed to make this request
+    * @return 403 - token has expired
     */
     public function registerInvite(Request $request, $invite_token = NULL){
 
@@ -356,12 +360,12 @@ class UserController extends Controller
             }else{
                 return response()->json([
                         'error' => 'The token has expired',
-                    ], 404);
+                    ], 403);
             }
         }else{
             return response()->json([
                     'error' => 'There is no token.',
-                ], 403);
+                ], 404);
         }
 
         $user->update($params);
@@ -369,6 +373,54 @@ class UserController extends Controller
         return response()->json([
                 'message' => 'User successfully updated',
             ], 200);
+    }
+
+
+     /**
+    * send email with new password
+    *
+    * @return 200 - successfully changed password
+    * @return 404 - user does not exist
+    * @return 403 - user is not allowed to make this request
+    */
+    public function forgotPassword(Request $request){
+
+        $params = $request->all();
+
+        $this->validate($request, [
+            'email' => 'email',
+        ]);
+
+        $user=User::where('email', $params['email'])->first();
+
+        if ($user == NULL) {
+            return response()->json([
+                'error' => 'User does not exist',
+            ], 404);
+        }
+
+        if($user->accepted!=2){
+            return response()->json([
+                'error' => 'User not allowed to do make this request',
+                ], 403);
+        }
+
+        $password=str_random(6);
+        $params['password']= Hash::make($password);
+
+        $data = [
+            'password' => $password,
+        ];
+
+        Mail::send('emails.forgot', $data, function ($message) use($params){
+            $message->to($params['email'])->subject($this->mail_subject_forgot);
+        });
+
+        $user->update($params);
+
+        return response()->json([
+                'message' => 'User successfully updated',
+        ], 200);
     }
 
 }
