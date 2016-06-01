@@ -122,6 +122,21 @@ class UserController extends Controller
         return response()->json($filtered->getArray());
     }
 
+     /**
+    * should get limited info for every user
+    *
+    *
+    * @return 200 {Array} - within this array several single objects as user
+    * @return 404 - no users found
+    */
+    public function getAllLimited(Request $request)
+    {
+
+        $users = User::select('id', 'firstname', 'lastname')->get();
+
+        return response()->json($users->toArray());
+    }
+
     /**
     * should create a new category, but fails if a name is duplicated
     *

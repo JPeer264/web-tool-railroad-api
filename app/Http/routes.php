@@ -27,6 +27,7 @@ $app->group(['prefix' => 'api/v1',
     $app->get('user', 'UserController@getAll');
     // user & register
     $app->get('user/{id}', 'UserController@get');
+    $app->get('userAll', 'UserController@getAllLimited');
     $app->post('user/{id}', 'UserController@update');
     $app->delete('user/{id}', 'UserController@delete');
 
@@ -43,6 +44,7 @@ $app->group(['prefix' => 'api/v1',
 
     // company
     $app->get('company', 'CompanyController@getAll'); // created
+    $app->get('companyAll', 'CompanyController@getAllLimited');
     $app->post('company', 'CompanyController@create'); // created
 
     $app->get('company/{id}', 'CompanyController@get'); // created

@@ -74,6 +74,20 @@ class CompanyController extends Controller
         return response()->json($companies->toArray());
     }
 
+  /**
+    * should get limited info for every user
+    *
+    *
+    * @return 200 {Array} - within this array several single objects as user
+    * @return 404 - no users found
+    */
+    public function getAllLimited(Request $request)
+    {
+
+        $companies = Company::select('id', 'name')->get();
+
+        return response()->json($companies->toArray());
+    }
     /**
      * should create a new company
      *
