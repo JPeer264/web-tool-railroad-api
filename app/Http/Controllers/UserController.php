@@ -27,6 +27,7 @@ use App\Job;
 use App\Company;
 use App\Http\Controllers\Filter;
 use Tymon\JWTAuth\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 
@@ -327,9 +328,7 @@ class UserController extends Controller
     * @return 403 - user is not allowed to make this request
     * @return 403 - token has expired
     */
-    public function registerInvite(Request $request, $invite_token = NULL){
-
-        $params = $request->all();
+    public function registerInvite(Request $request){
 
         $this->validate($request, [
             'email' => 'email',
@@ -339,27 +338,36 @@ class UserController extends Controller
             'gender'=>'string',
             'birthday'=>'date',
             'country_id'=>'integer',
-            'company_id'=>'integer',
-            'job_id'=>'integer',
             'city'=>'string',
             'address'=>'string',
             'Twitter'=>'string',
             'Facebook'=>'string',
             'LinkedIn'=>'string',
             'Xing'=>'string',
-            'picture_alt'=>'string',
+            'invite_token'=>'string',
         ]);
 
-        if($invite_token!=null) {
-            $invite_expireDate=Crypt::decrypt($invite_token);
-            if(Carbon::now()->diffInDays($invite_expireDate, false)>=0){
-                $user=User::where('email', $params['email'])->first();
+        $params = $request->all();
+        $credentials = $request->only('email', 'password');
 
-                if ($user == NULL) {
-                    return response()->json([
-                        'error' => 'User does not exist',
-                    ], 404);
+
+        if($params['invite_token']!=null) {
+            $invite_expireDate=Crypt::decrypt($params['invite_token']);
+            if(Carbon::now()->diffInDays($invite_expireDate, false)>=0){
+
+                try {
+                    // attempt to verify the credentials and create a token for the user
+                    $token = $this->auth->attempt($credentials);
+
+                    if (!$token) {
+                        return response()->json(['error' => 'invalid_credentials'], 401);
+                    }
+                } catch (JWTException $e) {
+                    // something went wrong whilst attempting to encode the token
+                    return response()->json(['error' => 'could_not_create_token'], 500);
                 }
+
+                $user = $this->auth->user();
 
                 if($user->accepted!=1){
                     return response()->json([
@@ -370,7 +378,7 @@ class UserController extends Controller
                 $params['job_id']=$user->job_id;
                 $params['company_id']=$user->company_id;
                 $params['accepted']=2;
-
+                $params['password'] = Hash::make($params['password']);
 
             }else{
                 return response()->json([
