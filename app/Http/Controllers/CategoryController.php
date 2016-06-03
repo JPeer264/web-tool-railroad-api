@@ -64,11 +64,14 @@ class CategoryController extends Controller
                                     $q->select('id', 'firstname', 'lastname');
                                 }])
                                 ->with(['topic' => function ($q) {
-                                    $q->select('id', 'title', 'type_id')
+                                    $q->select('id', 'title', 'type_id', 'user_id')
                                         ->with('type');
                                 }]);
                         }])
-                        ->with('job', 'company');
+                        ->with('job', 'company')
+                        ->with(['user' => function ($q) {
+                            $q->select('id', 'firstname', 'lastname');
+                        }]);
                     }]);
             }])
             ->select('id', 'title')
@@ -81,18 +84,6 @@ class CategoryController extends Controller
                 foreach ($subcategory['topic'] as $topicKey => $topic) {
                     // todo delete topics not shown topics for normal users
                     // todo shown for all admins < 4
-
-                    // if (isset($topic['comment'][0])) {
-                    //     $comment = $topic['comment'][0];
-
-                    //     // clear object
-                    //     // unset($topic['comment']);
-
-                    //     // regenerate object
-                    //     $topic['latest_comment'] = $comment;
-                    // } else {
-                    //     // unset($topic['comment']);
-                    // }
 
                     if ($user->role_id >= 4) {
                         $isCompanyFilterSet = false;
@@ -146,10 +137,7 @@ class CategoryController extends Controller
                 // get topic count of each subcategory
                 $subcategory->topic_count = count($subcategory->topic);
 
-                // cache previous date
-                $cachedDate = null;
-                $cachedTopicKey = null;
-                $cachedCommentKey = null;
+                // cache previous comment
                 $cachedComment = null;
 
                 // keep the first comment
@@ -167,15 +155,34 @@ class CategoryController extends Controller
                             if ($currentCreatedAt->gt($cachedComment->created_at)) {
                                 $cachedComment = $comment;
                             }
-
                         }
-                        // $comment = $topic->comment[0];
-                        // $subcategory->latest_comment = $comment;
                     }
-                    unset($topic);
                 }
 
                 $subcategory->latest_comment = $cachedComment;
+
+                if (count($subcategory->latest_comment) == 0) {
+                    // cache previous topic
+                    $cachedTopic = null;
+
+                    foreach ($subcategory->topic as $topic) {
+                        $currentCreatedAt = $topic->created_at;
+
+                        if (!isset($cachedTopic)) {
+                            $cachedTopic = $topic;
+                        }
+
+                        if ($currentCreatedAt->gt($cachedTopic->created_at)) {
+                            $cachedTopic = $topic;
+                        }
+                    }
+
+                    unset($subcategory->latest_comment);
+                    unset($cachedTopic->company);
+                    unset($cachedTopic->job);
+                    unset($cachedTopic->comment);
+                    $subcategory->latest_topic = $cachedTopic;
+                }
 
                 unset($category->subcategory[$subcategoryKey]->topic);
             } // end foreach $category->subcategory
