@@ -57,41 +57,56 @@ class TopicController extends Controller
             $isCompanyUsed = false;
             $isJobUsed = false;
 
+            $isCompanyFilterSet = false;
+            $isJobFilterSet = false;
+            $isInCompany = false;
+            $isInJob = false;
+
 
             // if there is no filter on companies or job
             // set the booleans to true (user has all rights)
-            if (count($companies) == 0) {
-                $isCompanyUsed = false;
+            if (count($companies) > 0) {
+                $isCompanyFilterSet = true;
+
+                foreach ($companies as $company) {
+                    if ($company->id == $user->company_id) {
+                        $isInCompany = true;
+                    }
+                }
             }
 
-            if (count($jobs) == 0) {
-                $isJobUsed = false;
+            if (count($jobs) > 0) {
+                $isJobFilterSet = true;
+
+                foreach ($jobs as $job) {
+                    if ($job->id == $user->job_id) {
+                        $isInJob = true;
+                    }
+                }
             }
 
-            foreach ($companies as $key) {
-                if ($key->id == $user->company_id) $isCompanyUsed = true;
+            if ($isCompanyFilterSet && $isJobFilterSet) {
+                if (!$isInJob || !$isInCompany) {
+                    return response()->json([
+                            'message' => 'This topic is not listed in your company or job',
+                        ], 401);
+                }
             }
 
-            foreach ($jobs as $key) {
-                if ($key->id == $user->job_id) $isJobUsed = true;
+            if ($isCompanyFilterSet && !$isJobFilterSet) {
+                if (!$isInCompany) {
+                    return response()->json([
+                            'message' => 'This topic is not listed in your company or job',
+                        ], 401);
+                }
             }
 
-            if ($isCompanyUsed && $isJobUsed) {
-                return response()->json([
-                        'message' => 'This topic is not listed in your company or job',
-                    ], 401);
-            }
-
-            if ($isCompanyUsed && !$isJobUsed) {
-                return response()->json([
-                        'message' => 'This topic is not listed in your company or job',
-                    ], 401);
-            }
-
-            if (!$isCompanyUsed && $isJobUsed) {
-                return response()->json([
-                        'message' => 'This topic is not listed in your company or job',
-                    ], 401);
+            if (!$isCompanyFilterSet && $isJobFilterSet) {
+                if (!$isInJob) {
+                    return response()->json([
+                            'message' => 'This topic is not listed in your company or job',
+                        ], 401);
+                }
             }
         }
 

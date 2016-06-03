@@ -113,27 +113,26 @@ class CategoryController extends Controller
 
                         // if both filter are set
                         if ($isCompanyFilterSet && $isJobFilterSet) {
-                            if ($isInJob || $isInCompany) {
+                            if (!$isInJob || !$isInCompany) {
                                 unset($subcategory['topic'][$topicKey]);
                             }
                         }
 
                         // if just company filter isset
                         if ($isCompanyFilterSet && !$isJobFilterSet) {
-                            if ($isInCompany) {
+                            if (!$isInCompany) {
                                 unset($subcategory['topic'][$topicKey]);
                             }
                         }
 
                         // if just job filter isset
                         if (!$isCompanyFilterSet && $isJobFilterSet) {
-                            if ($isInJob) {
+                            if (!$isInJob) {
                                 unset($subcategory['topic'][$topicKey]);
                             }
                         }
                     }
                 }
-                // var_dump(count($subcategory->topic));
                 // get topic count of each subcategory
                 $subcategory->topic_count = count($subcategory->topic);
 
