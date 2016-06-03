@@ -60,11 +60,11 @@ class SubcategoryController extends Controller
             if (isset($topic['comment'][0])) {
                 $comment = $topic['comment'][0];
 
-                // clear object
-                unset($topic['comment']);
-
                 // regenerate object
                 $topic['latest_comment'] = $comment;
+
+                // clear object
+                unset($topic['comment']);
             } else {
                 unset($topic['comment']);
             }
@@ -97,21 +97,21 @@ class SubcategoryController extends Controller
 
                 // if both filter are set
                 if ($isCompanyFilterSet && $isJobFilterSet) {
-                    if (!$isInJob || !$isInCompany) {
+                    if ($isInJob || $isInCompany) {
                         unset($subcategory['topic'][$topicKey]);
                     }
                 }
 
                 // if just company filter isset
                 if ($isCompanyFilterSet && !$isJobFilterSet) {
-                    if (!$isInCompany) {
+                    if ($isInCompany) {
                         unset($subcategory['topic'][$topicKey]);
                     }
                 }
 
                 // if just job filter isset
                 if (!$isCompanyFilterSet && $isJobFilterSet) {
-                    if (!$isInJob) {
+                    if ($isInJob) {
                         unset($subcategory['topic'][$topicKey]);
                     }
                 }

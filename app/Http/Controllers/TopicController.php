@@ -61,11 +61,11 @@ class TopicController extends Controller
             // if there is no filter on companies or job
             // set the booleans to true (user has all rights)
             if (count($companies) == 0) {
-                $isCompanyUsed = true;
+                $isCompanyUsed = false;
             }
 
             if (count($jobs) == 0) {
-                $isJobUsed = true;
+                $isJobUsed = false;
             }
 
             foreach ($companies as $key) {
@@ -76,7 +76,19 @@ class TopicController extends Controller
                 if ($key->id == $user->job_id) $isJobUsed = true;
             }
 
-            if (!$isCompanyUsed || !$isJobUsed) {
+            if ($isCompanyUsed && $isJobUsed) {
+                return response()->json([
+                        'message' => 'This topic is not listed in your company or job',
+                    ], 401);
+            }
+
+            if ($isCompanyUsed && !$isJobUsed) {
+                return response()->json([
+                        'message' => 'This topic is not listed in your company or job',
+                    ], 401);
+            }
+
+            if (!$isCompanyUsed && $isJobUsed) {
                 return response()->json([
                         'message' => 'This topic is not listed in your company or job',
                     ], 401);

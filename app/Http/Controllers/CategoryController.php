@@ -58,7 +58,7 @@ class CategoryController extends Controller
                 $q->select('id', 'title', 'category_id')
                     ->with(['topic' => function ($q) {
                         $q->with(['comment' => function ($q) {
-                            $q->select('id', 'user_id', 'topic_id', 'created_at')
+                            $q->select('id', 'content', 'user_id', 'topic_id', 'created_at')
                                 ->orderBy('created_at', 'desc')
                                 ->with(['user' => function ($q) {
                                     $q->select('id', 'firstname', 'lastname');
@@ -74,24 +74,25 @@ class CategoryController extends Controller
             ->select('id', 'title')
             ->get();
 
-        foreach ($categories as $category) {
-            foreach ($category->subcategory as $subcategory) {
+        // adds lates_comment
+        foreach ($categories as $categoryKey => $category) {
+            foreach ($category->subcategory as $subcategoryKey => $subcategory) {
                 // filter the latest comment per topic
                 foreach ($subcategory['topic'] as $topicKey => $topic) {
                     // todo delete topics not shown topics for normal users
                     // todo shown for all admins < 4
 
-                    if (isset($topic['comment'][0])) {
-                        $comment = $topic['comment'][0];
+                    // if (isset($topic['comment'][0])) {
+                    //     $comment = $topic['comment'][0];
 
-                        // clear object
-                        unset($topic['comment']);
+                    //     // clear object
+                    //     // unset($topic['comment']);
 
-                        // regenerate object
-                        $topic['latest_comment'] = $comment;
-                    } else {
-                        unset($topic['comment']);
-                    }
+                    //     // regenerate object
+                    //     $topic['latest_comment'] = $comment;
+                    // } else {
+                    //     // unset($topic['comment']);
+                    // }
 
                     if ($user->role_id >= 4) {
                         $isCompanyFilterSet = false;
@@ -121,39 +122,64 @@ class CategoryController extends Controller
 
                         // if both filter are set
                         if ($isCompanyFilterSet && $isJobFilterSet) {
-                            if (!$isInJob || !$isInCompany) {
+                            if ($isInJob || $isInCompany) {
                                 unset($subcategory['topic'][$topicKey]);
                             }
                         }
 
                         // if just company filter isset
                         if ($isCompanyFilterSet && !$isJobFilterSet) {
-                            if (!$isInCompany) {
+                            if ($isInCompany) {
                                 unset($subcategory['topic'][$topicKey]);
                             }
                         }
 
                         // if just job filter isset
                         if (!$isCompanyFilterSet && $isJobFilterSet) {
-                            if (!$isInJob) {
+                            if ($isInJob) {
                                 unset($subcategory['topic'][$topicKey]);
                             }
                         }
                     }
                 }
+                // var_dump(count($subcategory->topic));
                 // get topic count of each subcategory
                 $subcategory->topic_count = count($subcategory->topic);
+
+                // cache previous date
+                $cachedDate = null;
+                $cachedTopicKey = null;
+                $cachedCommentKey = null;
+                $cachedComment = null;
 
                 // keep the first comment
                 foreach ($subcategory->topic as $topic) {
                     if (isset($topic->comment[0])) {
-                        $comment = $topic->comment[0];
-                        $subcategory->latest_comment = $comment;
+
+                        foreach ($topic->comment as $commentKey => $comment) {
+                            $currentCreatedAt = $comment->created_at;
+
+                            // set first cached previous date
+                            if (!isset($cachedComment)) {
+                                $cachedComment = $comment;
+                            }
+
+                            if ($currentCreatedAt->gt($cachedComment->created_at)) {
+                                $cachedComment = $comment;
+                            }
+
+                        }
+                        // $comment = $topic->comment[0];
+                        // $subcategory->latest_comment = $comment;
                     }
                     unset($topic);
                 }
-            }
-        }
+
+                $subcategory->latest_comment = $cachedComment;
+
+                unset($category->subcategory[$subcategoryKey]->topic);
+            } // end foreach $category->subcategory
+        } // end foreach $categories
 
         return response()->json($categories->toArray());
     }
