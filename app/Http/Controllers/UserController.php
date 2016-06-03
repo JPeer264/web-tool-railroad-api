@@ -64,7 +64,7 @@ class UserController extends Controller
         $user  = User::with('country', 'job')
                 ->with(['company' =>function ($q) {
                     $q->with(['user' => function ($q) {
-                            $q->select('id', 'firstname', 'lastname','job_id','company_id')
+                            $q->select('id', 'firstname', 'lastname','job_id','company_id', 'picture_location', 'picture_alt')
                                 ->with(['job' => function ($q) {
                                     $q->select('id', 'title');
                                 }]);
