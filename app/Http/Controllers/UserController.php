@@ -63,6 +63,10 @@ class UserController extends Controller
         // todo check if user is allowed to make this request // accessible for everybody? - at least same company
         $user  = User::with('country', 'job')
                 ->with(['company' =>function ($q) {
+                    $q->with(['country' => function($q){
+                        $q->select('id', 'name');
+
+                    }]);
                     $q->with(['user' => function ($q) {
                             $q->select('id', 'firstname', 'lastname','job_id','company_id', 'picture_location', 'picture_alt')
                                 ->with(['job' => function ($q) {
