@@ -6,6 +6,7 @@ use Tymon\JWTAuth\JWTAuth;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 /**
  * Class AuthController
@@ -57,6 +58,14 @@ class AuthenticationController extends Controller
                 'error' => 'User is not accepted',
             ], 403);
         }
+
+        // update last login
+        // and return the old value
+        $last_login = $user->last_login;
+        $user->last_login = Carbon::now()->format('Y-m-d H:i:s');
+        $user->login_count += 1;
+        $user->save();
+        $user->last_login = $last_login;
 
         // all good so return the token
         return response()->json([

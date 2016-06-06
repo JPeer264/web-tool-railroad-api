@@ -97,7 +97,7 @@ class CompanyController extends Controller
     public function create(Request $request) {
         $this->validate($request, [
            'administrator' => 'required|integer',
-           'name' => 'required|string|unique:company',
+           'name' => 'required|string',
            'logo_alt'=>'string',
            'country_id'=>'required|string',
            'city'=>'required|string',

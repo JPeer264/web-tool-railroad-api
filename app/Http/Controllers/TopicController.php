@@ -205,7 +205,7 @@ class TopicController extends Controller
      */
     public function create(Request $request, $id) {
         $this->validate($request, [
-           'title' => 'required|string|unique:type',
+           'title' => 'required|string',
            'description' => 'required|string',
            'subcategory_id'=>'integer',
            'type_id'=>'integer',
@@ -269,7 +269,7 @@ class TopicController extends Controller
     */
     public function update(Request $request, $id) {
         $this->validate($request, [
-           'title' => 'string|unique:type',
+           'title' => 'string',
            'description' => 'string',
            'subcategory_id'=>'integer',
            'user_id'=>'integer',

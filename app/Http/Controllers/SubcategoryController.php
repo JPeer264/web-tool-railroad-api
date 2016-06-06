@@ -39,35 +39,25 @@ class SubcategoryController extends Controller
             ->with(['topic' => function ($q) {
                 $q->select('id', 'title', 'subcategory_id', 'user_id', 'type_id', 'created_at')
                     ->with(['comment' => function ($q) {
-                        $q->select('id', 'user_id', 'topic_id')
+                        $q->select('id', 'user_id', 'topic_id', 'created_at')
                             ->orderBy('created_at', 'desc')
                             ->with(['user' => function ($q) {
                                 $q->select('id', 'firstname', 'lastname', 'picture_location');
-                            }]);
+                            }])
+                            ->LIMIT(1);
                     }])
                     ->with(['user' => function ($q) {
                         $q->select('id', 'firstname', 'lastname');
                     }])
-                    ->with('job', 'company');
+                    ->with('job', 'company', 'type');
             }])
             ->find($id);
 
         // filter the latest comment per topic
         foreach ($subcategory['topic'] as $topicKey => $topic) {
+            $createdAt = $topic->created_at;
             // todo delete topics not shown topics for normal users
             // todo shown for all admins < 4
-
-            if (isset($topic['comment'][0])) {
-                $comment = $topic['comment'][0];
-
-                // regenerate object
-                $topic['latest_comment'] = $comment;
-
-                // clear object
-                unset($topic['comment']);
-            } else {
-                unset($topic['comment']);
-            }
 
             if ($user->role_id >= 4) {
                 $isCompanyFilterSet = false;
@@ -115,7 +105,16 @@ class SubcategoryController extends Controller
                         unset($subcategory['topic'][$topicKey]);
                     }
                 }
+
             }
+
+            if (isset($topic->comment[0])) {
+                $subcategory['topic'][$topicKey]->latest_comment = $topic->comment[0];
+            }
+
+            unset($subcategory['topic'][$topicKey]->comment);
+            unset($subcategory['topic'][$topicKey]->job);
+            unset($subcategory['topic'][$topicKey]->company);
         }
 
         unset($subcategory->deleted_at);
@@ -151,7 +150,7 @@ class SubcategoryController extends Controller
 
         // todo check if it is a superadmin (1)
         $this->validate($request, [
-           'title' => 'required|string|unique:type',
+           'title' => 'required|string',
         ]);
 
         $params = $request->all();
@@ -193,7 +192,7 @@ class SubcategoryController extends Controller
 
         // todo check if it is a superadmin (1)
         $this->validate($request, [
-           'title' => 'required|string|unique:type',
+           'title' => 'required|string',
         ]);
 
         $params = $request->all();
