@@ -13,6 +13,10 @@ class CompanyTableSeeder extends Seeder
     public function run()
     {
         DB::table('Company')->insert([
+            'name' => 'Company not listed',
+        ]);
+
+        DB::table('Company')->insert([
             'name' => 'Museum Vilanova i la Geltrú',
             'logo_alt' => 'Picture Mueseum Vilanova',
             'country_id' => 724,

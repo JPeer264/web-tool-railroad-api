@@ -19,7 +19,10 @@ class JobTableSeeder extends Seeder
             'Manager',
             'Head of communication'
         ];
-
+        DB::table('Job')->insert([
+                'title' => 'Job not listed',
+                'description' => "Job you can choose in case your job isn't available"
+            ]);
         for ($i = 0; $i < 5; $i++) {
             $random_jobtitle = mt_rand(0, count($jobtitle)-1);
             DB::table('Job')->insert([
