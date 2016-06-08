@@ -98,7 +98,13 @@ class UserController extends Controller
 
         $user = $user->toArray();
         $user['login_count'] = count($user['userlog']);
-        $user['last_login'] = $user['userlog'][1]['created_at'];
+
+        if (count($user['userlog']) === 0 || count($user['userlog']) === 1) {
+            $user['last_login'] = null;
+        } else {
+            $user['last_login'] = $user['userlog'][1]['created_at'];
+        }
+
         unset($user['userlog']);
 
         return response()->json($user);
