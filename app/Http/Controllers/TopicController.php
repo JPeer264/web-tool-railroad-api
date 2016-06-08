@@ -125,6 +125,83 @@ class TopicController extends Controller
      * @return 200 {Array} - within this array several single objects as topic
      * @return 404 - subcategory not found
      */
+    public function getAll(Request $request) {
+
+        // todo check if user is allowed to see this request // is user in the right company or job?
+        $user = $this->auth->user();
+        $topics = Topic::with(['user' => function ($q) {
+                $q->select('id', 'firstname', 'lastname');
+            }])
+            ->with(['comment' => function ($q) {
+                $q->with(['topic' => function ($q) {
+                    // $q->orderBy('created_at', 'desc');
+                }]);
+            }])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        foreach ($topics as $topicKey => $topic) {
+            // todo delete topics not shown topics for normal users
+            // todo shown for all admins < 4
+
+            if ($user->role_id >= 4) {
+                $isCompanyFilterSet = false;
+                $isJobFilterSet = false;
+                $isInCompany = false;
+                $isInJob = false;
+
+                if (isset($topic['company'][0])) {
+                    $isCompanyFilterSet = true;
+
+                    foreach ($topic['company'] as $company) {
+                        if ($company->id == $user->company_id) {
+                            $isInCompany = true;
+                        }
+                    }
+                }
+
+                if (isset($topic['job'][0])) {
+                    $isJobFilterSet = true;
+
+                    foreach ($topic['job'] as $job) {
+                        if ($job->id == $user->job_id) {
+                            $isInJob = true;
+                        }
+                    }
+                }
+
+                // if both filter are set
+                if ($isCompanyFilterSet && $isJobFilterSet) {
+                    if (!$isInJob || !$isInCompany) {
+                        unset($topics[$topicKey]);
+                    }
+                }
+
+                // if just company filter isset
+                if ($isCompanyFilterSet && !$isJobFilterSet) {
+                    if (!$isInCompany) {
+                        unset($topics[$topicKey]);
+                    }
+                }
+
+                // if just job filter isset
+                if (!$isCompanyFilterSet && $isJobFilterSet) {
+                    if (!$isInJob) {
+                        unset($topics[$topicKey]);
+                    }
+                }
+            }
+        }
+
+        return $topics->toArray();
+    }
+
+    /**
+     * should get every topic
+     *
+     * @return 200 {Array} - within this array several single objects as topic
+     * @return 404 - subcategory not found
+     */
     public function getAllBySubategory(Request $request, $id) {
         $this->validate($request, [
            'company' => 'array|integer',

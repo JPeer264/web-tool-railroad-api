@@ -46,8 +46,6 @@ class User extends Migration
             $table->tinyInteger('accepted')->default(false);
             $table->timestamp('accepted_at')->nullable();
             $table->timestamp('requested_at')->nullable();
-            $table->timestamp('last_login')->nullable();
-            $table->integer('login_count')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

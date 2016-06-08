@@ -24,6 +24,7 @@ $app->group(['prefix' => 'api/v1',
     // todo add specific method
     // @example UserController@method
 
+    $app->get('latest', 'MissedActivityController@getLatest');
     $app->get('user', 'UserController@getAll');
     // user & register
     $app->get('user/{id}', 'UserController@get');

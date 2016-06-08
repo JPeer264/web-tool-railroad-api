@@ -61,7 +61,7 @@ class UserController extends Controller
     public function get(Request $request, $id) {
 
         // todo check if user is allowed to make this request // accessible for everybody? - at least same company
-        $user  = User::with('country', 'job')
+        $user = User::with('country', 'job')
                 ->with(['company' =>function ($q) {
                     $q->with(['country' => function($q){
                         $q->select('id', 'name');
@@ -84,7 +84,10 @@ class UserController extends Controller
                         ->take(3)
                         ->get();
                 }])
+                ->with('userlog')
                 ->find($id);
+
+
 
         if (empty($user)) {
             return response()->json([
@@ -92,7 +95,12 @@ class UserController extends Controller
                 ], 404);
         }
 
-        return response()->json($user->toArray());
+        $user = $user->toArray();
+        $user['login_count'] = count($user['userlog']);
+        $user['last_login'] = $user['userlog'][1]['created_at'];
+        unset($user['userlog']);
+
+        return response()->json($user);
     }
 
     /**
@@ -127,7 +135,7 @@ class UserController extends Controller
         return response()->json($filtered->getArray());
     }
 
-     /**
+    /**
     * should get limited info for every user
     *
     *

@@ -57,6 +57,20 @@ class User extends Model implements
         return $this->hasOne('App\Company','id', 'company_id');
     }
 
+    public function userlog() {
+        return $this->hasMany('App\Userlog','user_id', 'id')->orderBy('created_at', 'desc');
+    }
+
+    public function last_login() {
+        return $this->userlog()
+            ->orderBy('created_at', 'desc')
+            ->limit(1);
+    }
+
+    public function login_count() {
+        return $this->userlog();
+    }
+
     public function country() {
         return $this
             ->hasOne('App\Country', 'id', 'country_id')

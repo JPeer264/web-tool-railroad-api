@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call('CommentTableSeeder');
         $this->call('TopicCompanyTableSeeder');
         $this->call('TopicJobTableSeeder');
+        $this->call('UserlogTableSeeder');
     }
 }
