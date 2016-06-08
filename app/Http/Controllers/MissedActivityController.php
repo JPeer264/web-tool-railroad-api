@@ -40,8 +40,10 @@ class MissedActivityController extends Controller
         $cachedUserlog = null;
         $comments = array();
         $commentsCreatedAt = array();
+        $latestMissedComments = array();
         $latestComments = array();
         $latestTopics = array();
+        $latestMissedTopics = array();
         $latestUserRequests = array();
         $topics = $topicCtrl->getAll($request);
 
@@ -77,9 +79,9 @@ class MissedActivityController extends Controller
         // sort by created DESC
         array_multisort($commentsCreatedAt, SORT_DESC, $comments);
 
-        /*************************
-         **** LATEST COMMENTS ****
-         *************************/
+        /********************************
+         **** LATEST MISSED COMMENTS ****
+         ********************************/
 
         foreach ($comments as $commentKey => $comment) {
             $createdComment = Carbon::parse($comment['created_at']);
@@ -88,12 +90,30 @@ class MissedActivityController extends Controller
                 break;
             }
 
-            array_push($latestComments, $comment);
+            array_push($latestMissedComments, $comment);
         }
 
         /***********************
          **** LATEST TOPICS ****
          ***********************/
+
+        // if their are no latestMissedComments show the latest 3 comments
+        if (count($latestMissedComments) == 0) {
+            foreach ($comments as $commentKey => $comment) {
+
+                if ($commentKey == 3) {
+                    break;
+                }
+
+                array_push($latestComments, $comment);
+            }
+        } else {
+            $latestComments = $latestMissedComments;
+        }
+
+        /******************************
+         **** LATEST MISSED TOPICS ****
+         ******************************/
 
         foreach ($topics as $topicKey => $topic) {
             $createdTopic = Carbon::parse($topic['created_at']);
@@ -105,15 +125,34 @@ class MissedActivityController extends Controller
             unset($topic['comment']);
             unset($topic['job']);
             unset($topic['company']);
-            array_push($latestTopics, $topic);
+            array_push($latestMissedTopics, $topic);
         }
+
+        /***********************
+         **** LATEST TOPICS ****
+         ***********************/
+
+        // if their are no latestMissedTopics show the latest 3 topics
+        if (count($latestMissedTopics) == 0) {
+            foreach ($topics as $topicKey => $topic) {
+
+                if ($topicKey == 3) {
+                    break;
+                }
+
+                array_push($latestTopics, $topic);
+            }
+        } else {
+            $latestTopics = $latestMissedTopics;
+        }
+
 
         /*************************
          **** LATEST ACTIVITY ****
          *************************/
         $latest_activity = [
             'latest_comments' => $latestComments,
-            'latest_topics' => $latestTopics
+            'latest_topics' => $latestTopics,
         ];
 
         return response()->json($latest_activity);
