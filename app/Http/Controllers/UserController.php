@@ -29,6 +29,7 @@ use App\Http\Controllers\Filter;
 use Tymon\JWTAuth\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Mail;
 
 use Illuminate\Support\Facades\Hash;
@@ -211,12 +212,12 @@ class UserController extends Controller
 
         }else {
             $this->validate($request, [
-                'email' => 'required|email|unique:user',
+                'email' => 'required|email',
                 'password' => 'required',
                 'firstname'=> 'required|string',
                 'lastname'=>'required|string',
                 'gender'=>'required|string',
-                'birthday'=>'required|date',
+                'birthday'=>'date',
                 'country_id'=>'required|integer',
                 'signup_comment'=>'required|string|max:1000',
                 'company_id'=>'required|integer',
@@ -364,7 +365,14 @@ class UserController extends Controller
 
 
         if($params['invite_token']!=null) {
-            $invite_expireDate=Crypt::decrypt($params['invite_token']);
+            try {
+                    // attempt to verify the credentials and create a token for the user
+                    $invite_expireDate=Crypt::decrypt($params['invite_token']);
+
+                } catch (DecryptException $e) {
+                    // something went wrong whilst attempting to encode the token
+                    return response()->json(['error' => 'invalid_token'], 400);
+                }
             if(Carbon::now()->diffInDays($invite_expireDate, false)>=0){
 
                 try {

@@ -65,7 +65,7 @@ class JobController extends Controller
      */
     public function create(Request $request) {
         $this->validate($request, [
-            'title' => 'required|string|unique:job',
+            'title' => 'required|string',
             'description' => 'required|string',
         ]);
 
