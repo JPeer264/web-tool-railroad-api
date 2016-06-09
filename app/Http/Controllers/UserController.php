@@ -279,6 +279,7 @@ class UserController extends Controller
             'signup_comment'=>'string|max:1000',
             'company_id'=>'integer',
             'job_id'=>'integer',
+            'role_id'=>'integer',
             'city'=>'string',
             'address'=>'string',
             'Twitter'=>'string',
@@ -290,6 +291,15 @@ class UserController extends Controller
 
         $params = $request->all();
 
+        if (isset($params['role_id'])){
+            $user = $this->auth->parseToken()->authenticate();
+            if($user->id!=1){
+                return response()->json([
+                        'error' => 'User not allowed to do make this request',
+                    ], 403);
+            }
+
+        }
         if (isset($params['password'])) {
             $params['password'] = Hash::make($params['password']);
         }
