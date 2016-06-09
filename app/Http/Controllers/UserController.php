@@ -50,6 +50,10 @@ class UserController extends Controller
         $this->auth = $auth;
         $this->mail_subject_invite = env('MAIL_SUBJECT_INVITE');
         $this->mail_subject_forgot = env('MAIL_SUBJECT_FORGOT');
+        $this->mail_subject_register = env('MAIL_SUBJECT_REGISTER');
+        $this->mail_subject_accepted = env('MAIL_SUBJECT_ACCEPTED');
+        $this->mail_subject_rejected = env('MAIL_SUBJECT_REJECTED');
+
     }
 
 
@@ -254,6 +258,15 @@ class UserController extends Controller
                     $params['accepted']=0;
                 }
                 $params["role_id"]=4;
+
+                $data = [
+               'firstname' => $params['firstname'],
+               'lastname' => $params['lastname']
+                ];
+
+                Mail::send('emails.register', $data, function ($message) use($params){
+                $message->to($params['email'])->subject($this->mail_subject_register);
+                });
             }
 
 
@@ -298,8 +311,8 @@ class UserController extends Controller
                         'error' => 'User not allowed to do make this request',
                     ], 403);
             }
-
         }
+
         if (isset($params['password'])) {
             $params['password'] = Hash::make($params['password']);
         }
@@ -310,6 +323,18 @@ class UserController extends Controller
             return response()->json([
                     'error' => 'User does not exist',
                 ], 404);
+        }
+        if (isset($params['accepted'])){
+            if($params['accepted']==2){
+                $data = [
+               'firstname' => $user->firstname,
+               'lastname' => $user->lastname
+                ];
+
+                Mail::send('emails.accepted', $data, function ($message) use($params, $user){
+                $message->to($user->email)->subject($this->mail_subject_accepted);
+                });
+            }
         }
 
         // fileupload
@@ -342,6 +367,25 @@ class UserController extends Controller
             return response()->json([
                     'error' => 'User does not exist',
                 ], 404);
+        }
+
+        if($user->accepted==0){
+            $userCurrent = $this->auth->parseToken()->authenticate();
+            var_dump($userCurrent);
+            if($userCurrent->id!=1){
+                return response()->json([
+                        'error' => 'User not allowed to do make this request',
+                    ], 403);
+            }
+
+            $data = [
+                'firstname' => $user->firstname,
+                'lastname' => $user->lastname
+            ];
+
+            Mail::send('emails.rejected', $data, function ($message) use($user){
+                    $message->to($user->email)->subject($this->mail_subject_rejected);
+                    });
         }
 
         $user->delete();
@@ -431,6 +475,15 @@ class UserController extends Controller
         }
 
         $user->update($params);
+
+        $data = [
+            'firstname' => $params['firstname'],
+            'lastname' => $params['lastname']
+        ];
+
+        Mail::send('emails.accepted', $data, function ($message) use($params){
+                $message->to($params['email'])->subject($this->mail_subject_accepted);
+                });
 
         return response()->json([
                 'message' => 'User successfully updated',
