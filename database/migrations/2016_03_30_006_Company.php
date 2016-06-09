@@ -21,6 +21,10 @@ class Company extends Migration
             $table->integer('country_id')->unsigned();
             $table->string('city');
             $table->string('address');
+            $table->string('Twitter')->nullable();
+            $table->string('Facebook')->nullable();
+            $table->string('LinkedIn')->nullable();
+            $table->string('Xing')->nullable();
             // todo check if we can use -> laravel countries + prefixes for phonennumbers
             $table->string('phonenumber')->nullable();
             $table->string('email');
