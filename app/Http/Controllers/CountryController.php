@@ -48,7 +48,9 @@ class CountryController extends Controller
      */
     public function getAll(Request $request) {
 
-        $countries = Country::select('id', 'name', 'capital')->get();
+        $countries = Country::select('id', 'name', 'capital')
+                    ->orderBy('name', 'asc')
+                    ->get();
 
         return response()->json($countries->toArray());
     }
