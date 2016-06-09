@@ -30,12 +30,15 @@ $app->group(['prefix' => 'api/v1',
     $app->get('user', 'UserController@getAll');
     // user & register
     $app->get('user/{id}', 'UserController@get');
-    $app->get('userAll', 'UserController@getAllLimited');
+    $app->get('userall', 'UserController@getAllLimited');
     $app->post('user/{id}', 'UserController@update');
     $app->delete('user/{id}', 'UserController@delete');
 
     // country
     $app->get('country/{id}', 'CountryController@get'); // created
+
+    //role
+    $app->get('role', 'RoleController@getAll'); // created
 
     // job
     $app->get('job', 'JobController@getAll'); // created
