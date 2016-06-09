@@ -130,6 +130,9 @@ class UserController extends Controller
             }])
             ->with(['job' => function ($q) {
                 $q->select('id', 'title');
+            }])
+            ->with(['role' => function ($q) {
+                $q->select('id', 'name');
             }]);
 
         $filter = new Filter($user->get(), $request->all());

@@ -104,6 +104,10 @@ class CompanyController extends Controller
            'address'=>'required|string',
            'phonenumber'=>'required|string',
            'email'=>'required|email',
+            'Twitter'=>'string',
+            'Facebook'=>'string',
+            'LinkedIn'=>'string',
+            'Xing'=>'string',
 
         ]);
 
@@ -155,6 +159,11 @@ class CompanyController extends Controller
            'address'=>'string',
            'phonenumber'=>'string',
            'email'=>'email',
+            'Twitter'=>'string',
+            'Facebook'=>'string',
+            'LinkedIn'=>'string',
+            'Xing'=>'string',
+
        ]);
 
         // todo check if user is allowed to make this request // only admins
