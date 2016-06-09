@@ -78,7 +78,7 @@ class User extends Model implements
     }
 
     public function role() {
-        return $this->hasOne('App\Role');
+        return $this->hasOne('App\Role', 'id', 'role_id');
     }
 
     public function job() {
