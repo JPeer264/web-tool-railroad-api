@@ -24,7 +24,9 @@ $app->group(['prefix' => 'api/v1',
     // todo add specific method
     // @example UserController@method
 
-    $app->get('latest', 'MissedActivityController@getLatest');
+    $app->get('latest/missed', 'LatestActivityController@getLatestMissed');
+    $app->get('latest', 'LatestActivityController@getLatestFromLoggedInUser');
+    $app->get('latest/{id}', 'LatestActivityController@getLatestByUser');
     $app->get('user', 'UserController@getAll');
     // user & register
     $app->get('user/{id}', 'UserController@get');
@@ -45,7 +47,7 @@ $app->group(['prefix' => 'api/v1',
 
     // company
     $app->get('company', 'CompanyController@getAll'); // created
-    $app->get('companyAll', 'CompanyController@getAllLimited');
+    $app->get('companyall', 'CompanyController@getAllLimited');
     $app->post('company', 'CompanyController@create'); // created
 
     $app->get('company/{id}', 'CompanyController@get'); // created
