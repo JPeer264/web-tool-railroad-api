@@ -50,8 +50,6 @@ class LatestActivityController extends Controller
         $latestUserRequests = array();
         $topics = $topicCtrl->getAll($request);
 
-        return $topics;
-
         // check when the user last logged in before "today"
         // if he will login more often it will not overwrite form the previous logged in
         foreach ($userlogs as $userlogKey => $userlog) {
