@@ -10,6 +10,7 @@ use App\Topic;
 use App\Subcategory;
 use Carbon\Carbon;
 use App\Http\Controllers\Filter;
+use App\Http\Controllers\FilterHelper;
 
 class TopicController extends Controller
 {
@@ -21,8 +22,9 @@ class TopicController extends Controller
     /**
      * @param JWTAuth $auth
      */
-    public function __construct(JWTAuth $auth) {
+    public function __construct(JWTAuth $auth, FilterHelper $filter) {
         $this->auth = $auth;
+        $this->filter = $filter;
     }
 
     /**
@@ -134,64 +136,13 @@ class TopicController extends Controller
             }])
             ->with(['comment' => function ($q) {
                 $q->with(['topic' => function ($q) {
-                    // $q->orderBy('created_at', 'desc');
                 }]);
             }])
+            ->with('company', 'job')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        foreach ($topics as $topicKey => $topic) {
-            // todo delete topics not shown topics for normal users
-            // todo shown for all admins < 4
-
-            if ($user->role_id >= 4) {
-                $isCompanyFilterSet = false;
-                $isJobFilterSet = false;
-                $isInCompany = false;
-                $isInJob = false;
-
-                if (isset($topic['company'][0])) {
-                    $isCompanyFilterSet = true;
-
-                    foreach ($topic['company'] as $company) {
-                        if ($company->id == $user->company_id) {
-                            $isInCompany = true;
-                        }
-                    }
-                }
-
-                if (isset($topic['job'][0])) {
-                    $isJobFilterSet = true;
-
-                    foreach ($topic['job'] as $job) {
-                        if ($job->id == $user->job_id) {
-                            $isInJob = true;
-                        }
-                    }
-                }
-
-                // if both filter are set
-                if ($isCompanyFilterSet && $isJobFilterSet) {
-                    if (!$isInJob || !$isInCompany) {
-                        unset($topics[$topicKey]);
-                    }
-                }
-
-                // if just company filter isset
-                if ($isCompanyFilterSet && !$isJobFilterSet) {
-                    if (!$isInCompany) {
-                        unset($topics[$topicKey]);
-                    }
-                }
-
-                // if just job filter isset
-                if (!$isCompanyFilterSet && $isJobFilterSet) {
-                    if (!$isInJob) {
-                        unset($topics[$topicKey]);
-                    }
-                }
-            }
-        }
+        $this->filter->filterTopics($topics, 4);
 
         return $topics->toArray();
     }
@@ -226,52 +177,6 @@ class TopicController extends Controller
         }
 
         return response()->json($filtered->getArray());
-    }
-
-    /**
-     * same as getAllByCategory but with less information
-     * used in CategoryController
-     *
-     * @return 200 {Array} - within this array several single objects as topic
-     * @return 404 - category not found
-     */
-    public function getAllByCategoryLessInformation(Request $request, $id) {
-        // $this->validate($request, [
-        //    'company' => 'array|integer',
-        //    'job' => 'array|integer',
-        // ]);
-        
-        // // todo check if user is allowed to see this request // is user in the right company or job?
-        // $topics = Topic::where('category_id', $id)->get();
-
-        // $category = Category::find((int)$id);
-
-        // $filter = new Filter($topics, $request->all());
-
-        // $filtered = $filter
-        //     ->byParameters('job')
-        //     ->byParameters('company');
-
-        // if (empty($category)) {
-        //     return response()->json([
-        //         'message' => 'Category not found',
-        //     ], 404);
-        // }
-
-        // $topics = $filtered->getArray();
-
-        // // delete added elquents and return filtered topics
-        // $count = 0;
-        // foreach ($topics as $topic) {
-        //     unset($topic['job']);
-        //     unset($topic['company']);
-
-        //     $topics[$count] = $topic;
-
-        //     $count++;
-        // }
-
-        // return response()->json($topics);
     }
 
     /**

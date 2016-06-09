@@ -1,14 +1,14 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
 class Filter
-{   
+{
     /**
      * @param $array        {Object}    e.g. Category::find(1)->get();
      * @param $parameters   {Array}     parameters from Illuminate\Http\Request -> e.g. $request->all()
      */
-    public function __construct($array, $parameters) {
+    public function __construct($array, $parameters, JWTAuth $auth) {
         $this->globalArray = $array;
         $this->globalParameters = $parameters;
         $this->containedPivot = [];
@@ -40,7 +40,7 @@ class Filter
                 $filter[] = (int) $id;
             }
 
-            $result = $item->$keyword->whereIn('id', $filter);    
+            $result = $item->$keyword->whereIn('id', $filter);
 
             return $result;
         })
