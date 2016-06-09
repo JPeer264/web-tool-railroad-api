@@ -25,7 +25,6 @@ $app->group(['prefix' => 'api/v1',
     // @example UserController@method
 
     $app->get('latest/missed', 'LatestActivityController@getLatestMissed');
-    $app->get('latest', 'LatestActivityController@getLatestFromLoggedInUser');
     $app->get('latest/{id}', 'LatestActivityController@getLatestByUser');
     $app->get('user', 'UserController@getAll');
     // user & register
