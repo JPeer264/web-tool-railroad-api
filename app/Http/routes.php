@@ -37,6 +37,9 @@ $app->group(['prefix' => 'api/v1',
     // country
     $app->get('country/{id}', 'CountryController@get'); // created
 
+    //role
+    $app->get('role', 'RoleController@getAll'); // created
+
     // job
     $app->get('job', 'JobController@getAll'); // created
     $app->post('job', 'JobController@create'); // created
