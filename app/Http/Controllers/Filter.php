@@ -8,7 +8,7 @@ class Filter
      * @param $array        {Object}    e.g. Category::find(1)->get();
      * @param $parameters   {Array}     parameters from Illuminate\Http\Request -> e.g. $request->all()
      */
-    public function __construct($array, $parameters, JWTAuth $auth) {
+    public function __construct($array, $parameters) {
         $this->globalArray = $array;
         $this->globalParameters = $parameters;
         $this->containedPivot = [];
