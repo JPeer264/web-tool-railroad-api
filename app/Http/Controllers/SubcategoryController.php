@@ -58,7 +58,6 @@ class SubcategoryController extends Controller
             $createdAt = $topic->created_at;
             // todo delete topics not shown topics for normal users
             // todo shown for all admins < 4
-
             if ($user->role_id >= 4) {
                 $isCompanyFilterSet = false;
                 $isJobFilterSet = false;
@@ -111,10 +110,6 @@ class SubcategoryController extends Controller
             if (isset($topic->comment[0])) {
                 $subcategory['topic'][$topicKey]->latest_comment = $topic->comment[0];
             }
-
-            unset($subcategory['topic'][$topicKey]->comment);
-            unset($subcategory['topic'][$topicKey]->job);
-            unset($subcategory['topic'][$topicKey]->company);
         }
 
         unset($subcategory->deleted_at);
