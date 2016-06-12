@@ -108,7 +108,9 @@ class SubcategoryController extends Controller
             }
 
             if (isset($topic->comment[0])) {
-                $subcategory['topic'][$topicKey]->latest_comment = $topic->comment[0];
+                if (isset($subcategory['topic'][$topicKey])) {
+                    $subcategory['topic'][$topicKey]->latest_comment = $topic->comment[0];
+                }
             }
         }
 
