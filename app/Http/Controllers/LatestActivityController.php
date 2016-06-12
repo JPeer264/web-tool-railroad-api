@@ -125,9 +125,6 @@ class LatestActivityController extends Controller
                 break;
             }
 
-            unset($topic['comment']);
-            unset($topic['job']);
-            unset($topic['company']);
             array_push($latestMissedTopics, $topic);
         }
 
@@ -185,8 +182,8 @@ class LatestActivityController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $this->filter->filterTopics($topics, 4);
-        $this->filter->filterTopics($topicsAllowedToSee, 4);
+        $this->filter->filterTopics($topics, 3);
+        $this->filter->filterTopics($topicsAllowedToSee, 3);
         $latestComments = array();
         $latestTopics = array();
         $limit = 3;
