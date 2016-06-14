@@ -44,7 +44,6 @@ class CommentController extends Controller
         $params['topic_id'] = $id;
 
         $comment = Comment::create($params);
-         var_dump($files);
 
         $file = new FileController($request);
         $params['comment_id'] =  $comment->id;
