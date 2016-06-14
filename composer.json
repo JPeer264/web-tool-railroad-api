@@ -12,7 +12,8 @@
         "nesbot/carbon": "~1.18",
         "illuminate/mail": "5.2.*",
         "webpatser/laravel-countries": "^1.4",
-        "ktquez/lumen-image": "^1.0"
+        "ktquez/lumen-image": "^1.0",
+        "league/flysystem": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

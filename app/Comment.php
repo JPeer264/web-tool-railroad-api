@@ -36,4 +36,9 @@ class Comment extends Model
         return $this->belongsTo('App\User');
     }
 
+
+    public function file() {
+        return $this->hasMany('App\File');
+    }
+
 }

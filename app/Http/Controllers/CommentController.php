@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Tymon\JWTAuth\JWTAuth;
 use App\Comment;
+use App\File;
 
 class CommentController extends Controller
 {
@@ -36,12 +37,30 @@ class CommentController extends Controller
 
          // todo check if user is allowed to make this request // allowed to see topic?
         $params = $request->all();
+        $files = $request->files->all();
         $user = $this->auth->parseToken()->authenticate();
 
         $params['user_id'] = $user->id;
         $params['topic_id'] = $id;
 
         $comment = Comment::create($params);
+         var_dump($files);
+
+        $file = new FileController($request);
+        $params['comment_id'] =  $comment->id;
+        foreach ($files as $key => $value) {
+            $fileMeta = $file->saveFile($params, $value);
+            if($fileMeta){
+                $jsonres = $fileMeta->getData();
+
+                if( $jsonres->message == 'filename already exist in this topic'){
+                    return response()->json([
+                            'message' => 'filename already exist in this topic'
+                        ], 409);
+                }
+            }
+        }
+
 
         return response()->json([
                 'message' => 'Comment successfully created',

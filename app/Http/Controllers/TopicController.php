@@ -39,7 +39,8 @@ class TopicController extends Controller
                 $q->select('id', 'firstname', 'lastname');
             }])
             ->with(['comment' => function ($q) {
-                $q->with(['user' => function ($q) {
+                $q->with('file')
+                  ->with(['user' => function ($q) {
                     $q->select('id', 'firstname', 'lastname');
                 }]);
             }])
