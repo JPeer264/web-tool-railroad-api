@@ -89,6 +89,16 @@ In the `.env` you can change the email settings at the section with the `EMAIL_`
 
 `MAIL_SUBJECT_FORGOT` - the subject if a person forgot his password
 
+#### CORS settings
+
+> This setting is very important to make your api secure
+
+In the `.env` you have to change the value `ACCESS_CONTROLL_ALLOW_ORIGIN` to the path where the frontend is running. The for the production it is set to `*`. This means that it is possible to send requests to the API from every domain. For more information click [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)
+
+Example:
+
+The frontend is running on `www.elephorum.com` to the option should be set to the same value: `www.elephorum.com`
+
 ### Step 6 - Migrate database
 
 After setting up the database connection we are ready for the final step - the database migration, that all the needed data will be stored to the database.
@@ -105,7 +115,7 @@ Change the directory in your terminal to the project root of the backend and exe
 
 If the server response with a 500 it could be that `./app/storage` of Lumen has not the right permission. To fix that go into the project root of the backend in the terminal and type following command:
 
-`sudo chmod -R 777 app/storage`
+`sudo chmod -R 755 app/storage`
 
 **No files are uploaded**
 
