@@ -39,9 +39,9 @@ class User extends Migration
             $table->string('address')->nullable();
             $table->text('signup_comment')->nullable();
             $table->date('birthday')->nullable();
-            $table->string('twitter')->nullable();
-            $table->string('facebook')->nullable();
-            $table->string('linkedin')->nullable();
+            $table->string('Twitter')->nullable();
+            $table->string('Facebook')->nullable();
+            $table->string('LinkedIn')->nullable();
             $table->string('pinterest')->nullable();
             $table->string('flickr')->nullable();
             $table->string('youtube')->nullable();
