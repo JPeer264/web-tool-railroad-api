@@ -13,7 +13,8 @@ class Company extends Model
 
     protected $fillable = [
         'administrator', 'name', 'logo_alt', 'logo_location',
-        'country_id', 'city', 'address', 'phonenumber', 'email',
+        'country_id', 'city', 'address', 'phonenumber', 'email', 'facebook',
+        'twitter', 'linkedin', 'pinterest', 'instagram', 'others', 'flickr', 'youtube'
 
     ];
 

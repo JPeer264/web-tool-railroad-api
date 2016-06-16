@@ -240,7 +240,6 @@ class UserController extends Controller
                 'Twitter'=>'string',
                 'Facebook'=>'string',
                 'LinkedIn'=>'string',
-                'Xing'=>'string',
             ]);
 
                 $exist = User::where('email', $params['email'])->get();
@@ -298,7 +297,6 @@ class UserController extends Controller
             'Twitter'=>'string',
             'Facebook'=>'string',
             'LinkedIn'=>'string',
-            'Xing'=>'string',
             'picture_alt'=>'string',
         ]);
 
@@ -419,7 +417,6 @@ class UserController extends Controller
             'Twitter'=>'string',
             'Facebook'=>'string',
             'LinkedIn'=>'string',
-            'Xing'=>'string',
             'invite_token'=>'string',
         ]);
 

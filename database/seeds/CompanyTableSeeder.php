@@ -19,12 +19,12 @@ class CompanyTableSeeder extends Seeder
         DB::table('Company')->insert([
             'name' => 'Museum Vilanova i la Geltrú',
             'logo_alt' => 'Picture Mueseum Vilanova',
+            'email' => 'museuferrocarril@ffe.es',
             'country_id' => 724,
             'city' => 'Vilanova',
-            'Twitter' => 'www.twitter.com',
-            'Facebook' => 'fb.me',
-            'LinkedIn' => 'www.linkedin.com',
-            'Xing' => 'www.xing.com',
+            'twitter' => 'www.twitter.com',
+            'facebook' => 'fb.me',
+            'linkedin' => 'www.linkedin.com',
             'phonenumber' => mt_rand(1000000, 9999999)
         ]);
 
@@ -33,10 +33,6 @@ class CompanyTableSeeder extends Seeder
             'logo_alt' => 'Picture Mueseum Madrid',
             'country_id' => 724,
             'city' => 'Madrid',
-            'Twitter' => 'www.twitter.com',
-            'Facebook' => 'fb.me',
-            'LinkedIn' => 'www.linkedin.com',
-            'Xing' => 'www.xing.com',
             'phonenumber' => mt_rand(1000000, 9999999)
         ]);
 
@@ -45,10 +41,6 @@ class CompanyTableSeeder extends Seeder
             'logo_alt' => 'Picture Mueseum Vienna',
             'country_id' => 40,
             'city' => 'Madrid',
-            'Twitter' => 'www.twitter.com',
-            'Facebook' => 'fb.me',
-            'LinkedIn' => 'www.linkedin.com',
-            'Xing' => 'www.xing.com',
             'phonenumber' => mt_rand(1000000, 9999999)
         ]);
     }

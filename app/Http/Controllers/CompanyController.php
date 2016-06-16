@@ -107,7 +107,6 @@ class CompanyController extends Controller
             'Twitter'=>'string',
             'Facebook'=>'string',
             'LinkedIn'=>'string',
-            'Xing'=>'string',
 
         ]);
 
@@ -162,7 +161,6 @@ class CompanyController extends Controller
             'Twitter'=>'string',
             'Facebook'=>'string',
             'LinkedIn'=>'string',
-            'Xing'=>'string',
 
        ]);
 

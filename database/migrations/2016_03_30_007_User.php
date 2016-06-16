@@ -39,10 +39,14 @@ class User extends Migration
             $table->string('address')->nullable();
             $table->text('signup_comment')->nullable();
             $table->date('birthday')->nullable();
-            $table->string('Twitter')->nullable();
-            $table->string('Facebook')->nullable();
-            $table->string('LinkedIn')->nullable();
-            $table->string('Xing')->nullable();
+            $table->string('twitter')->nullable();
+            $table->string('facebook')->nullable();
+            $table->string('linkedin')->nullable();
+            $table->string('pinterest')->nullable();
+            $table->string('flickr')->nullable();
+            $table->string('youtube')->nullable();
+            $table->string('instagram')->nullable();
+            $table->string('others')->nullable();
             $table->tinyInteger('accepted')->default(false);
             $table->timestamp('accepted_at')->nullable();
             $table->timestamp('requested_at')->nullable();
