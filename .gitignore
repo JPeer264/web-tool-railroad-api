@@ -1,4 +1,4 @@
 vendor
 .DS_Store
-uploads
 storage/files
+pictures/uploads
