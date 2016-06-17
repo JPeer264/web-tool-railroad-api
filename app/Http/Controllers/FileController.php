@@ -33,6 +33,9 @@ class FileController extends Controller
             return;
         }
 
+        $basepath = base_path();
+        $storagepath  = storage_path('files');
+        $folderpath = str_replace($basepath, "", $storagepath);
         $file   = $request->file('fileUpload');
         $params = $request->all();
         $ext    = $file->getClientOriginalExtension();
@@ -41,33 +44,36 @@ class FileController extends Controller
         $name     = isset($params[$param_alt]) ? preg_replace('/\s+/', '_', $params[$param_alt]) : preg_replace('/.' . $ext . '$/', '', $fileName);
         $newName  = $folderName .'picture_' . $name;
 
-        $path          = '/' . $this->dir_uploads . '/' . $folderName . '/' . $id;
-        $fullpath      = base_path() . $path;
+        $path          = '/' . $folderName . '/' . $id;
+        $fullpath      = storage_path('files') . $path;
         $original_name = $newName . '.' . $ext;
+        //$file->move($fullpath, $original_name);
+        Storage::put($path . '/' . $original_name,  File::get($file));
 
-        $file->move($fullpath, $original_name);
 
         // save small
-        Image::make($fullpath . '/' . $original_name ,array(
+        $filesmall = Image::make($fullpath . '/' . $original_name ,array(
             'width' => $this->size_small
-        ))->save($fullpath . '/' . $newName . '-'. $this->text_small .'.' . $ext);
+        ));
+        Storage::put($folderName . '/' . $id . '/' . $newName . '-'. $this->text_small .'.' . $ext,  $filesmall);
 
         // save medium
-        Image::make($fullpath . '/' . $original_name ,array(
+        $filemedium = Image::make($fullpath . '/' . $original_name ,array(
             'width' => $this->size_medium
-        ))->save($fullpath . '/' . $newName . '-'. $this->text_medium .'.' . $ext);
+        ));
+        Storage::put($folderName . '/' . $id . '/' . $newName . '-'. $this->text_medium .'.' . $ext,  $filemedium);
 
         // save large
-        Image::make($fullpath . '/' . $original_name ,array(
+        $filelarge = Image::make($fullpath . '/' . $original_name ,array(
             'width' => $this->size_large
-        ))->save($fullpath . '/' . $newName . '-'. $this->text_large .'.' . $ext);
+        ));
+        Storage::put($folderName . '/' . $id . '/' . $newName . '-'. $this->text_large .'.' . $ext,  $filelarge);
 
-        var_dump($original_name, $path, $fullpath);
         return ([
             'filename' => $original_name,
             'path' => $path,
             'fullpath' => $fullpath,
-            'filepath' => $path . '/' . $original_name
+            'filepath' => $folderpath . $path . '/' . $original_name
         ]);
     }
 
@@ -80,13 +86,13 @@ class FileController extends Controller
         $file = $request->file('file');
         //$params = $request->all();
 
-
-        $basepath= base_path();
-        $storagepath  = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
+        $basepath = base_path();
+        $storagepath  = storage_path('files');
         $folderpath = str_replace($basepath, "", $storagepath);
         $filename = preg_replace('/\s+/', '_', $filetosave->getClientOriginalName());
         $path = $params['topic_id'].'/'.$filename;
 
+        var_dump($storagepath, $folderpath);
         if(Storage::has($path)){
             return response()->json([
                     'message' => 'filename already exist in this topic'
