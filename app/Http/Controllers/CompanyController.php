@@ -96,14 +96,15 @@ class CompanyController extends Controller
      */
     public function create(Request $request) {
         $this->validate($request, [
-           'administrator' => 'required|integer',
-           'name' => 'required|string',
-           'logo_alt'=>'string',
-           'country_id'=>'required|string',
-           'city'=>'required|string',
-           'address'=>'required|string',
-           'phonenumber'=>'required|string',
-           'email'=>'required|email',
+            'administrator' => 'required|integer',
+            'name' => 'required|string',
+            'logo_alt'=>'string',
+            'fileUpload' => 'image',
+            'country_id'=>'required|string',
+            'city'=>'required|string',
+            'address'=>'required|string',
+            'phonenumber'=>'required|string',
+            'email'=>'required|email',
             'Twitter'=>'string',
             'Facebook'=>'string',
             'LinkedIn'=>'string',
@@ -132,6 +133,15 @@ class CompanyController extends Controller
 
         }
 
+        // fileupload
+        $file = new FileController($request);
+        $fileMeta = $file->save('company', 'logo_alt', 1);
+
+        // check, if not it will overwrite the database
+        if ($fileMeta) {
+            $params['logo_location'] = $fileMeta['filepath'];
+        }
+
         $company = Company::create($params);
 
         return response()->json([
@@ -149,15 +159,15 @@ class CompanyController extends Controller
     */
     public function update(Request $request, $id) {
         $this->validate($request, [
-           'administrator' => 'integer',
-           'name' => 'string',
-           'logo_alt'=>'string',
-           'fileUpload' => 'image',
-           'country_id'=>'string',
-           'city'=>'string',
-           'address'=>'string',
-           'phonenumber'=>'string',
-           'email'=>'email',
+            'administrator' => 'integer',
+            'name' => 'string',
+            'logo_alt'=>'string',
+            'fileUpload' => 'image',
+            'country_id'=>'string',
+            'city'=>'string',
+            'address'=>'string',
+            'phonenumber'=>'string',
+            'email'=>'email',
             'Twitter'=>'string',
             'Facebook'=>'string',
             'LinkedIn'=>'string',
