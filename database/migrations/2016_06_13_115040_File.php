@@ -31,6 +31,8 @@ class File extends Migration
      */
     public function down()
     {
-        Schema::drop('Comment');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        Schema::drop('File');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }

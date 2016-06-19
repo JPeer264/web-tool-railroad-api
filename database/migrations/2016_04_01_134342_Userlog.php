@@ -27,6 +27,6 @@ class Userlog extends Migration
      */
     public function down()
     {
-      Schema::drop('Topic_Job');
+      Schema::drop('Userlog');
     }
 }
