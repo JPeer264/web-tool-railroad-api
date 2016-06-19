@@ -304,7 +304,7 @@ class UserController extends Controller
 
         if (isset($params['role_id'])){
             $user = $this->auth->parseToken()->authenticate();
-            if($user->id!=1){
+            if($user->role_id!=1){
                 return response()->json([
                         'error' => 'User not allowed to do make this request',
                     ], 403);
@@ -337,7 +337,7 @@ class UserController extends Controller
 
         // fileupload
         $file = new FileController($request);
-        $fileMeta = $file->save('user', 'picture_alt', 1);
+        $fileMeta = $file->save('user', 'picture_alt', $id);
 
         // check, if not it will overwrite the database
         if ($fileMeta) {

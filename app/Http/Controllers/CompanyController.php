@@ -127,23 +127,23 @@ class CompanyController extends Controller
         if (count($exist) != 0) {
 
             return response()->json([
-                'message' => 'Categoryname already exist in the listed job or company',
+                'message' => 'Company name already exists',
                 'company' => $exist
             ], 409);
 
         }
 
+
+        $company = Company::create($params);
         // fileupload
         $file = new FileController($request);
-        $fileMeta = $file->save('company', 'logo_alt', 1);
+        $fileMeta = $file->save('company', 'logo_alt', $company->id);
 
         // check, if not it will overwrite the database
         if ($fileMeta) {
-            $params['logo_location'] = $fileMeta['filepath'];
+            $company->logo_location = $fileMeta['filepath'];
+            $company->save();
         }
-
-        $company = Company::create($params);
-
         return response()->json([
                 'message' => 'Category successfully created',
                 'category_id' => $company->id
@@ -213,7 +213,7 @@ class CompanyController extends Controller
 
         // fileupload
         $file = new FileController($request);
-        $fileMeta = $file->save('company', 'logo_alt', 1);
+        $fileMeta = $file->save('company', 'logo_alt', $id);
 
         // check, if not it will overwrite the database
         if ($fileMeta) {
